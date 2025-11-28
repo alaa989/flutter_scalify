@@ -149,7 +149,7 @@ extension BorderRadiusExtension on num {
 
 /*
 دليل الاستخدام - Usage Guide:
-
+gg
 الأحجام الأساسية - Basic Sizes:
 - 16.fz     // حجم النص (text size)
 - 20.s      // المسافات (space)
