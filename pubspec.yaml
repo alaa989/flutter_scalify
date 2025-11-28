@@ -1,0 +1,38 @@
+name: flutter_scalify
+description: A powerful and elegant Flutter package for responsive design. Easily scale your UI elements (text, spacing, icons, containers) across all screen sizes with simple extensions.
+version: 1.0.0
+# رابط موقعك أو رابط المشروع على جيت هب (مهم للنقاط)
+homepage: https://github.com/AlaaHassan/flutter_scalify 
+# repository: https://github.com/AlaaHassan/flutter_scalify # (فعل هذا السطر اذا رفعت الكود على جيت هب)
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+# هذا القسم مهم جداً للبحث
+topics:
+  - responsive
+  - ui
+  - scaling
+  - adaptive
+  - layout
+  - flutter
+  - flutter_scalify
+  - scalify
+
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
