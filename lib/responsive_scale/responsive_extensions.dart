@@ -1,104 +1,62 @@
-
+// lib/responsive_scale/responsive_extensions.dart
 import 'package:flutter/material.dart';
+import 'responsive_provider.dart';
+import 'global_responsive.dart';
 import 'responsive_helper.dart';
+import 'responsive_data.dart';
 
+extension ResponsiveContext on BuildContext {
+  /// ✅ Safe: ResponsiveProvider.of أصبح يعالج الـ null ويعيد fallback
+  ResponsiveData get responsiveData => ResponsiveProvider.of(this);
 
+  ResponsiveHelper get responsiveHelper => ResponsiveHelper.fromData(responsiveData);
 
-class ResponsiveManager {
-  static ResponsiveManager? _instance;
-  static ResponsiveManager get instance {
-    _instance ??= ResponsiveManager._();
-    return _instance!;
-  }
-  
-  ResponsiveManager._();
-  
-  ResponsiveHelper? _helper;
-  
-  void updateContext(BuildContext context) {
-    _helper = ResponsiveHelper(context);
-  }
-  
-  ResponsiveHelper? get helper => _helper;
- 
-  double fallbackScale(double value) => value;
-}
-
-
-class ResponsiveProvider extends StatelessWidget {
-  final Widget child;
-  
-  const ResponsiveProvider({
-    super.key,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-
-    ResponsiveManager.instance.updateContext(context);
-    
-    return child;
+  T valueByScreen<T>({
+    required T mobile,
+    T? watch,
+    T? tablet,
+    T? smallDesktop,
+    T? desktop,
+    T? largeDesktop,
+  }) {
+    return responsiveHelper.valueByScreen(
+      mobile: mobile,
+      watch: watch,
+      tablet: tablet,
+      smallDesktop: smallDesktop,
+      desktop: desktop,
+      largeDesktop: largeDesktop,
+    );
   }
 }
 
-// Extension for responsive scaling on num types
 extension ResponsiveExtension on num {
-  // Text size - حجم النص
+  // ✅ Safe: GlobalResponsive.data أصبح يعيد 1.0 كـ fallback إذا لم تتم التهيئة
+  ResponsiveData get _globalData => GlobalResponsive.data;
+
+  double get _scaleWidth => _globalData.scaleWidth;
+  double get _scaleHeight => _globalData.scaleHeight;
+  double get _scale => _globalData.scaleFactor;
+
+  double get w => (toDouble() * _scaleWidth);
+  double get h => (toDouble() * _scaleHeight);
+  double get r => (toDouble() * (_scaleWidth < _scaleHeight ? _scaleWidth : _scaleHeight));
+  double get sc => (toDouble() * _scale);
+  double get ui => (toDouble() * _scale);
+  double get iz => (toDouble() * _scale);
+  double get s => (toDouble() * _scale);
+
   double get fz {
-    final helper = ResponsiveManager.instance.helper;
-    return helper?.autoScaleFontSize(toDouble()) ?? toDouble();
+    final cfg = _globalData.config;
+    var size = toDouble() * _scale;
+    if (cfg.respectTextScaleFactor) {
+      size *= _globalData.textScaleFactor;
+    }
+    return size.clamp(6.0, 256.0);
   }
-  
-  // Space - المسافات
-  double get s {
-    final helper = ResponsiveManager.instance.helper;
-    return helper?.autoScaleSpace(toDouble()) ?? toDouble();
-  }
-  
-  // Icon size - حجم الأيقونات
-  double get iz {
-    final helper = ResponsiveManager.instance.helper;
-    return helper?.autoScaleIconSize(toDouble()) ?? toDouble();
-  }
-  
-  // Width - العرض
-  double get w {
-    final helper = ResponsiveManager.instance.helper;
-    return helper?.autoScaleDouble(toDouble()) ?? toDouble();
-  }
-  
-  // Height - الارتفاع  
-  double get h {
-    final helper = ResponsiveManager.instance.helper;
-    return helper?.autoScaleDouble(toDouble()) ?? toDouble();
-  }
-  
-  // Radius - نصف القطر
-  double get r {
-    final helper = ResponsiveManager.instance.helper;
-    return helper?.autoScaleSpace(toDouble()) ?? toDouble();
-  }
-  
-  // UI elements - عناصر واجهة المستخدم
-  double get ui {
-    final helper = ResponsiveManager.instance.helper;
-    return helper?.autoScaleUI(toDouble()) ?? toDouble();
-  }
-  
-  // General scaling - التحجيم العام
-  double get sc {
-    final helper = ResponsiveManager.instance.helper;
-    return helper?.autoScale(toDouble()) ?? toDouble();
-  }
-  
-  // For integer values
-  int get si {
-    final helper = ResponsiveManager.instance.helper;
-    return helper?.autoScaleInt(toInt()) ?? toInt();
-  }
-  
-  // Padding shortcuts
+
+  int get si => (toDouble() * _scale).round();
+
   EdgeInsets get p => EdgeInsets.all(s);
   EdgeInsets get ph => EdgeInsets.symmetric(horizontal: s);
   EdgeInsets get pv => EdgeInsets.symmetric(vertical: s);
@@ -106,47 +64,36 @@ extension ResponsiveExtension on num {
   EdgeInsets get pb => EdgeInsets.only(bottom: s);
   EdgeInsets get pl => EdgeInsets.only(left: s);
   EdgeInsets get pr => EdgeInsets.only(right: s);
-}
 
-// Extension for EdgeInsets creation
-extension EdgeInsetsExtension on List<num> {
-  EdgeInsets get p {
-    if (length == 1) return EdgeInsets.all(this[0].s);
-    if (length == 2) return EdgeInsets.symmetric(horizontal: this[0].s, vertical: this[1].s);
-    if (length == 4) return EdgeInsets.fromLTRB(this[0].s, this[1].s, this[2].s, this[3].s);
-    return EdgeInsets.zero;
-  }
-}
-
-// Extension for SizedBox shortcuts
-extension SizedBoxExtension on num {
   SizedBox get sbh => SizedBox(height: s);
   SizedBox get sbw => SizedBox(width: s);
+
   SizedBox sbhw({double? width}) => SizedBox(height: s, width: width?.s);
   SizedBox sbwh({double? height}) => SizedBox(width: s, height: height?.s);
-}
 
-// Extension for BorderRadius
-extension BorderRadiusExtension on num {
   BorderRadius get br => BorderRadius.circular(r);
-  BorderRadius get brt => BorderRadius.only(
-    topLeft: Radius.circular(r),
-    topRight: Radius.circular(r),
-  );
-  BorderRadius get brb => BorderRadius.only(
-    bottomLeft: Radius.circular(r),
-    bottomRight: Radius.circular(r),
-  );
-  BorderRadius get brl => BorderRadius.only(
-    topLeft: Radius.circular(r),
-    bottomLeft: Radius.circular(r),
-  );
-  BorderRadius get brr => BorderRadius.only(
-    topRight: Radius.circular(r),
-    bottomRight: Radius.circular(r),
-  );
+  BorderRadius get brt => BorderRadius.only(topLeft: Radius.circular(r), topRight: Radius.circular(r));
+  BorderRadius get brb => BorderRadius.only(bottomLeft: Radius.circular(r), bottomRight: Radius.circular(r));
+  BorderRadius get brl => BorderRadius.only(topLeft: Radius.circular(r), bottomLeft: Radius.circular(r));
+  BorderRadius get brr => BorderRadius.only(topRight: Radius.circular(r), bottomRight: Radius.circular(r));
 }
-
+/// List<num> extension for EdgeInsets with validation
+extension EdgeInsetsExtension on List<num> {
+  EdgeInsets get p {
+    final length = this.length;
+    if (length == 0 || length == 3 || length > 4) {
+      throw ArgumentError('Scalify Padding Error: List length must be 1, 2, or 4. Received: $length');
+      }
+    if (length == 1) {
+      return EdgeInsets.all(this[0].s);
+    } else if (length == 2) {
+      return EdgeInsets.symmetric(horizontal: this[0].s, vertical: this[1].s);
+    } else {
+      // length == 4
+      return EdgeInsets.fromLTRB(this[0].s, this[1].s, this[2].s, this[3].s);
+    }
+  }
+}
 /*
 دليل الاستخدام - Usage Guide:
 gg
