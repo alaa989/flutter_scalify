@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'responsive_config.dart';
 
@@ -10,16 +12,19 @@ enum ScreenType {
   largeDesktop,
 }
 
+/// Immutable container for responsive metrics
 class ResponsiveData {
   final Size size;
   final double textScaleFactor;
   final ScreenType screenType;
   final ResponsiveConfig config;
+
+  // Precomputed scales for O(1) extension getters
   final double scaleWidth;
   final double scaleHeight;
   final double scaleFactor;
 
-  ResponsiveData({
+  const ResponsiveData._({
     required this.size,
     required this.textScaleFactor,
     required this.screenType,
@@ -28,6 +33,17 @@ class ResponsiveData {
     required this.scaleHeight,
     required this.scaleFactor,
   });
+
+  // identity (safe fallback)
+  static const ResponsiveData identity = ResponsiveData._(
+    size: Size(375, 812),
+    textScaleFactor: 1.0,
+    screenType: ScreenType.mobile,
+    config: ResponsiveConfig(),
+    scaleWidth: 1.0,
+    scaleHeight: 1.0,
+    scaleFactor: 1.0,
+  );
 
   bool get isSmallScreen =>
       screenType == ScreenType.watch || screenType == ScreenType.mobile;
@@ -38,88 +54,64 @@ class ResponsiveData {
 
   bool get isOverMaxWidth => size.width > config.desktopBreakpoint;
 
-  /// ✅ Safe Fallback: يستخدم عند فشل العثور على Context أو عدم تهيئة البيانات
-  factory ResponsiveData.identity({ResponsiveConfig? config}) {
-    return ResponsiveData(
-      size: const Size(375, 812), // Default Mobile Size
-      textScaleFactor: 1.0,
-      screenType: ScreenType.mobile,
-      config: config ?? const ResponsiveConfig(),
-      scaleWidth: 1.0,
-      scaleHeight: 1.0,
-      scaleFactor: 1.0,
-    );
-  }
+  /// Factory to compute metrics from a MediaQueryData (may be null)
+  factory ResponsiveData.fromMediaQuery(
+      MediaQueryData? media, ResponsiveConfig cfg) {
+    if (media == null) return ResponsiveData.identity;
 
-  /// ✅ Safe Calculation: حماية من القيم الصفرية (Web/Desktop init)
-  factory ResponsiveData.fromMediaQuery(MediaQueryData? media, ResponsiveConfig config) {
-    // 1. حماية: إذا كان الـ media null
-    if (media == null) {
-      return ResponsiveData.identity(config: config);
+    final width = media.size.width;
+    final height = media.size.height;
+    if (!width.isFinite || !height.isFinite || width <= 0 || height <= 0) {
+      return ResponsiveData.identity;
     }
 
-    // 2. حماية: إذا كانت الأبعاد صفر (يحدث في الويب أحياناً قبل التحميل الكامل)
-    final width = media.size.width.clamp(0.0, double.infinity).toDouble();
-    final height = media.size.height.clamp(0.0, double.infinity).toDouble();
-
-    if (width == 0 || height == 0) {
-      return ResponsiveData.identity(config: config);
-    }
-
-    // المنطق الأساسي للحساب
     ScreenType type;
-    if (width < config.watchBreakpoint) {
+    if (width < cfg.watchBreakpoint) {
       type = ScreenType.watch;
-    } else if (width < config.mobileBreakpoint) {
+    } else if (width < cfg.mobileBreakpoint) {
       type = ScreenType.mobile;
-    } else if (width < config.tabletBreakpoint) {
+    } else if (width < cfg.tabletBreakpoint) {
       type = ScreenType.tablet;
-    } else if (width < config.smallDesktopBreakpoint) {
+    } else if (width < cfg.smallDesktopBreakpoint) {
       type = ScreenType.smallDesktop;
-    } else if (width < config.desktopBreakpoint) {
+    } else if (width < cfg.desktopBreakpoint) {
       type = ScreenType.desktop;
     } else {
       type = ScreenType.largeDesktop;
     }
 
-    double baseWidthScale;
-    switch (type) {
-      case ScreenType.watch:
-        baseWidthScale = 0.67;
-        break;
-      case ScreenType.mobile:
-        baseWidthScale = 1.0;
-        break;
-      case ScreenType.tablet:
-        baseWidthScale = 1.22;
-        break;
-      case ScreenType.smallDesktop:
-        baseWidthScale = 1.44;
-        break;
-      case ScreenType.desktop:
-        baseWidthScale = 1.67;
-        break;
-      case ScreenType.largeDesktop:
-        baseWidthScale = 1.89;
-        break;
+    // Compute a base width scale (dampened above threshold to save memory on 4K)
+    double calculatedScaleWidth;
+    if (width <= cfg.memoryProtectionThreshold) {
+      calculatedScaleWidth = width / cfg.designWidth;
+    } else {
+      final thresholdScale = cfg.memoryProtectionThreshold / cfg.designWidth;
+      final excessWidth = width - cfg.memoryProtectionThreshold;
+      final excessScale =
+          (excessWidth / cfg.designWidth) * cfg.highResScaleFactor;
+      calculatedScaleWidth = thresholdScale + excessScale;
     }
 
-    const double designHeight = 800.0;
-    double rawHeightScale = (height / designHeight).clamp(0.5, 3.5).toDouble();
-    final clampedWidthScale = baseWidthScale.clamp(config.minScale, config.maxScale).toDouble();
+    // Height scale
+    double calculatedScaleHeight = (height / cfg.designHeight);
 
-    final scaleWidth = clampedWidthScale;
-    final scaleHeight = rawHeightScale.clamp(config.minScale, config.maxScale).toDouble();
-    final combined = ((scaleWidth + scaleHeight) / 2).clamp(config.minScale, config.maxScale).toDouble();
+    // Clamp scales
+    final finalScaleWidth =
+        calculatedScaleWidth.clamp(cfg.minScale, cfg.maxScale);
+    final finalScaleHeight =
+        calculatedScaleHeight.clamp(cfg.minScale, cfg.maxScale);
 
-    return ResponsiveData(
+    // Combined factor (prefer width, but safe)
+    final finalCombined = finalScaleWidth;
+
+    return ResponsiveData._(
       size: Size(width, height),
-     textScaleFactor: media.textScaler.scale(10) / 10,// media is guaranteed non-null here
+      textScaleFactor: media.textScaleFactor,
       screenType: type,
-      config: config,
-      scaleWidth: scaleWidth,
-      scaleHeight: scaleHeight,
-      scaleFactor: combined,
+      config: cfg,
+      scaleWidth: finalScaleWidth.toDouble(),
+      scaleHeight: finalScaleHeight.toDouble(),
+      scaleFactor: finalCombined.toDouble(),
     );
   }
 }

@@ -14,25 +14,22 @@ class ResponsiveProvider extends StatefulWidget {
     this.config = const ResponsiveConfig(),
   });
 
-  /// ✅ Safe Access: يعيد Fallback إذا لم يجد الـ Provider
+  /// Safe access: when not found, returns fallback computed from MediaQuery.maybeOf
   static ResponsiveData of(BuildContext context) {
-    final inherited = context.dependOnInheritedWidgetOfExactType<_InheritedResponsive>();
-    
-    if (inherited == null) {
-       // fallback آمن بدلاً من crash
-       final mq = MediaQuery.maybeOf(context);
-       return ResponsiveData.fromMediaQuery(mq, const ResponsiveConfig());
-    }
-    
-    return inherited.data;
+    final inherited =
+        context.dependOnInheritedWidgetOfExactType<_InheritedResponsive>();
+    if (inherited != null) return inherited.data;
+    final mq = MediaQuery.maybeOf(context);
+    return ResponsiveData.fromMediaQuery(mq, const ResponsiveConfig());
   }
 
   @override
   State<ResponsiveProvider> createState() => _ResponsiveProviderState();
 }
 
-class _ResponsiveProviderState extends State<ResponsiveProvider> with WidgetsBindingObserver {
-  ResponsiveData? _data;
+class _ResponsiveProviderState extends State<ResponsiveProvider>
+    with WidgetsBindingObserver {
+  ResponsiveData _data = ResponsiveData.identity;
   Timer? _debounce;
 
   @override
@@ -50,55 +47,49 @@ class _ResponsiveProviderState extends State<ResponsiveProvider> with WidgetsBin
 
   @override
   void didChangeMetrics() {
+    // debounce rapid resizes
     _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 120), () {
-      if (mounted) _recalcIfNeeded();
+    _debounce =
+        Timer(Duration(milliseconds: widget.config.debounceWindowMillis), () {
+      _recalcIfNeeded();
     });
   }
 
   void _recalcIfNeeded() {
     if (!mounted) return;
-
-    // ✅ Safe: استخدام maybeOf
     final mq = MediaQuery.maybeOf(context);
     final newData = ResponsiveData.fromMediaQuery(mq, widget.config);
 
-    // إذا كانت البيانات القديمة null، قم بالتحديث فوراً
-    if (_data == null) {
-       setState(() {
-        _data = newData;
-        GlobalResponsive.update(newData);
-      });
-      return;
-    }
+    final sizeChanged = (_data.size.width != newData.size.width) ||
+        (_data.size.height != newData.size.height);
+    final scaleChanged = (_data.scaleFactor - newData.scaleFactor).abs() >
+        widget.config.rebuildScaleThreshold;
+    final widthPxChanged = (_data.size.width - newData.size.width).abs() >
+        widget.config.rebuildWidthPxThreshold;
+    final screenTypeChanged = _data.screenType != newData.screenType;
 
-    final old = _data!;
-    final sizeChanged = old.size.width != newData.size.width ||
-        old.size.height != newData.size.height;
-    final scaleChanged = (old.scaleFactor - newData.scaleFactor).abs() > 0.01;
-
-    if (sizeChanged || scaleChanged) {
+    if (sizeChanged && (scaleChanged || widthPxChanged || screenTypeChanged)) {
       setState(() {
         _data = newData;
         GlobalResponsive.update(newData);
       });
+    } else {
+      // still update global for minimal correctness (no rebuild)
+      GlobalResponsive.update(newData);
+      _data = newData;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // ✅ Safe: استخدام maybeOf وحساب البيانات حتى لو كان الـ mq null
     final mq = MediaQuery.maybeOf(context);
-    
-    // حساب البيانات الحالية
-    final currentData = ResponsiveData.fromMediaQuery(mq, widget.config);
-    
-    // تحديث المتغير المحلي والـ Global
-    _data = currentData;
-    GlobalResponsive.update(currentData);
+    final current = ResponsiveData.fromMediaQuery(mq, widget.config);
+    // update global and local
+    _data = current;
+    GlobalResponsive.update(current);
 
     return _InheritedResponsive(
-      data: currentData,
+      data: current,
       child: widget.child,
     );
   }
@@ -106,15 +97,14 @@ class _ResponsiveProviderState extends State<ResponsiveProvider> with WidgetsBin
 
 class _InheritedResponsive extends InheritedWidget {
   final ResponsiveData data;
-  const _InheritedResponsive({
-    required this.data,
-    required super.child,
-  });
+  const _InheritedResponsive({required this.data, required super.child});
 
   @override
   bool updateShouldNotify(covariant _InheritedResponsive oldWidget) {
+    // Notify only on meaningful changes
     return data.scaleFactor != oldWidget.data.scaleFactor ||
-        data.size != oldWidget.data.size ||
-        data.textScaleFactor != oldWidget.data.textScaleFactor;
+        data.size.width != oldWidget.data.size.width ||
+        data.size.height != oldWidget.data.size.height ||
+        data.screenType != oldWidget.data.screenType;
   }
 }

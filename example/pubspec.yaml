@@ -1,8 +1,8 @@
 name: flutter_scalify_example
-description: "A beautiful example app demonstrating flutter_scalify package capabilities"
-publish_to: 'none' 
+description: "A beautiful example app demonstrating flutter_scalify engine capabilities"
+publish_to: 'none'
 
-version: 1.0.0+1
+version: 2.0.0
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_scalify:
-    path: ../ 
+    path: ../
 
 dev_dependencies:
   flutter_test:

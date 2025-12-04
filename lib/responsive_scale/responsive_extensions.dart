@@ -1,15 +1,15 @@
-// lib/responsive_scale/responsive_extensions.dart
 import 'package:flutter/material.dart';
-import 'responsive_provider.dart';
-import 'global_responsive.dart';
-import 'responsive_helper.dart';
+import 'package:flutter_scalify/responsive_scale/responsive_provider.dart';
 import 'responsive_data.dart';
+import 'global_responsive.dart';
+import '_cache.dart';
+import 'responsive_helper.dart';
 
+/// Context extension
 extension ResponsiveContext on BuildContext {
-  /// ✅ Safe: ResponsiveProvider.of أصبح يعالج الـ null ويعيد fallback
   ResponsiveData get responsiveData => ResponsiveProvider.of(this);
-
-  ResponsiveHelper get responsiveHelper => ResponsiveHelper.fromData(responsiveData);
+  ResponsiveHelper get responsiveHelper =>
+      ResponsiveHelper.fromData(responsiveData);
 
   T valueByScreen<T>({
     required T mobile,
@@ -30,70 +30,99 @@ extension ResponsiveContext on BuildContext {
   }
 }
 
+/// Fast API (optional) - use when you need micro-performance inside loops
+class ScalifyFast {
+  ScalifyFast._();
+
+  static double w(double dp) => dp * GlobalResponsive.data.scaleWidth;
+  static double h(double dp) => dp * GlobalResponsive.data.scaleHeight;
+
+  static double r(double dp) {
+    final d = GlobalResponsive.data;
+    return dp * (d.scaleWidth < d.scaleHeight ? d.scaleWidth : d.scaleHeight);
+  }
+
+  static double sc(double val) => val * GlobalResponsive.data.scaleFactor;
+
+  static double fz(double sp) {
+    final d = GlobalResponsive.data;
+    var size = sp * d.scaleFactor;
+    if (d.config.respectTextScaleFactor) size *= d.textScaleFactor;
+    return size.clamp(6.0, 256.0);
+  }
+}
+
+/// Numeric extensions (keep abbreviations)
 extension ResponsiveExtension on num {
-  // ✅ Safe: GlobalResponsive.data أصبح يعيد 1.0 كـ fallback إذا لم تتم التهيئة
-  ResponsiveData get _globalData => GlobalResponsive.data;
+  // fast access - no null checks
+  ResponsiveData get _g => GlobalResponsive.data;
 
-  double get _scaleWidth => _globalData.scaleWidth;
-  double get _scaleHeight => _globalData.scaleHeight;
-  double get _scale => _globalData.scaleFactor;
+  double get w => toDouble() * _g.scaleWidth;
+  double get h => toDouble() * _g.scaleHeight;
 
-  double get w => (toDouble() * _scaleWidth);
-  double get h => (toDouble() * _scaleHeight);
-  double get r => (toDouble() * (_scaleWidth < _scaleHeight ? _scaleWidth : _scaleHeight));
-  double get sc => (toDouble() * _scale);
-  double get ui => (toDouble() * _scale);
-  double get iz => (toDouble() * _scale);
-  double get s => (toDouble() * _scale);
+  double get r {
+    final g = _g;
+    final scale = (g.scaleWidth < g.scaleHeight ? g.scaleWidth : g.scaleHeight);
+    return toDouble() * scale;
+  }
+
+  // spacing / general scale
+  double get s => toDouble() * _g.scaleFactor;
+  double get sc => s;
+  double get ui => s;
+  double get iz => s;
 
   double get fz {
-    final cfg = _globalData.config;
-    var size = toDouble() * _scale;
-    if (cfg.respectTextScaleFactor) {
-      size *= _globalData.textScaleFactor;
-    }
+    final g = _g;
+    var size = toDouble() * g.scaleFactor;
+    if (g.config.respectTextScaleFactor) size *= g.textScaleFactor;
     return size.clamp(6.0, 256.0);
   }
 
-  int get si => (toDouble() * _scale).round();
+  int get si => (toDouble() * _g.scaleFactor).round();
 
-  EdgeInsets get p => EdgeInsets.all(s);
-  EdgeInsets get ph => EdgeInsets.symmetric(horizontal: s);
-  EdgeInsets get pv => EdgeInsets.symmetric(vertical: s);
-  EdgeInsets get pt => EdgeInsets.only(top: s);
-  EdgeInsets get pb => EdgeInsets.only(bottom: s);
-  EdgeInsets get pl => EdgeInsets.only(left: s);
-  EdgeInsets get pr => EdgeInsets.only(right: s);
+  // padding helpers — use caching for EdgeInsets.all
+  EdgeInsets get p => cachedAll(toDouble(), _g.scaleFactor);
+  EdgeInsets get ph => EdgeInsets.symmetric(horizontal: w);
+  EdgeInsets get pv => EdgeInsets.symmetric(vertical: h);
+  EdgeInsets get pt => EdgeInsets.only(top: h);
+  EdgeInsets get pb => EdgeInsets.only(bottom: h);
+  EdgeInsets get pl => EdgeInsets.only(left: w);
+  EdgeInsets get pr => EdgeInsets.only(right: w);
 
+  // SizedBoxes (no heavy allocations but still handy)
   SizedBox get sbh => SizedBox(height: s);
   SizedBox get sbw => SizedBox(width: s);
 
-  SizedBox sbhw({double? width}) => SizedBox(height: s, width: width?.s);
-  SizedBox sbwh({double? height}) => SizedBox(width: s, height: height?.s);
+  SizedBox sbhw({double? width}) => SizedBox(height: h, width: width?.w);
+  SizedBox sbwh({double? height}) => SizedBox(width: w, height: height?.h);
 
-  BorderRadius get br => BorderRadius.circular(r);
-  BorderRadius get brt => BorderRadius.only(topLeft: Radius.circular(r), topRight: Radius.circular(r));
-  BorderRadius get brb => BorderRadius.only(bottomLeft: Radius.circular(r), bottomRight: Radius.circular(r));
-  BorderRadius get brl => BorderRadius.only(topLeft: Radius.circular(r), bottomLeft: Radius.circular(r));
-  BorderRadius get brr => BorderRadius.only(topRight: Radius.circular(r), bottomRight: Radius.circular(r));
+  // Border radius - cached
+  BorderRadius get br => cachedCircularRadius(toDouble(), _g.scaleFactor);
+  BorderRadius get brt => BorderRadius.only(
+      topLeft: Radius.circular(r), topRight: Radius.circular(r));
+  BorderRadius get brb => BorderRadius.only(
+      bottomLeft: Radius.circular(r), bottomRight: Radius.circular(r));
+  BorderRadius get brl => BorderRadius.only(
+      topLeft: Radius.circular(r), bottomLeft: Radius.circular(r));
+  BorderRadius get brr => BorderRadius.only(
+      topRight: Radius.circular(r), bottomRight: Radius.circular(r));
 }
-/// List<num> extension for EdgeInsets with validation
-extension EdgeInsetsExtension on List<num> {
+
+/// List<num> padding shorthand with validation (allowed lengths: 1,2,4)
+extension EdgeInsetsListExtension on List<num> {
   EdgeInsets get p {
-    final length = this.length;
-    if (length == 0 || length == 3 || length > 4) {
-      throw ArgumentError('Scalify Padding Error: List length must be 1, 2, or 4. Received: $length');
-      }
-    if (length == 1) {
-      return EdgeInsets.all(this[0].s);
-    } else if (length == 2) {
-      return EdgeInsets.symmetric(horizontal: this[0].s, vertical: this[1].s);
-    } else {
-      // length == 4
-      return EdgeInsets.fromLTRB(this[0].s, this[1].s, this[2].s, this[3].s);
-    }
+    final len = length;
+    if (len == 1) return [this[0]].first.p;
+    if (len == 2)
+      return EdgeInsets.symmetric(horizontal: this[0].w, vertical: this[1].h);
+    if (len == 4)
+      return EdgeInsets.fromLTRB(this[0].w, this[1].h, this[2].w, this[3].h);
+    throw ArgumentError(
+        'Scalify Padding Error: List length must be 1, 2, or 4. Received: $len');
   }
 }
+
 /*
 دليل الاستخدام - Usage Guide:
 gg
@@ -157,21 +186,17 @@ Column(
 */
 //  padding: [16, 8].p,  // أو 16.ph + 8.pv
 
-
 //  50.sbh,  // أو يمكنك استخدام: SizedBox(height: 50.s)
-
-
 
 // Icon size
 // Icon(
 //   Icons.home,
 //   // القديم:
 //   // size: context.responsive.autoScaleIconSize(24),
-  
+
 //   // الجديد:
 //   size: 24.iz,
 // )
-
 
 // Container(
 //   padding: 16.p,                    // padding all 16

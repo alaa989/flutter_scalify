@@ -1,6 +1,6 @@
 name: flutter_scalify
-description: A powerful and elegant Flutter package for responsive design. Easily scale UI elements across all screen sizes with defensive null-safety.
-version: 1.0.1
+description: The Intelligent Scaling Engine for Flutter. High-performance responsive design with 4K protection, container queries (local scaling), and zero-allocation caching.
+version: 2.0.0
 
 homepage: https://github.com/alaa989/flutter_scalify
 repository: https://github.com/alaa989/flutter_scalify
@@ -21,10 +21,10 @@ dev_dependencies:
 
 topics:
   - responsive
-  - ui
   - scaling
-  - adaptive
-  - layout
+  - performance
+  - container-queries
+  - desktop
 
 platforms:
   android:
