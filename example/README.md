@@ -1,38 +1,44 @@
-# Flutter Scalify Example
+Flutter Scalify Example (Scalify Lab Ultimate) 🧪
 
-This is a beautiful example application demonstrating the power of `flutter_scalify` package.
+What to Look For?
+When running the app (preferably in Device Preview or Desktop/Web):
 
-## Features Demonstrated
+Resize the Window: Watch the "Live Metrics" update instantly.
 
-- ✅ Responsive text sizing using `.fz` extension
-- ✅ Responsive spacing using `.s` extension
-- ✅ Responsive icon sizing using `.iz` extension
-- ✅ Responsive UI elements using `.ui` extension
-- ✅ Responsive border radius using `.r` extension
-- ✅ Dynamic GridView that adapts columns based on screen size:
-  - Mobile: 1 column
-  - Tablet: 2 columns
-  - Desktop: 3-4 columns
-  - Large Desktop: 5 columns
-- ✅ Modern UI with cards, shadows, and gradients
-- ✅ Beautiful color palette
-- ✅ Works seamlessly across all screen sizes
+Test 4K: Expand width beyond 1920px to see the 4K Guard turn green (Active).
 
-## Running the Example
+Check the Grid: Notice how grid items grow and shrink intelligently using ScalifyBox instead of standard media queries.
 
-```bash
+Enjoy the ultimate scaling experience! 🚀
+
+This is a comprehensive "Lab" dashboard designed to demonstrate the full power of the Scalify Engine v2.0. It visualizes how the package handles scaling, performance, and responsiveness in real-time.
+
+Features Demonstrated 🛠️
+
+1. Core Scaling Logic
+
+Visual comparison between Width-based (.w), Height-based (.h), and Smart-balanced (.s) scaling.
+
+Live metrics dashboard showing real-time Width, Scale Factor, and Device Type.
+
+2. The New Engine Capabilities (v2.0)
+
+📦 ScalifyBox (Local Scaling): Demonstrates the new Container Query widget that scales items based on their parent size (used in the Grid).
+
+🛡️ 4K Memory Protection: A dedicated section showing the status of the protection algorithm (ACTIVE vs STANDBY) on large screens.
+
+⚡ Performance: Uses cached extensions (.p, .br) for zero-allocation rendering.
+
+3. Adaptive Layouts
+
+Smart Grid System: A dynamic grid that adapts columns from 1 to 5 based on precise breakpoints.
+
+Proportional Scaling: Uses ScalifyFit.contain to ensure grid items maintain perfect proportions without overflowing, regardless of the aspect ratio.
+
+Typography: Demonstrates safe-area typography scaling using .fz.
+
+Running the Example
+
 cd example
 flutter pub get
 flutter run
-```
-
-## Screenshots
-
-The example app includes:
-- A beautiful gradient app bar
-- Statistics cards that adapt to screen size
-- A responsive product grid that changes columns dynamically
-- An information section with gradient background
-
-Try resizing the window or running on different devices to see the responsive magic in action!
-

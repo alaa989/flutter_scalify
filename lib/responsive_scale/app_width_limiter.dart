@@ -17,9 +17,8 @@ class AppWidthLimiter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-     
-      final screenWidth = constraints.maxWidth.isFinite 
-          ? constraints.maxWidth 
+      final double screenWidth = constraints.maxWidth.isFinite
+          ? constraints.maxWidth
           : MediaQuery.maybeOf(context)?.size.width ?? 0.0;
 
       if (screenWidth > maxWidth) {

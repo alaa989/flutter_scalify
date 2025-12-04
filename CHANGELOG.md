@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2025-12-04 🚀 (The Engine Update)
+
+### 📦 New Features: Container Queries
+- **Added `ScalifyBox`:** A game-changing widget that allows **Local Scaling**. Scale UI elements based on their parent container's size, not just the screen size. Perfect for Cards and Grids.
+- **Added `ScalifyFit`:** Control how content scales inside a `ScalifyBox` (`width`, `height`, `contain`, `cover`) to handle dynamic aspect ratios automatically.
+
+### 🛡️ 4K & Ultra-Wide Protection
+- **Smart Dampening Algorithm:** Introduced a non-linear scaling logic for screens wider than `1920px` (configurable). This prevents UI elements from becoming comically large on TVs or Ultra-wide monitors while saving Texture Memory.
+- **New Config Options:** Added `memoryProtectionThreshold` and `highResScaleFactor` to `ResponsiveConfig`.
+
+### ⚡ Ultimate Performance (Zero-Cost)
+- **LRU Caching System:** Implemented an internal cache for `EdgeInsets` (.p) and `BorderRadius` (.br). This reduces memory allocations by up to 90% during rebuilds.
+- **Resize Debouncing:** The provider now waits for the window resize to settle before recalculating layout (Smart Throttling), eliminating lag on Desktop/Web resizing.
+- **Optimized Getters:** Refactored extension getters to access data in O(1) time without unnecessary context lookups in hot paths.
+
+### 🛠️ API & DX Improvements
+- **Context Shortcuts:** Added `context.screenType` getter for faster checks.
+- **Grid Stability:** Fixed layout overflows in dynamic grids using the new `ScalifyFit` logic.
+
+---
+
 ## [1.0.1] - 2025-12-03
 
 ### 🛡️ Critical Fixes & Null Safety

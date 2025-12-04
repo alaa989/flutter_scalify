@@ -1,30 +1,21 @@
-import 'package:flutter/material.dart';
-
 import 'responsive_data.dart';
 
+/// Fast global holder for responsive data.
+/// Initialized to identity to avoid null checks in hot paths.
 class GlobalResponsive {
-  static ResponsiveData? _data;
+  GlobalResponsive._();
 
+  static ResponsiveData _data = ResponsiveData.identity;
+
+  /// Update from provider
   static void update(ResponsiveData data) {
     _data = data;
   }
 
-  /// ✅ Safe Getter: لا يرمي Exception بل يعيد قيمة افتراضية
-  static ResponsiveData get data {
-    if (_data == null) {
-      // طباعة تحذير للمطور فقط في وضع الـ Debug
-      assert(() {
-        debugPrint('⚠️ Warning: ResponsiveProvider not initialized. Using fallback values.');
-        return true;
-      }());
-      
-      // إرجاع قيمة افتراضية (Scale = 1.0) لتجنب توقف التطبيق
-      return ResponsiveData.identity();
-    }
-    return _data!;
-  }
+  /// Extremely fast getter for extension hot paths (no null checks).
+  static ResponsiveData get data => _data;
 
-  static bool get isInitialized => _data != null;
+  static bool get isInitialized => _data != ResponsiveData.identity;
 
-  static void clear() => _data = null;
+  static void reset() => _data = ResponsiveData.identity;
 }
