@@ -114,10 +114,12 @@ extension EdgeInsetsListExtension on List<num> {
   EdgeInsets get p {
     final len = length;
     if (len == 1) return [this[0]].first.p;
-    if (len == 2)
+    if (len == 2) {
       return EdgeInsets.symmetric(horizontal: this[0].w, vertical: this[1].h);
-    if (len == 4)
+    }
+    if (len == 4) {
       return EdgeInsets.fromLTRB(this[0].w, this[1].h, this[2].w, this[3].h);
+    }
     throw ArgumentError(
         'Scalify Padding Error: List length must be 1, 2, or 4. Received: $len');
   }
