@@ -59,12 +59,12 @@ class ResponsiveData {
     scaleFactorId: 1000,
     textScaleFactorId: 100,
   );
-bool get isSmallScreen =>
+  bool get isSmallScreen =>
       screenType == ScreenType.watch || screenType == ScreenType.mobile;
 
   bool get isMediumScreen =>
       screenType == ScreenType.tablet || screenType == ScreenType.smallDesktop;
-    
+
   bool get isLargeScreen =>
       screenType == ScreenType.desktop || screenType == ScreenType.largeDesktop;
 
@@ -81,11 +81,16 @@ bool get isSmallScreen =>
     // ScreenType Logic
     ScreenType type;
     if (width < cfg.mobileBreakpoint) {
-      type = (width < cfg.watchBreakpoint) ? ScreenType.watch : ScreenType.mobile;
+      type =
+          (width < cfg.watchBreakpoint) ? ScreenType.watch : ScreenType.mobile;
     } else if (width < cfg.smallDesktopBreakpoint) {
-      type = (width < cfg.tabletBreakpoint) ? ScreenType.tablet : ScreenType.smallDesktop;
+      type = (width < cfg.tabletBreakpoint)
+          ? ScreenType.tablet
+          : ScreenType.smallDesktop;
     } else {
-      type = (width < cfg.desktopBreakpoint) ? ScreenType.desktop : ScreenType.largeDesktop;
+      type = (width < cfg.desktopBreakpoint)
+          ? ScreenType.desktop
+          : ScreenType.largeDesktop;
     }
 
     // Scale Logic
@@ -93,14 +98,16 @@ bool get isSmallScreen =>
     if (width > cfg.memoryProtectionThreshold) {
       final thresholdScale = cfg.memoryProtectionThreshold / cfg.designWidth;
       final excessWidth = width - cfg.memoryProtectionThreshold;
-      calculatedScaleWidth = thresholdScale + 
+      calculatedScaleWidth = thresholdScale +
           ((excessWidth / cfg.designWidth) * cfg.highResScaleFactor);
     }
 
     final double calculatedScaleHeight = height / cfg.designHeight;
 
-    final double finalScaleWidth = calculatedScaleWidth.clamp(cfg.minScale, cfg.maxScale);
-    final double finalScaleHeight = calculatedScaleHeight.clamp(cfg.minScale, cfg.maxScale);
+    final double finalScaleWidth =
+        calculatedScaleWidth.clamp(cfg.minScale, cfg.maxScale);
+    final double finalScaleHeight =
+        calculatedScaleHeight.clamp(cfg.minScale, cfg.maxScale);
     final double finalCombined = finalScaleWidth;
 
     return ResponsiveData._(
@@ -120,20 +127,21 @@ bool get isSmallScreen =>
   }
 
   // --- PERFORMANCE MAGIC: Integer-based Equality ---
-  
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! ResponsiveData) return false;
-    
+
     // Compare Integers (Fast & Stable) instead of Doubles (Unstable)
     return other._scaleFactorId == _scaleFactorId &&
-           other._scaleWidthId == _scaleWidthId &&
-           other._scaleHeightId == _scaleHeightId &&
-           other._textScaleFactorId == _textScaleFactorId &&
-           other.size.width.toInt() == size.width.toInt() && // Compare dimensions as Int logic
-           other.size.height.toInt() == size.height.toInt() &&
-           other.screenType == screenType;
+        other._scaleWidthId == _scaleWidthId &&
+        other._scaleHeightId == _scaleHeightId &&
+        other._textScaleFactorId == _textScaleFactorId &&
+        other.size.width.toInt() ==
+            size.width.toInt() && // Compare dimensions as Int logic
+        other.size.height.toInt() == size.height.toInt() &&
+        other.screenType == screenType;
   }
 
   @override

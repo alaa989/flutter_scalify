@@ -26,7 +26,7 @@ class ResponsiveHelper {
 
   int autoScaleInt(int value) => (scale(value.toDouble()).round());
 
-T valueByScreen<T>({
+  T valueByScreen<T>({
     required T mobile,
     T? watch,
     T? tablet,

@@ -15,7 +15,8 @@ class ResponsiveProvider extends StatefulWidget {
   });
 
   static ResponsiveData of(BuildContext context) {
-    final inherited = context.dependOnInheritedWidgetOfExactType<_InheritedResponsive>();
+    final inherited =
+        context.dependOnInheritedWidgetOfExactType<_InheritedResponsive>();
     if (inherited != null) return inherited.data;
     final mq = MediaQuery.maybeOf(context);
     return ResponsiveData.fromMediaQuery(mq, const ResponsiveConfig());
@@ -25,9 +26,10 @@ class ResponsiveProvider extends StatefulWidget {
   State<ResponsiveProvider> createState() => _ResponsiveProviderState();
 }
 
-class _ResponsiveProviderState extends State<ResponsiveProvider> with WidgetsBindingObserver {
+class _ResponsiveProviderState extends State<ResponsiveProvider>
+    with WidgetsBindingObserver {
   Timer? _debounce;
-  ResponsiveData _currentData = ResponsiveData.identity; 
+  ResponsiveData _currentData = ResponsiveData.identity;
 
   @override
   void initState() {
@@ -45,7 +47,8 @@ class _ResponsiveProviderState extends State<ResponsiveProvider> with WidgetsBin
   @override
   void didChangeMetrics() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(Duration(milliseconds: widget.config.debounceWindowMillis), () {
+    _debounce =
+        Timer(Duration(milliseconds: widget.config.debounceWindowMillis), () {
       if (mounted) _recalculate();
     });
   }
@@ -67,11 +70,11 @@ class _ResponsiveProviderState extends State<ResponsiveProvider> with WidgetsBin
     // Optimization #3: Calculate once, use everywhere
     final mq = MediaQuery.maybeOf(context);
     final newData = ResponsiveData.fromMediaQuery(mq, widget.config);
-    
+
     // Sync global state efficiently
     if (newData != _currentData) {
-       _currentData = newData;
-       GlobalResponsive.update(newData);
+      _currentData = newData;
+      GlobalResponsive.update(newData);
     }
 
     return _InheritedResponsive(
