@@ -4,13 +4,38 @@ import 'responsive_data.dart';
 import 'global_responsive.dart';
 import 'responsive_helper.dart';
 
+/// Context extension for accessing Responsive Data and Helpers
 extension ResponsiveContext on BuildContext {
+  /// Access the responsive data directly from the context (via InheritedWidget)
   ResponsiveData get responsiveData => ResponsiveProvider.of(this);
+
+  /// Access the helper class for logical operations
   ResponsiveHelper get responsiveHelper =>
       ResponsiveHelper.fromData(responsiveData);
+
+  /// Helper method to return different values based on screen type
+  T valueByScreen<T>({
+    required T mobile,
+    T? watch,
+    T? tablet,
+    T? smallDesktop,
+    T? desktop,
+    T? largeDesktop,
+  }) {
+    return responsiveHelper.valueByScreen(
+      mobile: mobile,
+      watch: watch,
+      tablet: tablet,
+      smallDesktop: smallDesktop,
+      desktop: desktop,
+      largeDesktop: largeDesktop,
+    );
+  }
 }
 
+/// Numeric extensions for responsive scaling
 extension ResponsiveExtension on num {
+  // Access global data directly for performance
   ResponsiveData get _g => GlobalResponsive.data;
 
   // --- The Performance Magic: Force Inline ---
@@ -52,12 +77,13 @@ extension ResponsiveExtension on num {
   @pragma('vm:prefer-inline')
   int get si => (this * _g.scaleFactor).round();
 
-  // --- Spacing ---
-  // لا نحتاج inline هنا لأن إنشاء الكائنات (SizedBox) أثقل من استدعاء الدالة
+  // --- Spacing (SizedBox) ---
   SizedBox get sbh => SizedBox(height: h);
   SizedBox get sbw => SizedBox(width: w);
+
   SizedBox sbhw({double? width}) =>
       SizedBox(height: h, width: width != null ? width * _g.scaleWidth : null);
+
   SizedBox sbwh({double? height}) => SizedBox(
       width: w, height: height != null ? height * _g.scaleHeight : null);
 
@@ -72,16 +98,21 @@ extension ResponsiveExtension on num {
 
   // --- BorderRadius ---
   BorderRadius get br => BorderRadius.circular(r);
+
   BorderRadius get brt => BorderRadius.only(
       topLeft: Radius.circular(r), topRight: Radius.circular(r));
+
   BorderRadius get brb => BorderRadius.only(
       bottomLeft: Radius.circular(r), bottomRight: Radius.circular(r));
+
   BorderRadius get brl => BorderRadius.only(
       topLeft: Radius.circular(r), bottomLeft: Radius.circular(r));
+
   BorderRadius get brr => BorderRadius.only(
       topRight: Radius.circular(r), bottomRight: Radius.circular(r));
 }
 
+/// List<num> padding shorthand with validation (allowed lengths: 1,2,4)
 extension EdgeInsetsListExtension on List<num> {
   EdgeInsets get p {
     final len = length;
@@ -95,11 +126,10 @@ extension EdgeInsetsListExtension on List<num> {
     if (len == 4) {
       return EdgeInsets.fromLTRB(this[0].w, this[1].h, this[2].w, this[3].h);
     }
-    // Fail silently or throw based on preference, currently throwing as per original
+    // Fail silently or throw based on preference
     throw ArgumentError('Scalify: List must have length 1, 2, or 4.');
   }
 }
-
 /*
 دليل الاستخدام - Usage Guide:
 gg

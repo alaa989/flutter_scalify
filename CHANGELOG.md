@@ -1,6 +1,11 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+
+## [2.0.2] - 2025-12-06
+### 🐛 Hotfix
+- **Restored API:** Fixed missing `context.valueByScreen()` method that was accidentally removed in 2.0.1.
+
 ## [2.0.1] - 2025-12-06 🚀 (The Hyper-Performance Update)
 
 ### ⚡ Performance Overhaul (Zero Allocation)

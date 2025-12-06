@@ -1,31 +1,52 @@
+/// Configuration class for [ResponsiveProvider].
+/// Defines the design baseline, breakpoints, and scaling behavior.
 class ResponsiveConfig {
-  // Base design dimensions (common mobile design width/height)
+  /// Base design width (e.g., 375 for iPhone design).
   final double designWidth;
+
+  /// Base design height (e.g., 812 for iPhone design).
   final double designHeight;
 
-  // Breakpoints
+  /// Breakpoint for Watch devices (default < 300).
   final double watchBreakpoint;
+
+  /// Breakpoint for Mobile devices (300 - 600).
   final double mobileBreakpoint;
+
+  /// Breakpoint for Tablets (600 - 900).
   final double tabletBreakpoint;
+
+  /// Breakpoint for Small Desktops (900 - 1200).
   final double smallDesktopBreakpoint;
+
+  /// Breakpoint for Desktops (1200 - 1800).
   final double desktopBreakpoint;
 
-  // Accessibility
+  /// Whether to respect the system's text scale factor (Accessibility).
   final bool respectTextScaleFactor;
 
-  // Clamping for scale factors
+  /// Minimum allowed scale factor (prevents UI from becoming too small).
   final double minScale;
+
+  /// Maximum allowed scale factor (prevents UI from exploding on huge screens).
   final double maxScale;
 
-  // 4K memory-protection threshold and damping factor
+  /// The width threshold where 4K/Ultra-wide protection kicks in (default 1920).
   final double memoryProtectionThreshold;
+
+  /// The dampening factor applied to width pixels exceeding [memoryProtectionThreshold].
   final double highResScaleFactor;
 
-  // Debounce & thresholds for rebuild notification
+  /// Time in milliseconds to debounce resize events (Desktop/Web).
   final int debounceWindowMillis;
-  final double rebuildScaleThreshold; // minimal change in scaleFactor to notify
-  final double rebuildWidthPxThreshold; // minimal change in px to notify
 
+  /// The scale difference required to trigger a rebuild.
+  final double rebuildScaleThreshold;
+
+  /// The pixel width difference required to trigger a rebuild.
+  final double rebuildWidthPxThreshold;
+
+  /// Creates a new [ResponsiveConfig].
   const ResponsiveConfig({
     this.designWidth = 375.0,
     this.designHeight = 812.0,
@@ -44,6 +65,7 @@ class ResponsiveConfig {
     this.rebuildWidthPxThreshold = 3.0,
   });
 
+  /// Creates a copy of this config with the given fields replaced with the new values.
   ResponsiveConfig copyWith({
     double? designWidth,
     double? designHeight,

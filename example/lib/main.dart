@@ -38,7 +38,11 @@ class MyApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-      home: const ScalifyLabScreen(),
+      home: AppWidthLimiter(
+          maxWidth: 2000,
+          horizontalPadding: 16,
+          backgroundColor: const Color(0xFFF3F4F6),
+          child: const ScalifyLabScreen()),
     );
   }
 }
@@ -64,162 +68,159 @@ class ScalifyLabScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: AppWidthLimiter(
-        maxWidth: 2400,
-        child: SingleChildScrollView(
-          padding: 20.p,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 1. Live Metrics
-              _buildSectionTitle("1. Live Metrics"),
-              Container(
-                padding: 16.p,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: 12.br,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.05), blurRadius: 10)
-                  ],
-                ),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildMetricItem("Width", "${data.size.width.toInt()}px"),
-                      30.sbw,
-                      _buildMetricItem(
-                          "Scale", "${data.scaleFactor.toStringAsFixed(2)}x"),
-                      30.sbw,
-                      _buildMetricItem(
-                          "Device", data.screenType.name.toUpperCase()),
-                    ],
-                  ),
-                ),
+      body: SingleChildScrollView(
+        padding: 20.p,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // 1. Live Metrics
+            _buildSectionTitle("1. Live Metrics"),
+            Container(
+              padding: 16.p,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: 12.br,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.05), blurRadius: 10)
+                ],
               ),
-
-              24.sbh,
-
-              // 2. Scaling Logic
-              _buildSectionTitle("2. Scaling Logic"),
-              Container(
-                padding: 16.p,
-                decoration:
-                    BoxDecoration(color: Colors.white, borderRadius: 12.br),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildBox(100.w, Colors.blue, ".w (Width)", 100.w),
-                      20.sbw,
-                      _buildBox(100.s, Colors.green, ".s (Smart)", 100.s),
-                      20.sbw,
-                      _buildBox(100.h, Colors.orange, ".h (Height)", 100.h),
-                    ],
-                  ),
-                ),
-              ),
-
-              24.sbh,
-
-              // 3. Typography
-              _buildSectionTitle("3. Typography"),
-              Container(
-                padding: 16.p,
-                decoration:
-                    BoxDecoration(color: Colors.white, borderRadius: 12.br),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Standard Body (14.fz)",
-                        style: TextStyle(fontSize: 14.fz),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                    8.sbh,
-                    Text("Section Title (20.fz)",
-                        style: TextStyle(
-                            fontSize: 20.fz, fontWeight: FontWeight.bold),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                    8.sbh,
-                    Text("Display Header (30.fz)",
-                        style: TextStyle(
-                            fontSize: 30.fz,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.indigo),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                  ],
-                ),
-              ),
-
-              24.sbh,
-
-              // 4. 4K Protection
-              _buildSectionTitle("4. 4K Protection"),
-              Container(
-                padding: 16.p,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B),
-                  borderRadius: 12.br,
-                ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.shield_moon,
-                      color: data.size.width > 1920
-                          ? Colors.greenAccent
-                          : Colors.grey,
-                      size: 36.iz,
-                    ),
-                    16.sbw,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            data.size.width > 1920
-                                ? "ACTIVE GUARD"
-                                : "STANDBY MODE",
-                            style: TextStyle(
-                              color: data.size.width > 1920
-                                  ? Colors.greenAccent
-                                  : Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.fz,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          4.sbh,
-                          Text(
-                            data.size.width > 1920
-                                ? "Scaling dampened to save RAM"
-                                : "Standard linear scaling",
-                            style: TextStyle(
-                                color: Colors.white70, fontSize: 12.fz),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    )
+                    _buildMetricItem("Width", "${data.size.width.toInt()}px"),
+                    30.sbw,
+                    _buildMetricItem(
+                        "Scale", "${data.scaleFactor.toStringAsFixed(2)}x"),
+                    30.sbw,
+                    _buildMetricItem(
+                        "Device", data.screenType.name.toUpperCase()),
                   ],
                 ),
               ),
+            ),
 
-              24.sbh,
+            24.sbh,
 
-              // 5. ScalifyBox Grid (The New Feature)
-              _buildSectionTitle("5. ScalifyBox Grid (Local Scaling)"),
-              _buildAdaptiveGrid(context),
+            // 2. Scaling Logic
+            _buildSectionTitle("2. Scaling Logic"),
+            Container(
+              padding: 16.p,
+              decoration:
+                  BoxDecoration(color: Colors.white, borderRadius: 12.br),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildBox(100.w, Colors.blue, ".w (Width)", 100.w),
+                    20.sbw,
+                    _buildBox(100.s, Colors.green, ".s (Smart)", 100.s),
+                    20.sbw,
+                    _buildBox(100.h, Colors.orange, ".h (Height)", 100.h),
+                  ],
+                ),
+              ),
+            ),
 
-              40.sbh,
-            ],
-          ),
+            24.sbh,
+
+            // 3. Typography
+            _buildSectionTitle("3. Typography"),
+            Container(
+              padding: 16.p,
+              decoration:
+                  BoxDecoration(color: Colors.white, borderRadius: 12.br),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Standard Body (14.fz)",
+                      style: TextStyle(fontSize: 14.fz),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                  8.sbh,
+                  Text("Section Title (20.fz)",
+                      style: TextStyle(
+                          fontSize: 20.fz, fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                  8.sbh,
+                  Text("Display Header (30.fz)",
+                      style: TextStyle(
+                          fontSize: 30.fz,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.indigo),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+
+            24.sbh,
+
+            // 4. 4K Protection
+            _buildSectionTitle("4. 4K Protection"),
+            Container(
+              padding: 16.p,
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E293B),
+                borderRadius: 12.br,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.shield_moon,
+                    color: data.size.width > 1920
+                        ? Colors.greenAccent
+                        : Colors.grey,
+                    size: 36.iz,
+                  ),
+                  16.sbw,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data.size.width > 1920
+                              ? "ACTIVE GUARD"
+                              : "STANDBY MODE",
+                          style: TextStyle(
+                            color: data.size.width > 1920
+                                ? Colors.greenAccent
+                                : Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.fz,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        4.sbh,
+                        Text(
+                          data.size.width > 1920
+                              ? "Scaling dampened to save RAM"
+                              : "Standard linear scaling",
+                          style:
+                              TextStyle(color: Colors.white70, fontSize: 12.fz),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+
+            24.sbh,
+
+            // 5. ScalifyBox Grid (The New Feature)
+            _buildSectionTitle("5. ScalifyBox Grid (Local Scaling)"),
+            _buildAdaptiveGrid(context),
+
+            40.sbh,
+          ],
         ),
       ),
     );

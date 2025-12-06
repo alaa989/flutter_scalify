@@ -7,7 +7,6 @@
 
 Not just a screen adaptation tool, but a complete high-performance engine designed for Mobile, Web, and Desktop. Easily scale your UI elements (text, spacing, icons, containers) across all screen sizes with simple extensions and smart container queries.
 
-
 ## Why Scalify? ⚡️
 
 | Feature | Scalify Engine 🚀 | Standard Solutions |
@@ -38,7 +37,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_scalify: ^2.0.1
+  flutter_scalify: ^2.0.2
 ```
 
 Then run:
@@ -107,6 +106,45 @@ Container(
   ),
   child: Icon(Icons.home, size: 24.iz), // Responsive icon size
 )
+```
+
+### 3\. Conditional Values (valueByScreen) 🔀
+
+Sometimes math scaling isn't enough. You might need completely different values (or Widgets) for specific device types.
+
+**Example 1: Responsive Layout Constraints**
+Make a button take full width on mobile, but restrict it on tablets/desktops.
+
+```dart
+SizedBox(
+  // 📱 Mobile: Full width (double.infinity)
+  // 🖥️ Tablet/Desktop: Restricted to 400px scaled
+  width: context.valueByScreen(
+      mobile: double.infinity, 
+      tablet: 400.w
+  ), 
+  child: FilledButton(
+    onPressed: () {},
+    child: const Text("Next Step"),
+  ),
+)
+```
+
+**Example 2: Logic Switching**
+
+```dart
+// Different grid columns count based on screen type
+int columns = context.valueByScreen(
+  mobile: 2,
+  tablet: 4,
+  desktop: 6,
+);
+
+// Switch UI structure completely
+Widget content = context.valueByScreen(
+  mobile: Column(children: ...), // Vertical stack on phone
+  desktop: Row(children: ...),   // Horizontal row on PC
+);
 ```
 
 ## 📦 ScalifyBox (Local Scaling / Container Queries)
@@ -212,12 +250,18 @@ The package automatically detects screen sizes based on width:
 
 ## AppWidthLimiter
 
-Limit the maximum width of your app for better UX on large screens. This centers your content and adds a safe background area.
+Limit the maximum width of your app for better UX on large screens (Web/Desktop). This centers your content and adds a safe background area.
+
+  - **maxWidth**: The maximum width the content is allowed to take.
+  - **horizontalPadding**: **(New)** Adds outer margins when the screen is wider than the max width, ensuring your content doesn't look "glued" to the edges.
+
+<!-- end list -->
 
 ```dart
 AppWidthLimiter(
   maxWidth: 1400,
-  horizontalPadding: 16, // Optional outer padding
+  horizontalPadding: 16, // 👈 Adds breathing room on large screens
+  backgroundColor: Colors.grey[200], // Optional background for the empty space
   child: YourContent(),
 )
 ```
