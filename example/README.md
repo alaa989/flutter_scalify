@@ -1,6 +1,6 @@
 # Flutter Scalify Example (Scalify Lab Ultimate) 🧪
 
-This is a comprehensive "Lab" dashboard designed to demonstrate the full power of the **Scalify Engine v2.0.1**. It visualizes how the package handles scaling, performance, and responsiveness in real-time.
+This is a comprehensive "Lab" dashboard designed to demonstrate the full power of the **Scalify Engine v2.0.2**. It visualizes how the package handles scaling, performance, and responsiveness in real-time.
 
 ## What to Look For? 👁️
 
@@ -17,7 +17,7 @@ When running the app (preferably in Device Preview or Desktop/Web):
 - Visual comparison between Width-based (`.w`), Height-based (`.h`), and Smart-balanced (`.s`) scaling.
 - Live metrics dashboard showing real-time Width, Scale Factor, and Device Type.
 
-### 2. The New Engine Capabilities (v2.0.1)
+### 2. The New Engine Capabilities (v2.0.2)
 - **📦 ScalifyBox (Local Scaling):** Demonstrates the new Container Query widget that scales items based on their **parent** size (used in the Grid).
 - **🛡️ 4K Memory Protection:** A dedicated section showing the status of the protection algorithm (**ACTIVE** vs **STANDBY**) on large screens.
 - **⚡ Zero-Allocation Performance:** Uses optimized **Inline Math** extensions (`.p`, `.br`) for O(1) rendering performance without memory overhead.
