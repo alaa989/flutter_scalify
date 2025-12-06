@@ -7,24 +7,24 @@
 
 Not just a screen adaptation tool, but a complete high-performance engine designed for Mobile, Web, and Desktop. Easily scale your UI elements (text, spacing, icons, containers) across all screen sizes with simple extensions and smart container queries.
 
-**Developed with by Alaa Hassan Damad**
-Iraq
 
 ## Why Scalify? ⚡️
 
-| Feature | Scalify Engine 🚀 | Traditional Packages |
+| Feature | Scalify Engine 🚀 | Standard Solutions |
 | :--- | :--- | :--- |
-| **Memory Efficiency** | ✅ **LRU Caching** (Zero Allocations strategy) | ❌ High Memory Usage |
+| **Performance** | ✅ **O(1) Inline Math** (Zero Overhead) | ❌ Complex Calculations |
+| **Memory Efficiency** | ✅ **Zero Allocation Strategy** (No Garbage Collection pressure) | ❌ High Memory Usage |
+| **Rebuilds** | ✅ **Smart Equality Checks** (Prevents Phantom Rebuilds) | ❌ Rebuilds on every pixel change |
 | **4K/Desktop Support** | ✅ **Smart Dampening** (Prevents UI explosion) | ❌ Linear Scaling Only |
 | **Container Queries** | ✅ **ScalifyBox** (Scale by parent size) | ❌ Global Screen Only |
-| **Resize Performance** | ✅ **Debouncing** (Lag-free resizing) | ❌ Rebuilds every pixel |
 
 ## Features ✨
 
 - 🎯 **Simple API**: Use intuitive extensions like `16.fz`, `20.s`, `24.iz`.
+- 🚀 **Hyper Performance**: Uses `vm:prefer-inline` for direct memory access, making it the fastest scaling logic available.
 - 📦 **Container Queries**: New `ScalifyBox` widget to scale elements based on their **parent** size (Local Scaling).
 - 🛡️ **4K Memory Protection**: Smart algorithm that dampens scaling on ultra-wide screens to save RAM and maintain aesthetics.
-- ⚡️ **High Performance**: Internal LRU Cache for `EdgeInsets` and `BorderRadius` to reduce Garbage Collection.
+- 🧠 **Smart Rebuilds**: Advanced equality checks prevent unnecessary UI rebuilds when keyboard opens or metrics barely change.
 - 📱 **Fully Responsive**: Automatically adapts to Watch, Mobile, Tablet, Desktop, and 4K.
 - 🔧 **Flexible**: Works with any Flutter widget.
 
@@ -38,7 +38,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_scalify: ^2.0.0
+  flutter_scalify: ^2.0.1
 ```
 
 Then run:
@@ -98,12 +98,12 @@ Text(
 )
 
 Container(
-  padding: 16.p,                      // Cached Responsive padding
+  padding: 16.p,                      // Optimized Responsive padding
   margin: [20, 10].p,                 // List-based shortcut [horizontal, vertical]
   width: 200.w,                       // Width-driven scale
   height: 100.h,                      // Height-driven scale
   decoration: BoxDecoration(
-    borderRadius: 12.br,              // Cached Responsive border radius
+    borderRadius: 12.br,              // Optimized Responsive border radius
   ),
   child: Icon(Icons.home, size: 24.iz), // Responsive icon size
 )
@@ -160,7 +160,7 @@ ScalifyBox(
   - `20.sbh` - `SizedBox` height.
   - `30.sbw` - `SizedBox` width.
 
-### Padding Shortcuts (Cached ⚡️)
+### Padding Shortcuts (Optimized ⚡️)
 
   - `16.p` - Padding all sides.
   - `16.ph` - Padding horizontal.

@@ -1,6 +1,6 @@
 name: flutter_scalify
-description: The Intelligent Scaling Engine for Flutter. High-performance responsive design with 4K protection, container queries (local scaling), and zero-allocation caching.
-version: 2.0.0
+description: The Intelligent Scaling Engine for Flutter. High-performance responsive design with 4K protection, container queries (local scaling), and zero-allocation architecture.
+version: 2.0.1
 
 homepage: https://github.com/alaa989/flutter_scalify
 repository: https://github.com/alaa989/flutter_scalify

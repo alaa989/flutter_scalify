@@ -1,6 +1,28 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [2.0.1] - 2025-12-06 🚀 (The Hyper-Performance Update)
+
+### ⚡ Performance Overhaul (Zero Allocation)
+- **Zero Allocation Strategy:** Completely removed the internal caching layer to eliminate memory allocation overhead. The engine now uses direct O(1) math.
+- **Inline Optimization:** Applied `vm:prefer-inline` to all core extensions (`.w`, `.h`, `.sp`, etc.) to force the compiler to execute getters directly in the hot path.
+- **Smart Equality Checks (Quantization):** Implemented Integer-based IDs in `ResponsiveData`. This prevents "phantom rebuilds" caused by microscopic floating-point errors (e.g., `100.0` vs `100.0000001`).
+- **Safety Asserts:** Added debug-mode assertions to ensure `GlobalResponsive` updates only happen during valid frame phases.
+
+### 📦 New Features: Container Queries
+- **Added `ScalifyBox`:** A game-changing widget that allows **Local Scaling**. Scale UI elements based on their parent container's size, not just the screen size. Perfect for Cards and Grids.
+- **Added `ScalifyFit`:** Control how content scales inside a `ScalifyBox` (`width`, `height`, `contain`, `cover`) to handle dynamic aspect ratios automatically.
+
+### 🛡️ 4K & Ultra-Wide Protection
+- **Smart Dampening Algorithm:** Introduced a non-linear scaling logic for screens wider than `1920px` (configurable). This prevents UI elements from becoming comically large on TVs or Ultra-wide monitors.
+- **New Config Options:** Added `memoryProtectionThreshold` and `highResScaleFactor` to `ResponsiveConfig`.
+
+### 🛠️ Maintenance & Docs
+- **100% Documentation:** Added comprehensive Dartdoc comments to all public APIs to meet pub.dev scoring requirements.
+- **Code Formatting:** The entire codebase is now strictly formatted according to Dart standards.
+- **Resize Debouncing:** The provider waits for window resize events to settle before recalculating layout, eliminating lag on Desktop/Web.
+
+---
 
 ## [2.0.0] - 2025-12-04 🚀 (The Engine Update)
 
