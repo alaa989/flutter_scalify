@@ -14,10 +14,8 @@ class ResponsiveProvider extends StatefulWidget {
     this.config = const ResponsiveConfig(),
   });
 
-  /// Safe access: when not found, returns fallback computed from MediaQuery.maybeOf
   static ResponsiveData of(BuildContext context) {
-    final inherited =
-        context.dependOnInheritedWidgetOfExactType<_InheritedResponsive>();
+    final inherited = context.dependOnInheritedWidgetOfExactType<_InheritedResponsive>();
     if (inherited != null) return inherited.data;
     final mq = MediaQuery.maybeOf(context);
     return ResponsiveData.fromMediaQuery(mq, const ResponsiveConfig());
@@ -27,10 +25,9 @@ class ResponsiveProvider extends StatefulWidget {
   State<ResponsiveProvider> createState() => _ResponsiveProviderState();
 }
 
-class _ResponsiveProviderState extends State<ResponsiveProvider>
-    with WidgetsBindingObserver {
-  ResponsiveData _data = ResponsiveData.identity;
+class _ResponsiveProviderState extends State<ResponsiveProvider> with WidgetsBindingObserver {
   Timer? _debounce;
+  ResponsiveData _currentData = ResponsiveData.identity; 
 
   @override
   void initState() {
@@ -47,49 +44,38 @@ class _ResponsiveProviderState extends State<ResponsiveProvider>
 
   @override
   void didChangeMetrics() {
-    // debounce rapid resizes
-    _debounce?.cancel();
-    _debounce =
-        Timer(Duration(milliseconds: widget.config.debounceWindowMillis), () {
-      _recalcIfNeeded();
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(Duration(milliseconds: widget.config.debounceWindowMillis), () {
+      if (mounted) _recalculate();
     });
   }
 
-  void _recalcIfNeeded() {
-    if (!mounted) return;
+  void _recalculate() {
     final mq = MediaQuery.maybeOf(context);
     final newData = ResponsiveData.fromMediaQuery(mq, widget.config);
 
-    final sizeChanged = (_data.size.width != newData.size.width) ||
-        (_data.size.height != newData.size.height);
-    final scaleChanged = (_data.scaleFactor - newData.scaleFactor).abs() >
-        widget.config.rebuildScaleThreshold;
-    final widthPxChanged = (_data.size.width - newData.size.width).abs() >
-        widget.config.rebuildWidthPxThreshold;
-    final screenTypeChanged = _data.screenType != newData.screenType;
-
-    if (sizeChanged && (scaleChanged || widthPxChanged || screenTypeChanged)) {
+    if (newData != _currentData) {
       setState(() {
-        _data = newData;
-        GlobalResponsive.update(newData);
+        _currentData = newData;
       });
-    } else {
-      // still update global for minimal correctness (no rebuild)
       GlobalResponsive.update(newData);
-      _data = newData;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Optimization #3: Calculate once, use everywhere
     final mq = MediaQuery.maybeOf(context);
-    final current = ResponsiveData.fromMediaQuery(mq, widget.config);
-    // update global and local
-    _data = current;
-    GlobalResponsive.update(current);
+    final newData = ResponsiveData.fromMediaQuery(mq, widget.config);
+    
+    // Sync global state efficiently
+    if (newData != _currentData) {
+       _currentData = newData;
+       GlobalResponsive.update(newData);
+    }
 
     return _InheritedResponsive(
-      data: current,
+      data: _currentData,
       child: widget.child,
     );
   }
@@ -101,10 +87,7 @@ class _InheritedResponsive extends InheritedWidget {
 
   @override
   bool updateShouldNotify(covariant _InheritedResponsive oldWidget) {
-    // Notify only on meaningful changes
-    return data.scaleFactor != oldWidget.data.scaleFactor ||
-        data.size.width != oldWidget.data.size.width ||
-        data.size.height != oldWidget.data.size.height ||
-        data.screenType != oldWidget.data.screenType;
+    // The new operator == in ResponsiveData handles the logic here perfectly
+    return data != oldWidget.data;
   }
 }
