@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
-import 'responsive_provider.dart'; 
+import 'responsive_provider.dart';
 import 'responsive_data.dart';
 import 'global_responsive.dart';
 import 'responsive_helper.dart';
 
-
 extension ResponsiveContext on BuildContext {
   ResponsiveData get responsiveData => ResponsiveProvider.of(this);
-  ResponsiveHelper get responsiveHelper => ResponsiveHelper.fromData(responsiveData);
+  ResponsiveHelper get responsiveHelper =>
+      ResponsiveHelper.fromData(responsiveData);
 }
 
 extension ResponsiveExtension on num {
   ResponsiveData get _g => GlobalResponsive.data;
 
   // --- The Performance Magic: Force Inline ---
-  
+
   @pragma('vm:prefer-inline')
   double get w => this * _g.scaleWidth;
 
   @pragma('vm:prefer-inline')
   double get h => this * _g.scaleHeight;
-  
+
   @pragma('vm:prefer-inline')
   double get r {
     final s = _g.scaleWidth < _g.scaleHeight ? _g.scaleWidth : _g.scaleHeight;
@@ -29,13 +29,13 @@ extension ResponsiveExtension on num {
 
   @pragma('vm:prefer-inline')
   double get s => this * _g.scaleFactor;
-  
+
   @pragma('vm:prefer-inline')
   double get sc => s;
-  
+
   @pragma('vm:prefer-inline')
   double get ui => s;
-  
+
   @pragma('vm:prefer-inline')
   double get iz => s;
 
@@ -56,8 +56,10 @@ extension ResponsiveExtension on num {
   // لا نحتاج inline هنا لأن إنشاء الكائنات (SizedBox) أثقل من استدعاء الدالة
   SizedBox get sbh => SizedBox(height: h);
   SizedBox get sbw => SizedBox(width: w);
-  SizedBox sbhw({double? width}) => SizedBox(height: h, width: width != null ? width * _g.scaleWidth : null);
-  SizedBox sbwh({double? height}) => SizedBox(width: w, height: height != null ? height * _g.scaleHeight : null);
+  SizedBox sbhw({double? width}) =>
+      SizedBox(height: h, width: width != null ? width * _g.scaleWidth : null);
+  SizedBox sbwh({double? height}) => SizedBox(
+      width: w, height: height != null ? height * _g.scaleHeight : null);
 
   // --- Padding ---
   EdgeInsets get p => EdgeInsets.all(s);
@@ -70,13 +72,15 @@ extension ResponsiveExtension on num {
 
   // --- BorderRadius ---
   BorderRadius get br => BorderRadius.circular(r);
-  BorderRadius get brt => BorderRadius.only(topLeft: Radius.circular(r), topRight: Radius.circular(r));
-  BorderRadius get brb => BorderRadius.only(bottomLeft: Radius.circular(r), bottomRight: Radius.circular(r));
-  BorderRadius get brl => BorderRadius.only(topLeft: Radius.circular(r), bottomLeft: Radius.circular(r));
-  BorderRadius get brr => BorderRadius.only(topRight: Radius.circular(r), bottomRight: Radius.circular(r));
+  BorderRadius get brt => BorderRadius.only(
+      topLeft: Radius.circular(r), topRight: Radius.circular(r));
+  BorderRadius get brb => BorderRadius.only(
+      bottomLeft: Radius.circular(r), bottomRight: Radius.circular(r));
+  BorderRadius get brl => BorderRadius.only(
+      topLeft: Radius.circular(r), bottomLeft: Radius.circular(r));
+  BorderRadius get brr => BorderRadius.only(
+      topRight: Radius.circular(r), bottomRight: Radius.circular(r));
 }
-
-
 
 extension EdgeInsetsListExtension on List<num> {
   EdgeInsets get p {
