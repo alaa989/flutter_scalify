@@ -59,6 +59,7 @@ class ResponsiveData {
     scaleFactorId: 1000,
     textScaleFactorId: 100,
   );
+
   bool get isSmallScreen =>
       screenType == ScreenType.watch || screenType == ScreenType.mobile;
 
@@ -69,6 +70,7 @@ class ResponsiveData {
       screenType == ScreenType.desktop || screenType == ScreenType.largeDesktop;
 
   bool get isOverMaxWidth => size.width > config.desktopBreakpoint;
+
   factory ResponsiveData.fromMediaQuery(
       MediaQueryData? media, ResponsiveConfig cfg) {
     if (media == null) return ResponsiveData.identity;
@@ -110,9 +112,13 @@ class ResponsiveData {
         calculatedScaleHeight.clamp(cfg.minScale, cfg.maxScale);
     final double finalCombined = finalScaleWidth;
 
+    // FIX: Use textScaler instead of deprecated textScaleFactor
+    // .scale(1.0) returns the raw scaling factor equivalent to the old property
+    final double systemTextScaleFactor = media.textScaler.scale(1.0);
+
     return ResponsiveData._(
       size: Size(width, height),
-      textScaleFactor: media.textScaleFactor,
+      textScaleFactor: systemTextScaleFactor,
       screenType: type,
       config: cfg,
       scaleWidth: finalScaleWidth,
@@ -122,7 +128,7 @@ class ResponsiveData {
       scaleWidthId: (finalScaleWidth * 1000).round(),
       scaleHeightId: (finalScaleHeight * 1000).round(),
       scaleFactorId: (finalCombined * 1000).round(),
-      textScaleFactorId: (media.textScaleFactor * 100).round(),
+      textScaleFactorId: (systemTextScaleFactor * 100).round(),
     );
   }
 
