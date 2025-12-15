@@ -1,6 +1,6 @@
-// ignore_for_file: deprecated_member_use, prefer_const_constructors
-import 'package:flutter/material.dart';
+// ignore_for_file: deprecated_member_use, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:flutter/material.dart';
 import 'package:flutter_scalify/flutter_scalify.dart';
 
 void main() {
@@ -13,8 +13,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Scalify Lab Ultimate',
+      title: 'Scalify Ultimate Showcase',
       debugShowCheckedModeBanner: false,
+
       builder: (context, child) {
         return ResponsiveProvider(
           config: const ResponsiveConfig(
@@ -30,284 +31,446 @@ class MyApp extends StatelessWidget {
       },
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFF3F4F6),
-        primaryColor: Colors.indigo,
+        scaffoldBackgroundColor: const Color(0xFFF8FAFC),
+        primaryColor: const Color(0xFF0F172A),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0F172A)),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.indigo,
+          backgroundColor: Color(0xFF0F172A),
           foregroundColor: Colors.white,
           elevation: 0,
         ),
       ),
+      // 1. FEATURE: AppWidthLimiter (Global Protection)
       home: AppWidthLimiter(
-          maxWidth: 2000,
-          horizontalPadding: 16,
-          backgroundColor: const Color(0xFFF3F4F6),
-          child: const ScalifyLabScreen()),
+        maxWidth: 1400,
+        horizontalPadding: 16,
+        backgroundColor: const Color(0xFFE2E8F0),
+        child: const ScalifyShowcaseScreen(),
+      ),
     );
   }
 }
 
-class ScalifyLabScreen extends StatelessWidget {
-  const ScalifyLabScreen({super.key});
+class ScalifyShowcaseScreen extends StatelessWidget {
+  const ScalifyShowcaseScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final data = context.responsiveData;
 
+    // Dynamic Aspect Ratio for Manual Grid
+    final double dynamicAspectRatio = context.valueByScreen(
+      mobile: 2,
+      tablet: 1.5,
+      smallDesktop: 0.8,
+      desktop: 0.8,
+    );
+
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 90.h.clamp(56.0, 120.0),
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.science, size: 24.iz),
-            12.sbw,
-            Text("Scalify Lab 🧪",
-                style: TextStyle(fontSize: 20.fz, fontWeight: FontWeight.bold)),
-          ],
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: 20.p,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // 1. Live Metrics
-            _buildSectionTitle("1. Live Metrics"),
-            Container(
-              padding: 16.p,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: 12.br,
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.05), blurRadius: 10)
+      body: CustomScrollView(
+        slivers: [
+          // --- App Bar ---
+          SliverAppBar(
+            floating: true,
+            pinned: true,
+            expandedHeight: 80.h.clamp(60, 100),
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.layers, size: 24.iz),
+                12.sbw,
+                Flexible(
+                  child: Text(
+                    "Scalify UI Kit",
+                    style:
+                        TextStyle(fontSize: 20.fz, fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              Center(
+                child: Padding(
+                  padding: 16.pr,
+                  child: Container(
+                    padding: [8, 4].p,
+                    decoration: BoxDecoration(
+                      color: Colors.white10,
+                      borderRadius: 4.br,
+                    ),
+                    child: Text(
+                      "W: ${data.size.width.toInt()}",
+                      style: TextStyle(fontSize: 12.fz, color: Colors.white),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: 20.p,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // --- 2. FEATURE: ResponsiveFlex ---
+                  _SectionHeader(title: "1. Responsive Flex (Profile)"),
+                  _buildProfileHeader(context),
+
+                  30.sbh,
+
+                  // --- 3. FEATURE: AdaptiveContainer ---
+                  _SectionHeader(title: "2. Adaptive Cards (Layout Change)"),
+                  Text(
+                    "Cards change layout (Row/Column) based on their own width.",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 13.fz),
+                  ),
+                  10.sbh,
                 ],
               ),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildMetricItem("Width", "${data.size.width.toInt()}px"),
-                    30.sbw,
-                    _buildMetricItem(
-                        "Scale", "${data.scaleFactor.toStringAsFixed(2)}x"),
-                    30.sbw,
-                    _buildMetricItem(
-                        "Device", data.screenType.name.toUpperCase()),
-                  ],
-                ),
-              ),
             ),
+          ),
 
-            24.sbh,
+          // --- Section 2 Grid: Manual Control with AdaptiveContainer ---
+          ResponsiveGrid(
+            useSliver: true,
+            padding: 20.ph,
+            watch: 1,
+            mobile: 1,
+            tablet: 2,
+            smallDesktop: 4,
+            desktop: 4,
+            childAspectRatio: dynamicAspectRatio,
+            spacing: 16,
+            runSpacing: 16,
+            itemCount: 4,
+            itemBuilder: (context, index) {
+              return _AdaptiveProductCard(index: index);
+            },
+          ),
 
-            // 2. Scaling Logic
-            _buildSectionTitle("2. Scaling Logic"),
-            Container(
-              padding: 16.p,
-              decoration:
-                  BoxDecoration(color: Colors.white, borderRadius: 12.br),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildBox(100.w, Colors.blue, ".w (Width)", 100.w),
-                    20.sbw,
-                    _buildBox(100.s, Colors.green, ".s (Smart)", 100.s),
-                    20.sbw,
-                    _buildBox(100.h, Colors.orange, ".h (Height)", 100.h),
-                  ],
-                ),
-              ),
-            ),
-
-            24.sbh,
-
-            // 3. Typography
-            _buildSectionTitle("3. Typography"),
-            Container(
-              padding: 16.p,
-              decoration:
-                  BoxDecoration(color: Colors.white, borderRadius: 12.br),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: 20.p,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Standard Body (14.fz)",
-                      style: TextStyle(fontSize: 14.fz),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                  8.sbh,
-                  Text("Section Title (20.fz)",
-                      style: TextStyle(
-                          fontSize: 20.fz, fontWeight: FontWeight.bold),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                  8.sbh,
-                  Text("Display Header (30.fz)",
-                      style: TextStyle(
-                          fontSize: 30.fz,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.indigo),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
+                  30.sbh,
+                  // --- 4. FEATURE: ScalifyBox ---
+                  _SectionHeader(title: "3. ScalifyBox Grid (Perfect Scale)"),
+                  Text(
+                    "Items scale geometrically. Ideal for complex UI that shouldn't break.",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 13.fz),
+                  ),
+                  10.sbh,
                 ],
               ),
             ),
+          ),
 
-            24.sbh,
+          // --- Section 3 Grid: ScalifyBox Items ---
+          ResponsiveGrid(
+            useSliver: true,
+            padding: 20.ph,
+            watch: 1,
+            mobile: 2,
+            tablet: 3,
+            desktop: 4,
+            spacing: 12,
+            runSpacing: 12,
+            itemCount: 6,
+            itemBuilder: (context, index) {
+              return _ScalifyBoxGridItem(index: index);
+            },
+          ),
 
-            // 4. 4K Protection
-            _buildSectionTitle("4. 4K Protection"),
-            Container(
-              padding: 16.p,
-              decoration: BoxDecoration(
-                color: const Color(0xFF1E293B),
-                borderRadius: 12.br,
-              ),
-              child: Row(
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: 20.p,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.shield_moon,
-                    color: data.size.width > 1920
-                        ? Colors.greenAccent
-                        : Colors.grey,
-                    size: 36.iz,
+                  30.sbh,
+                  // --- 5. FEATURE: Auto-Fit (Lazy Loading / API Style) ---
+                  _SectionHeader(title: "4. Auto-Fit Grid (API & Lazy Load)"),
+                  Text(
+                    "Items lazy load and wrap automatically based on minWidth. Perfect for APIs.",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 13.fz),
                   ),
-                  16.sbw,
-                  Expanded(
+                  10.sbh,
+                ],
+              ),
+            ),
+          ),
+
+          // --- Section 4: Auto-Fit Grid (Simulating API Data) ---
+          ResponsiveGrid(
+            useSliver: true, // Enables lazy loading naturally
+            padding: 20.ph,
+            minItemWidth: 300,
+            scaleMinItemWidth: false, // Keep standard size, add more columns
+            spacing: 10,
+            runSpacing: 10,
+            itemCount: 20, // Simulating a large list
+            itemBuilder: (context, index) {
+              // This builder is only called when the item is visible on screen
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: 8.br,
+                  border: Border.all(color: Colors.grey.shade200),
+                ),
+                alignment: Alignment.center,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Padding(
+                    padding: 8.p,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          data.size.width > 1920
-                              ? "ACTIVE GUARD"
-                              : "STANDBY MODE",
-                          style: TextStyle(
-                            color: data.size.width > 1920
-                                ? Colors.greenAccent
-                                : Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.fz,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        Icon(Icons.cloud_download,
+                            color: Colors.blueGrey, size: 28.iz),
                         4.sbh,
-                        Text(
-                          data.size.width > 1920
-                              ? "Scaling dampened to save RAM"
-                              : "Standard linear scaling",
-                          style:
-                              TextStyle(color: Colors.white70, fontSize: 12.fz),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        Text("API Item $index",
+                            style: TextStyle(fontSize: 12.fz)),
                       ],
                     ),
-                  )
+                  ),
+                ),
+              );
+            },
+          ),
+
+          SliverToBoxAdapter(child: 50.sbh),
+        ],
+      ),
+    );
+  }
+
+  // --- Widget 1: Profile Header ---
+  Widget _buildProfileHeader(BuildContext context) {
+    final isMobile = context.responsiveData.isSmallScreen;
+
+    return Container(
+      padding: 20.p,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: 16.br,
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))
+        ],
+      ),
+      child: ResponsiveFlex(
+        switchOn: ScreenType.mobile,
+        spacing: 16,
+        rowCrossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Center(
+            child: CircleAvatar(
+              radius: 40.s,
+              backgroundColor: Colors.indigo.shade50,
+              child: Icon(Icons.person, size: 40.iz, color: Colors.indigo),
+            ),
+          ),
+          if (!isMobile)
+            Expanded(child: _buildInfoColumn(context))
+          else
+            _buildInfoColumn(context),
+          Container(
+            alignment: isMobile ? Alignment.center : Alignment.centerRight,
+            padding: isMobile ? EdgeInsets.zero : 8.pl,
+            child: ElevatedButton.icon(
+              onPressed: () {},
+              icon: Icon(Icons.message, size: 18.iz),
+              label: Text("Contact", style: TextStyle(fontSize: 14.fz)),
+              style: ElevatedButton.styleFrom(
+                padding: [20, 12].p,
+                backgroundColor: Colors.indigo,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoColumn(BuildContext context) {
+    final isMobile = context.responsiveData.isSmallScreen;
+
+    return Column(
+      crossAxisAlignment:
+          isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            "Alaa Naili",
+            style: TextStyle(fontSize: 22.fz, fontWeight: FontWeight.bold),
+          ),
+        ),
+        4.sbh,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            "Senior Flutter Developer & Expert",
+            style: TextStyle(fontSize: 14.fz, color: Colors.grey),
+          ),
+        ),
+        8.sbh,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisAlignment:
+                isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
+            children: [
+              _Badge(text: "Pro Member"),
+              8.sbw,
+              _Badge(text: "Available for Hire"),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
+
+// --- Widget 2: Adaptive Card ---
+class _AdaptiveProductCard extends StatelessWidget {
+  final int index;
+  const _AdaptiveProductCard({required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: 12.br,
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      padding: 12.p,
+      child: AdaptiveContainer(
+        breakpoints: const [200, 350],
+        xs: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(Icons.shopping_bag, color: Colors.indigo, size: 32.iz),
+              8.sbh,
+              Text("Product $index",
+                  style:
+                      TextStyle(fontSize: 13.fz, fontWeight: FontWeight.bold)),
+              Text("\$99",
+                  style: TextStyle(fontSize: 12.fz, color: Colors.green)),
+            ],
+          ),
+        ),
+        md: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(Icons.shopping_bag, color: Colors.indigo, size: 40.iz),
+              8.sbh,
+              Text("Product $index",
+                  style:
+                      TextStyle(fontSize: 14.fz, fontWeight: FontWeight.bold)),
+              Text("\$99.00",
+                  style: TextStyle(fontSize: 12.fz, color: Colors.green)),
+            ],
+          ),
+        ),
+        lg: Row(
+          children: [
+            Container(
+              width: 50.w,
+              height: 50.w,
+              decoration: BoxDecoration(
+                color: Colors.indigo.shade50,
+                borderRadius: 8.br,
+              ),
+              child:
+                  Icon(Icons.shopping_bag, color: Colors.indigo, size: 24.iz),
+            ),
+            16.sbw,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Premium Product $index",
+                      style: TextStyle(
+                          fontSize: 16.fz, fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                  Text("High quality item description...",
+                      style: TextStyle(fontSize: 12.fz, color: Colors.grey),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
                 ],
               ),
             ),
-
-            24.sbh,
-
-            // 5. ScalifyBox Grid (The New Feature)
-            _buildSectionTitle("5. ScalifyBox Grid (Local Scaling)"),
-            _buildAdaptiveGrid(context),
-
-            40.sbh,
+            12.sbw,
+            ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(padding: [16, 0].p),
+                child: Text("Buy"))
           ],
         ),
       ),
     );
   }
+}
 
-  // --- Grid Logic Implementation ---
-  Widget _buildAdaptiveGrid(BuildContext context) {
-    final width = context.responsiveData.size.width;
+// --- Widget 3: ScalifyBox Grid Item ---
+class _ScalifyBoxGridItem extends StatelessWidget {
+  final int index;
+  const _ScalifyBoxGridItem({required this.index});
 
-    int columns;
-    if (width <= 320) {
-      columns = 1;
-    } else if (width <= 700) {
-      columns = 2;
-    } else if (width <= 1024) {
-      columns = 3;
-    } else if (width <= 1400) {
-      columns = 4;
-    } else {
-      columns = 5;
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: 8.pb,
-          child: Text(
-              "Cols: $columns | Width: ${width.toInt()} | ScalifyBox Active",
-              style: TextStyle(
-                  fontSize: 12.fz,
-                  color: Colors.grey[600],
-                  fontStyle: FontStyle.italic)),
-        ),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: 10,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: columns,
-            crossAxisSpacing: 16.s,
-            mainAxisSpacing: 16.s,
-            childAspectRatio: 1.0, // Square
-          ),
-          itemBuilder: (context, index) {
-            return _buildGridItem(index);
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGridItem(int index) {
+  @override
+  Widget build(BuildContext context) {
     return ScalifyBox(
       referenceWidth: 100,
-      referenceHeight: 200,
+      referenceHeight: 120,
       fit: ScalifyFit.contain,
       builder: (context, ls) {
         return Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: ls.br(20),
+            borderRadius: ls.br(12),
             boxShadow: [
               BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4))
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: ls.s(8),
+                  offset: Offset(0, ls.s(4)))
             ],
           ),
-          padding: ls.p(10),
+          padding: ls.p(8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
                 Icons.dashboard_customize_rounded,
                 color: Colors.indigo,
-                size: ls.s(80),
+                size: ls.s(40),
               ),
-              SizedBox(height: ls.s(10)),
+              SizedBox(height: ls.s(8)),
               Text("Item #${index + 1}",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: ls.fz(26)),
+                      fontWeight: FontWeight.bold, fontSize: ls.fz(12)),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis),
-              SizedBox(height: ls.s(4)),
-              Text("Auto Fit UI",
-                  style: TextStyle(color: Colors.grey, fontSize: ls.fz(20)),
+              SizedBox(height: ls.s(2)),
+              Text("ScalifyBox",
+                  style: TextStyle(color: Colors.grey, fontSize: ls.fz(9)),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis),
             ],
@@ -316,58 +479,46 @@ class ScalifyLabScreen extends StatelessWidget {
       },
     );
   }
+}
 
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: 8.pb,
+class _Badge extends StatelessWidget {
+  final String text;
+  const _Badge({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: [8, 4].p,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: 4.br,
+        border: Border.all(color: Colors.grey.shade300),
+      ),
       child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 16.fz,
-          fontWeight: FontWeight.bold,
-          color: Colors.indigo[900],
-        ),
+        text,
+        style: TextStyle(fontSize: 10.fz, color: Colors.grey.shade700),
       ),
     );
   }
+}
 
-  Widget _buildMetricItem(String label, String value) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(value,
-            style: TextStyle(
-                fontSize: 18.fz,
-                fontWeight: FontWeight.bold,
-                color: Colors.indigo)),
-        Text(label, style: TextStyle(fontSize: 11.fz, color: Colors.grey)),
-      ],
-    );
-  }
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  const _SectionHeader({required this.title});
 
-  Widget _buildBox(double size, Color color, String label, double actualPx) {
-    return Column(
-      children: [
-        Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.15),
-            border: Border.all(color: color, width: 2),
-            borderRadius: 10.br,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            "${size.toInt()}",
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 12.fz, color: color),
-          ),
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: 10.pb,
+      child: Text(
+        title.toUpperCase(),
+        style: TextStyle(
+          fontSize: 12.fz,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.2,
+          color: Colors.blueGrey,
         ),
-        8.sbh,
-        Text(label,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 10.fz, fontWeight: FontWeight.w600)),
-      ],
+      ),
     );
   }
 }

@@ -1,6 +1,6 @@
 name: flutter_scalify
-description: The Intelligent Scaling Engine for Flutter. High-performance responsive design with 4K protection, container queries (local scaling), and zero-allocation architecture.
-version: 2.0.2
+description: The Ultimate Responsive Layout System. Features smart scaling, 6-tier grids, adaptive flex layouts, container queries, and 4K protection with zero-allocation math.
+version: 2.1.0
 
 homepage: https://github.com/alaa989/flutter_scalify
 repository: https://github.com/alaa989/flutter_scalify
@@ -22,9 +22,9 @@ dev_dependencies:
 topics:
   - responsive
   - scaling
-  - performance
+  - grid
+  - layout
   - container-queries
-  - desktop
 
 platforms:
   android:

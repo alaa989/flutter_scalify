@@ -7,19 +7,19 @@ class ResponsiveConfig {
   /// Base design height (e.g., 812 for iPhone design).
   final double designHeight;
 
-  /// Breakpoint for Watch devices (default < 300).
+  /// Breakpoint for Watch devices (default `< 300`).
   final double watchBreakpoint;
 
-  /// Breakpoint for Mobile devices (300 - 600).
+  /// Breakpoint for Mobile devices (`300 - 600`).
   final double mobileBreakpoint;
 
-  /// Breakpoint for Tablets (600 - 900).
+  /// Breakpoint for Tablets (`600 - 900`).
   final double tabletBreakpoint;
 
-  /// Breakpoint for Small Desktops (900 - 1200).
+  /// Breakpoint for Small Desktops (`900 - 1200`).
   final double smallDesktopBreakpoint;
 
-  /// Breakpoint for Desktops (1200 - 1800).
+  /// Breakpoint for Desktops (`1200 - 1800`).
   final double desktopBreakpoint;
 
   /// Whether to respect the system's text scale factor (Accessibility).
@@ -31,7 +31,7 @@ class ResponsiveConfig {
   /// Maximum allowed scale factor (prevents UI from exploding on huge screens).
   final double maxScale;
 
-  /// The width threshold where 4K/Ultra-wide protection kicks in (default 1920).
+  /// The width threshold where 4K/Ultra-wide protection kicks in (default `1920`).
   final double memoryProtectionThreshold;
 
   /// The dampening factor applied to width pixels exceeding [memoryProtectionThreshold].

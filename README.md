@@ -12,20 +12,19 @@ Not just a screen adaptation tool, but a complete high-performance engine design
 | Feature | Scalify Engine 🚀 | Standard Solutions |
 | :--- | :--- | :--- |
 | **Performance** | ✅ **O(1) Inline Math** (Zero Overhead) | ❌ Complex Calculations |
-| **Memory Efficiency** | ✅ **Zero Allocation Strategy** (No Garbage Collection pressure) | ❌ High Memory Usage |
-| **Rebuilds** | ✅ **Smart Equality Checks** (Prevents Phantom Rebuilds) | ❌ Rebuilds on every pixel change |
-| **4K/Desktop Support** | ✅ **Smart Dampening** (Prevents UI explosion) | ❌ Linear Scaling Only |
-| **Container Queries** | ✅ **ScalifyBox** (Scale by parent size) | ❌ Global Screen Only |
+| **Memory Efficiency** | ✅ **Zero Allocation** (No GC pressure) | ❌ High Memory Usage |
+| **Layout System** | ✅ **Responsive Grid & Flex** (Built-in) | ❌ Manual calculations |
+| **4K Support** | ✅ **Smart Dampening** (Prevents UI explosion) | ❌ Linear Scaling Only |
+| **Container Queries** | ✅ **AdaptiveContainer** (Scale by parent size) | ❌ Global Screen Only |
 
 ## Features ✨
 
 - 🎯 **Simple API**: Use intuitive extensions like `16.fz`, `20.s`, `24.iz`.
-- 🚀 **Hyper Performance**: Uses `vm:prefer-inline` for direct memory access, making it the fastest scaling logic available.
-- 📦 **Container Queries**: New `ScalifyBox` widget to scale elements based on their **parent** size (Local Scaling).
-- 🛡️ **4K Memory Protection**: Smart algorithm that dampens scaling on ultra-wide screens to save RAM and maintain aesthetics.
-- 🧠 **Smart Rebuilds**: Advanced equality checks prevent unnecessary UI rebuilds when keyboard opens or metrics barely change.
-- 📱 **Fully Responsive**: Automatically adapts to Watch, Mobile, Tablet, Desktop, and 4K.
-- 🔧 **Flexible**: Works with any Flutter widget.
+- 📐 **Responsive Layouts**: Built-in `ResponsiveGrid` and `ResponsiveFlex` widgets.
+- 📦 **Component-Driven**: `AdaptiveContainer` changes layout based on the widget's own size.
+- 🛡️ **4K Protection**: Smart algorithm that resets scaling on ultra-wide screens to maintain aesthetics.
+- 📱 **Fully Responsive**: Adapts to Watch, Mobile, Tablet, Small Desktop, Desktop, and Large Desktop.
+- ⚡ **Hyper Performance**: Uses `vm:prefer-inline` for direct memory access.
 
 ## Responsive Preview
 
@@ -37,7 +36,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_scalify: ^2.0.2
+  flutter_scalify: ^2.1.0
 ```
 
 Then run:
@@ -46,11 +45,11 @@ Then run:
 flutter pub get
 ```
 
-## Quick Start & Usage
+## Quick Start
 
 ### 1\. Wrap your app with ResponsiveProvider
 
-Initialize the engine with your design specifications. You can now tune the **4K protection** logic.
+Initialize the engine with your design specifications.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -73,198 +72,193 @@ class MyApp extends StatelessWidget {
             designHeight: 812,
             minScale: 0.5,
             maxScale: 3.0,
-            // 🛡️ New: Protects UI on large screens (4K/UltraWide)
+            // 🛡️ Protects UI on large screens (4K/UltraWide)
             memoryProtectionThreshold: 1920.0, 
             highResScaleFactor: 0.60, 
           ),
           child: child ?? const SizedBox(),
         );
       },
-      home: const ScalifyLabScreen(),
+      home: const HomeScreen(),
     );
   }
 }
 ```
 
-### 2\. Use the extensions (Global Scaling)
+-----
 
-Scale elements based on the **screen size**:
+## 🚀 Layout Widgets (New in v2.1.0)
 
-```dart
-Text(
-  "Hello World",
-  style: TextStyle(fontSize: 16.fz), // Smart font scaling
-)
+### 1\. ResponsiveGrid (The Ultimate Grid)
 
-Container(
-  padding: 16.p,                      // Optimized Responsive padding
-  margin: [20, 10].p,                 // List-based shortcut [horizontal, vertical]
-  width: 200.w,                       // Width-driven scale
-  height: 100.h,                      // Height-driven scale
-  decoration: BoxDecoration(
-    borderRadius: 12.br,              // Optimized Responsive border radius
-  ),
-  child: Icon(Icons.home, size: 24.iz), // Responsive icon size
-)
-```
+A powerful grid that supports **Manual Control** (columns per screen) and **Auto-Fit** (API data). It handles spacing automatically.
 
-### 3\. Conditional Values (valueByScreen) 🔀
-
-Sometimes math scaling isn't enough. You might need completely different values (or Widgets) for specific device types.
-
-**Example 1: Responsive Layout Constraints**
-Make a button take full width on mobile, but restrict it on tablets/desktops.
+**Mode A: Manual Columns (Static UI)**
+Define exactly how many columns you want for each screen size.
 
 ```dart
-SizedBox(
-  // 📱 Mobile: Full width (double.infinity)
-  // 🖥️ Tablet/Desktop: Restricted to 400px scaled
-  width: context.valueByScreen(
-      mobile: double.infinity, 
-      tablet: 400.w
-  ), 
-  child: FilledButton(
-    onPressed: () {},
-    child: const Text("Next Step"),
-  ),
-)
-```
-
-**Example 2: Logic Switching**
-
-```dart
-// Different grid columns count based on screen type
-int columns = context.valueByScreen(
+ResponsiveGrid(
+  useSliver: false, // Set true if inside CustomScrollView
+  spacing: 16,
+  runSpacing: 16,
+  // Define columns for each tier:
+  watch: 1,
   mobile: 2,
-  tablet: 4,
-  desktop: 6,
-);
+  tablet: 3,
+  smallDesktop: 4,
+  desktop: 5,
+  largeDesktop: 6,
+  children: [/* ... widgets ... */],
+)
+```
 
-// Switch UI structure completely
-Widget content = context.valueByScreen(
-  mobile: Column(children: ...), // Vertical stack on phone
-  desktop: Row(children: ...),   // Horizontal row on PC
+**Mode B: Auto-Fit (Dynamic/API Data)**
+Perfect for fetching data from an API. Items will fill the row based on a minimum width.
+
+```dart
+ResponsiveGrid(
+  // Items will be at least 150px wide. 
+  // The grid will calculate how many fit in the row automatically.
+  minItemWidth: 150, 
+  scaleMinItemWidth: true, // Should the 150px scale with screen?
+  itemCount: apiData.length,
+  itemBuilder: (context, index) {
+    return MyCard(data: apiData[index]);
+  },
+)
+```
+
+### 2\. ResponsiveFlex (Row \<-\> Column)
+
+A smart widget that switches between `Row` and `Column` based on the screen width. Perfect for **Profile Headers** or **Action Bars**.
+
+```dart
+ResponsiveFlex(
+  // Switch to Column layout when screen is Mobile or smaller
+  switchOn: ScreenType.mobile, 
+  spacing: 20, // Adds space between items automatically
+  
+  // Alignment changes based on the layout mode
+  colMainAxisAlignment: MainAxisAlignment.center,
+  rowMainAxisAlignment: MainAxisAlignment.start,
+  
+  children: [
+    UserAvatar(),
+    UserName(),
+    SettingsButton(),
+  ],
+)
+```
+
+### 3\. AdaptiveContainer (Component-Driven)
+
+This widget rebuilds its child based on its **own width** (Parent Constraints), NOT the screen width. Perfect for reusable cards that look different in a Sidebar vs. Main Content.
+
+```dart
+AdaptiveContainer(
+  // Define breakpoints for the CONTAINER width
+  breakpoints: const [200, 500], 
+  
+  xs: Icon(Icons.home),           // < 200px (Icon only)
+  sm: Column(children: [...]),    // 200px - 500px (Vertical Layout)
+  lg: Row(children: [...]),       // > 500px (Horizontal Layout)
+)
+```
+
+-----
+
+## 🛠️ Core Extensions (Global Scaling)
+
+Scale elements based on the screen size using simple getters.
+
+| Extension | Description | Usage |
+| :--- | :--- | :--- |
+| `.fz` | Smart Font Size (Respects scale + accessibility) | `16.fz` |
+| `.s` | General Scaling (Use for padding/margins) | `20.s` |
+| `.w` | Width Scaling | `100.w` |
+| `.h` | Height Scaling | `50.h` |
+| `.iz` | Icon Size Scaling | `24.iz` |
+| `.r` | Radius Scaling (Smoother curve) | `12.r` |
+| `.sbh` | SizedBox with Height | `20.sbh` |
+| `.sbw` | SizedBox with Width | `10.sbw` |
+
+**Example:**
+
+```dart
+Container(
+  padding: 16.p,              // Padding all
+  margin: [20, 10].p,         // [Horizontal, Vertical]
+  width: 200.w,
+  height: 100.h,
+  decoration: BoxDecoration(
+    borderRadius: 12.br,      // Radius
+  ),
+  child: Text("Hello", style: TextStyle(fontSize: 16.fz)),
+)
+```
+
+### Conditional Logic (`valueByScreen`)
+
+Return different values based on the device type.
+
+```dart
+double width = context.valueByScreen(
+  mobile: 300, 
+  tablet: 500, 
+  desktop: 800
 );
 ```
 
-## 📦 ScalifyBox (Local Scaling / Container Queries)
+-----
 
-**New in v2.0:** Stop calculating layout math manually\! Use `ScalifyBox` to scale elements based on their **parent container**, not the screen. This is perfect for **Grids** and **Cards** that need to maintain their internal proportions regardless of how many columns are on the screen.
+## 📦 ScalifyBox (Local Scaling)
+
+Use `ScalifyBox` to scale elements proportionally within a specific area (like a Credit Card or a complex Graphic). It ensures elements maintain their positions and ratios exactly.
 
 ```dart
-// Example: A Card designed to be 200px wide
 ScalifyBox(
-  referenceWidth: 200, 
-  fit: ScalifyFit.contain, // Ensures content never overflows
+  referenceWidth: 320, 
+  referenceHeight: 200,
+  fit: ScalifyFit.contain,
   builder: (context, ls) { // ls = LocalScaler
     return Container(
-      padding: ls.p(10), // Local padding (relative to the box)
-      decoration: BoxDecoration(
-        borderRadius: ls.br(20), // Local radius
-      ),
-      child: Column(
-        children: [
-          Icon(Icons.star, size: ls.s(50)), // Icon will occupy 25% of the card width
-          Text("Title", style: TextStyle(fontSize: ls.fz(18))),
-        ],
-      ),
+      // Use 'ls' instead of global extensions
+      padding: ls.p(20), 
+      child: Text("VISA", style: TextStyle(fontSize: ls.fz(18))),
     );
   },
 )
 ```
 
-### `ScalifyFit` Modes:
+-----
 
-  - `width`: Scale based on width (Default).
-  - `height`: Scale based on height.
-  - `contain`: Scales based on the smaller dimension (Prevents Overflow).
-  - `cover`: Scales based on the larger dimension.
+## 🛡️ AppWidthLimiter (Desktop Protection)
 
-## Available Extensions
-
-### Text & Sizing
-
-  - `16.fz` - Font size (text size) - respects accessibility & 4K protection.
-  - `24.iz` - Icon size.
-  - `100.w` - Width-driven scale.
-  - `50.h` - Height-driven scale.
-  - `12.r` - Radius (uses smaller scale factor).
-  - `48.ui` - UI elements (buttons, inputs).
-  - `1.5.sc` - General scaling factor.
-
-### Spacing & Layout
-
-  - `20.s` - Space (used for margins, padding, etc.).
-  - `20.sbh` - `SizedBox` height.
-  - `30.sbw` - `SizedBox` width.
-
-### Padding Shortcuts (Optimized ⚡️)
-
-  - `16.p` - Padding all sides.
-  - `16.ph` - Padding horizontal.
-  - `16.pv` - Padding vertical.
-  - `[16, 24].p` - Symmetric padding (horizontal 16, vertical 24).
-  - `[10, 20, 30, 40].p` - LTRB padding.
-
-## Responsive Grid Example (Adaptive)
-
-Easily build adaptive grids that change column counts based on screen width:
+Wrap your `Scaffold` or `Home` screen with this to prevent the app from stretching too wide on large screens. It creates a "centered layout" effect and **resets the scaling logic** so your fonts don't become gigantic on 4K screens.
 
 ```dart
-Widget build(BuildContext context) {
-  // Use the context extension
-  final width = context.responsiveData.size.width;
-  
-  // Define columns based on breakpoints
-  int columns;
-  if (width < 600) columns = 1;
-  else if (width < 900) columns = 2;
-  else columns = 3;
-
-  return GridView.builder(
-    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: columns,
-      crossAxisSpacing: 16.s,
-      mainAxisSpacing: 16.s,
-      childAspectRatio: 1.0, // Always square!
-    ),
-    // Use ScalifyBox inside items for perfect internal scaling
-    itemBuilder: (context, index) => ScalifyBox(
-        referenceWidth: 150,
-        builder: (ctx, ls) => MyCard(scaler: ls),
-    ),
-  );
-}
+AppWidthLimiter(
+  maxWidth: 1400, // Content will never exceed 1400px
+  horizontalPadding: 16,
+  backgroundColor: Colors.grey[100],
+  child: YourMainScreen(),
+)
 ```
+
+-----
 
 ## Screen Breakpoints
 
 The package automatically detects screen sizes based on width:
 
-  - **Watch**: \< 300px
-  - **Mobile**: 300px - 600px
-  - **Tablet**: 600px - 900px
-  - **Small Desktop**: 900px - 1200px
-  - **Desktop**: 1200px - 1800px
-  - **Large Desktop**: \> 1800px
-
-## AppWidthLimiter
-
-Limit the maximum width of your app for better UX on large screens (Web/Desktop). This centers your content and adds a safe background area.
-
-  - **maxWidth**: The maximum width the content is allowed to take.
-  - **horizontalPadding**: **(New)** Adds outer margins when the screen is wider than the max width, ensuring your content doesn't look "glued" to the edges.
-
-<!-- end list -->
-
-```dart
-AppWidthLimiter(
-  maxWidth: 1400,
-  horizontalPadding: 16, // 👈 Adds breathing room on large screens
-  backgroundColor: Colors.grey[200], // Optional background for the empty space
-  child: YourContent(),
-)
-```
+| Device Type | Width Range |
+| :--- | :--- |
+| **Watch** | `< 300px` |
+| **Mobile** | `300px - 600px` |
+| **Tablet** | `600px - 900px` |
+| **Small Desktop** | `900px - 1200px` |
+| **Desktop** | `1200px - 1800px` |
+| **Large Desktop** | `> 1800px` |
 
 Check out the [example](example/) directory for a complete, beautiful example app that demonstrates all features including a responsive grid that adapts to different screen sizes.
 

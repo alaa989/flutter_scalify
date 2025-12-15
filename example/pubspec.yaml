@@ -1,8 +1,8 @@
 name: flutter_scalify_example
-description: "A beautiful example app demonstrating flutter_scalify engine capabilities"
+description: "A comprehensive showcase of the Scalify Layout System (Grid, Flex, Adaptive, Scaling)."
 publish_to: 'none'
 
-version: 2.0.2
+version: 2.1.0
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

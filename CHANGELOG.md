@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2025-12-16 🚀 (The Layout & Adaptive System Update)
+
+This update transforms Scalify from a "Scaling Engine" into a full "Responsive Layout System". It introduces powerful widgets to handle complex layouts on Web and Desktop without manual math.
+
+### 📐 New Feature: The Responsive Layout System
+- **Added `ResponsiveGrid`:** The ultimate grid solution.
+  - **6-Tier Support:** Now supports specific column counts for Watch, Mobile, Tablet, **Small Desktop** (New), Desktop, and **Large Desktop** (New).
+  - **Auto-Fit Mode:** Just provide a `minItemWidth` (e.g., 150px), and the grid will automatically calculate how many items fit in the row. Perfect for API data.
+  - **Lazy Loading:** Built-in support for `SliverGrid` and infinite scrolling performance.
+- **Added `ResponsiveFlex`:** A smart widget that automatically switches between `Row` (horizontal) and `Column` (vertical) layouts based on screen width. Perfect for profile headers and toolbars.
+- **Added `AdaptiveContainer`:** Enables **Component-Driven Design**. This widget rebuilds its child based on its *own width* (Parent Constraints) rather than the screen size.
+
+### 🖥️ Desktop & Breakpoint Enhancements
+- **Granular Breakpoints:** Added `smallDesktop` (900px-1200px) and `largeDesktop` (>1800px) to `ResponsiveConfig` and `ResponsiveGrid`. You now have control over 6 distinct screen sizes.
+- **`AppWidthLimiter` Logic Upgrade:**
+  - **Scaling Reset:** When `AppWidthLimiter` constrains the app width (e.g., to 1400px), it now injects a *new* scaling context.
+  - **Result:** Elements inside the limiter scale relative to the *limit* (1400px), not the huge screen width (e.g., 4000px). This prevents "Gigantic UI" on ultra-wide monitors.
+
+### 🐛 Fixes & Improvements
+- **ResponsiveFlex Overflow:** Fixed `RenderFlex` overflow issues by implementing `mainAxisSize: MainAxisSize.min` defaults.
+- **Grid Stability:** Improved `childAspectRatio` logic in `ResponsiveGrid` to prevent layout breaks on resize.
+- **Documentation:** Updated README with comprehensive examples for the new layout widgets.
+
+---
+
 ## [2.0.2] - 2025-12-06
 ### 🐛 Hotfix
 - **Restored API:** Fixed missing `context.valueByScreen()` method that was accidentally removed in 2.0.1.
@@ -86,4 +111,4 @@ All notable changes to this project will be documented in this file.
 - ResponsiveHelper class with screen type detection
 - AppWidthLimiter widget for limiting app width on large screens
 - Support for Watch, Mobile, Tablet, Small Desktop, Desktop, and Large Desktop screen sizes
-- Beautiful example app demonstrating all features
+- Beautiful example app demonstrating all features including a responsive grid that adapts to different screen sizes.
