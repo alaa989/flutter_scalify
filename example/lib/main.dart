@@ -391,8 +391,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: 16.br,
         boxShadow: [
-          BoxShadow(
-              color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))
+          BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))
         ],
       ),
       child: ResponsiveFlex(
@@ -495,8 +494,8 @@ class _AdaptiveProductCard extends StatelessWidget {
               Icon(Icons.shopping_bag, color: Colors.indigo, size: 32.iz),
               8.sbh,
               Text("Product $index",
-                  style: TextStyle(
-                      fontSize: 13.fz, fontWeight: FontWeight.bold)),
+                  style:
+                      TextStyle(fontSize: 13.fz, fontWeight: FontWeight.bold)),
               Text("\$99",
                   style: TextStyle(fontSize: 12.fz, color: Colors.green)),
             ],
@@ -512,8 +511,8 @@ class _AdaptiveProductCard extends StatelessWidget {
               Icon(Icons.shopping_bag, color: Colors.indigo, size: 40.iz),
               8.sbh,
               Text("Product $index",
-                  style: TextStyle(
-                      fontSize: 14.fz, fontWeight: FontWeight.bold)),
+                  style:
+                      TextStyle(fontSize: 14.fz, fontWeight: FontWeight.bold)),
               Text("\$99.00",
                   style: TextStyle(fontSize: 12.fz, color: Colors.green)),
             ],
