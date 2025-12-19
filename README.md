@@ -10,7 +10,7 @@ Not just a screen adaptation tool, but a complete high-performance engine design
 ## Why Scalify? ⚡️
 
 | Feature | Scalify Engine 🚀 | Standard Solutions |
-| --- | --- | --- |
+| :--- | :--- | :--- |
 | **Performance** | ✅ **O(1) Inline Math** (Zero Overhead) | ❌ Complex Calculations |
 | **Memory Efficiency** | ✅ **Zero Allocation** (No GC pressure) | ❌ High Memory Usage |
 | **Layout System** | ✅ **Responsive Grid & Flex** (Built-in) | ❌ Manual calculations |
@@ -19,13 +19,13 @@ Not just a screen adaptation tool, but a complete high-performance engine design
 
 ## Features ✨
 
-* 🎯 **Simple API**: Use intuitive extensions like `16.fz`, `20.s`, `24.iz`.
-* 📐 **Responsive Layouts**: Built-in `ResponsiveGrid`, `ResponsiveFlex`, and `ResponsiveLayout`.
-* 📦 **Component-Driven**: `AdaptiveContainer` changes layout based on the widget's own size.
-* 🛡️ **Ultra-High Res Safeguard**: Smart algorithm that prevents UI "explosion" on 4K and Ultra-wide screens.
-* 📱 **Fully Responsive**: Adapts to Watch, Mobile, Tablet, Small Desktop, Desktop, and Large Desktop.
-* ⚡ **Hyper Performance**: Uses `vm:prefer-inline` for direct memory access.
-* 🔡 **Font Clamping (New)**: Optional control over minimum and maximum font sizes (e.g., 6.0 to 256.0).
+- 🎯 **Simple API**: Use intuitive extensions like `16.fz`, `20.s`, `24.iz`.
+- 📐 **Responsive Layouts**: Built-in `ResponsiveGrid`, `ResponsiveFlex`, and `ResponsiveLayout`.
+- 📦 **Component-Driven**: `AdaptiveContainer` changes layout based on the widget's own size.
+- 🛡️ **Ultra-High Res Safeguard**: Smart algorithm that prevents UI "explosion" on 4K and Ultra-wide screens.
+- 📱 **Fully Responsive**: Adapts to Watch, Mobile, Tablet, Small Desktop, Desktop, and Large Desktop.
+- ⚡ **Hyper Performance**: Uses `vm:prefer-inline` for direct memory access.
+- 🔡 **Font Clamping (New)**: Optional control over minimum and maximum font sizes (e.g., 6.0 to 256.0).
 
 ## Responsive Preview
 
@@ -37,7 +37,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_scalify: ^2.2.0
+  flutter_scalify: ^2.2.1
 
 ```
 
@@ -52,7 +52,7 @@ flutter pub get
 
 ### Wrap your app with ScalifyProvider
 
-Initialize the engine with your design specifications. You can now optionally define font size limits.
+Initialize the engine with your design specifications.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -75,9 +75,6 @@ class MyApp extends StatelessWidget {
             designHeight: 812,
             minScale: 0.5,
             maxScale: 3.0,
-            // 🔡 Optional: Font Clamping (New in v2.2.0)
-            minFontSize: 6.0, 
-            maxFontSize: 256.0,
             // 🛡️ High-Res Adaptation (Smart Dampening)
             memoryProtectionThreshold: 1920.0, 
             highResScaleFactor: 0.60, 
@@ -94,29 +91,115 @@ class MyApp extends StatelessWidget {
 
 ---
 
-## 🛠️ Core Extensions (Global Scaling)
+## 📚 API Cheat Sheet (All Shortcuts)
 
-Scale elements based on the screen size using simple getters.
+Scalify provides a comprehensive set of extensions to make every part of your UI responsive.
 
-| Extension | Description | Usage |
+### 1. Size & Font
+
+| Extension | Usage | Result (Description) |
 | --- | --- | --- |
-| `.fz` | Smart Font Size (Respects scale + accessibility + Clamping) | `16.fz` |
-| `.s` | General Scaling (Use for padding/margins) | `20.s` |
-| `.w` | Width Scaling | `100.w` |
-| `.h` | Height Scaling | `50.h` |
-| `.iz` | Icon Size Scaling | `24.iz` |
-| `.r` | Radius Scaling (Smoother curve) | `12.r` |
-| `.sbh` | SizedBox with Height | `20.sbh` |
-| `.sbw` | SizedBox with Width | `10.sbw` |
+| `.fz` | `16.fz` | **Font Size**: Scales text smartly + respects bounds. |
+| `.iz` | `24.iz` | **Icon Size**: Scales icons proportionally. |
+| `.s` | `20.s` | **Size/Space**: General scaling (margins/offsets). |
+| `.w` | `100.w` | **Width**: Scales based on screen width. |
+| `.h` | `50.h` | **Height**: Scales based on screen height. |
+| `.r` | `12.r` | **Radius**: Calculates radius based on min(w, h). |
+| `.si` | `10.si` | **Int**: Returns rounded integer for native APIs. |
 
-**Example:**
+### 2. Spacing (SizedBox)
+
+Replace `SizedBox(height: 20)` with clean shortcuts.
+
+| Extension | Usage | Result |
+| --- | --- | --- |
+| `.sbh` | `20.sbh` | `SizedBox(height: 20.h)` |
+| `.sbw` | `10.sbw` | `SizedBox(width: 10.w)` |
+| `.sbhw` | `20.sbhw(width: 10)` | `SizedBox(height: 20.h, width: 10.w)` |
+| `.sbwh` | `10.sbwh(height: 20)` | `SizedBox(width: 10.w, height: 20.h)` |
+
+### 3. Padding (EdgeInsets)
+
+Use on `double` or `List<num>`.
+
+| Extension | Usage | Result |
+| --- | --- | --- |
+| `.p` | `16.p` | `EdgeInsets.all(16)` |
+| `.ph` | `16.ph` | `EdgeInsets.symmetric(horizontal: 16)` |
+| `.pv` | `16.pv` | `EdgeInsets.symmetric(vertical: 16)` |
+| `.pt` | `16.pt` | `EdgeInsets.only(top: 16)` |
+| `.pb` | `16.pb` | `EdgeInsets.only(bottom: 16)` |
+| `.pl` | `16.pl` | `EdgeInsets.only(left: 16)` |
+| `.pr` | `16.pr` | `EdgeInsets.only(right: 16)` |
+| **List API** | `[20, 10].p` | `EdgeInsets.symmetric(h: 20, v: 10)` |
+| **List API** | `[10, 5, 10, 5].p` | `EdgeInsets.fromLTRB(10, 5, 10, 5)` |
+
+### 4. Border Radius
+
+| Extension | Usage | Result |
+| --- | --- | --- |
+| `.br` | `12.br` | `BorderRadius.circular(12)` |
+| `.brt` | `12.brt` | `BorderRadius.only(topLeft, topRight)` |
+| `.brb` | `12.brb` | `BorderRadius.only(bottomLeft, bottomRight)` |
+| `.brl` | `12.brl` | `BorderRadius.only(topLeft, bottomLeft)` |
+| `.brr` | `12.brr` | `BorderRadius.only(topRight, bottomRight)` |
+
+---
+
+## 💻 All-in-One Example
+
+Here is how you write clean, responsive UI code using Scalify shortcuts:
 
 ```dart
 Container(
-  padding: 16.p,
-  width: 200.w,
-  decoration: BoxDecoration(borderRadius: 12.br),
-  child: Text("Hello", style: TextStyle(fontSize: 16.fz)),
+  // Symmetric Padding: Horizontal 20, Vertical 10
+  padding: [20, 10].p, 
+  
+  // Responsive Width & Height
+  width: 300.w,
+  height: 200.h,
+  
+  decoration: BoxDecoration(
+    color: Colors.white,
+    // Top-only Border Radius
+    borderRadius: 20.brt, 
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black12,
+        // General scaling for offsets
+        offset: Offset(0, 4.s), 
+        blurRadius: 10.s,
+      )
+    ],
+  ),
+  child: Column(
+    children: [
+      // Icon Size
+      Icon(Icons.star, size: 32.iz), 
+      
+      // Spacing (Height)
+      16.sbh, 
+      
+      Text(
+        "Scalify",
+        // Smart Font Size
+        style: TextStyle(fontSize: 24.fz, fontWeight: FontWeight.bold), 
+      ),
+      
+      // Spacing (Height)
+      8.sbh,
+      
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Start", style: TextStyle(fontSize: 14.fz)),
+          // Spacing (Width)
+          8.sbw, 
+          Icon(Icons.arrow_forward, size: 16.iz),
+        ],
+      )
+    ],
+  ),
 )
 
 ```
@@ -149,6 +232,7 @@ ScalifyBox(
   referenceHeight: 200,
   builder: (context, ls) {
     return Container(
+      // Use 'ls' (Local Scaler) instead of global context
       padding: ls.p(20), 
       child: Text("VISA", style: TextStyle(fontSize: ls.fz(18))),
     );
@@ -171,6 +255,25 @@ MaterialApp(
 )
 
 ```
+
+---
+
+## 🔡 Font Clamping (Advanced Control)
+
+Sometimes you want the UI to scale, but you need to ensure text remains readable (not too small) and doesn't break layout (not too big).
+
+You can globally clamp font sizes in `ScalifyConfig`:
+
+```dart
+ScalifyConfig(
+  // ... other config
+  minFontSize: 6.0,   // Text will never be smaller than 6px
+  maxFontSize: 256.0,   // Text will never exceed 256px
+)
+
+```
+
+This applies to both `.fz` and `ThemeData.scale()`.
 
 ---
 

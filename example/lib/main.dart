@@ -391,7 +391,8 @@ class ScalifyShowcaseScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: 16.br,
         boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))
+          BoxShadow(
+              color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))
         ],
       ),
       child: ResponsiveFlex(
@@ -440,7 +441,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
         FittedBox(
           fit: BoxFit.scaleDown,
           child: Text(
-            "Alaa Naili",
+            "Alaa Hassan",
             style: TextStyle(fontSize: 22.fz, fontWeight: FontWeight.bold),
           ),
         ),
@@ -494,8 +495,8 @@ class _AdaptiveProductCard extends StatelessWidget {
               Icon(Icons.shopping_bag, color: Colors.indigo, size: 32.iz),
               8.sbh,
               Text("Product $index",
-                  style:
-                      TextStyle(fontSize: 13.fz, fontWeight: FontWeight.bold)),
+                  style: TextStyle(
+                      fontSize: 13.fz, fontWeight: FontWeight.bold)),
               Text("\$99",
                   style: TextStyle(fontSize: 12.fz, color: Colors.green)),
             ],
@@ -511,8 +512,8 @@ class _AdaptiveProductCard extends StatelessWidget {
               Icon(Icons.shopping_bag, color: Colors.indigo, size: 40.iz),
               8.sbh,
               Text("Product $index",
-                  style:
-                      TextStyle(fontSize: 14.fz, fontWeight: FontWeight.bold)),
+                  style: TextStyle(
+                      fontSize: 14.fz, fontWeight: FontWeight.bold)),
               Text("\$99.00",
                   style: TextStyle(fontSize: 12.fz, color: Colors.green)),
             ],
@@ -632,72 +633,5 @@ class _SectionHeader extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
                 color: Colors.blueGrey)));
-  }
-}
-
-// v2.2.0 FEATURE CLASSES & EXTENSIONS
-typedef ResponsiveWidgetBuilder = Widget Function(
-    BuildContext context, ResponsiveData data);
-
-class ResponsiveBuilder extends StatelessWidget {
-  final ResponsiveWidgetBuilder builder;
-  const ResponsiveBuilder({super.key, required this.builder});
-  @override
-  Widget build(BuildContext context) {
-    return builder(context, context.responsiveData);
-  }
-}
-
-class ResponsiveLayout extends StatelessWidget {
-  final Widget portrait;
-  final Widget landscape;
-  const ResponsiveLayout(
-      {super.key, required this.portrait, required this.landscape});
-  @override
-  Widget build(BuildContext context) {
-    final data = context.responsiveData;
-    final bool isLandscape = data.size.width > data.size.height;
-    return isLandscape ? landscape : portrait;
-  }
-}
-
-class ResponsiveVisibility extends StatelessWidget {
-  final Widget child;
-  final Widget replacement;
-  final List<ScreenType>? visibleOn;
-  final List<ScreenType>? hiddenOn;
-
-  const ResponsiveVisibility({
-    super.key,
-    required this.child,
-    this.replacement = const SizedBox.shrink(),
-    this.visibleOn,
-    this.hiddenOn,
-  }) : assert(visibleOn == null || hiddenOn == null,
-            'Provide either visibleOn or hiddenOn, not both.');
-
-  @override
-  Widget build(BuildContext context) {
-    final currentDevice = context.responsiveData.screenType;
-    bool isVisible = true;
-    if (visibleOn != null) {
-      isVisible = visibleOn!.contains(currentDevice);
-    } else if (hiddenOn != null) {
-      isVisible = !hiddenOn!.contains(currentDevice);
-    }
-    return isVisible ? child : replacement;
-  }
-}
-
-extension ScalifyThemeExtension on ThemeData {
-  ThemeData scale(BuildContext context) {
-    final double scale = context.responsiveData.scaleFactor;
-    if (scale == 1.0) return this;
-    final TextTheme scaledTextTheme = textTheme.apply(
-      fontSizeFactor: scale,
-      displayColor: textTheme.displayLarge?.color,
-      bodyColor: textTheme.bodyLarge?.color,
-    );
-    return copyWith(textTheme: scaledTextTheme);
   }
 }

@@ -12,3 +12,7 @@ export 'responsive_scale/responsive_grid.dart';
 export 'responsive_scale/responsive_flex.dart';
 export 'responsive_scale/container_query.dart';
 export 'responsive_scale/adaptive_container.dart';
+export 'responsive_scale/theme_extension.dart';
+export 'responsive_scale/responsive_builder.dart';
+export 'responsive_scale/responsive_layout.dart';
+export 'responsive_scale/responsive_visibility.dart';
