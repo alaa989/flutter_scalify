@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'responsive_provider.dart';
-import 'responsive_config.dart';
+import 'scalify_provider.dart';
+import 'scalify_config.dart';
 
 /// A widget that limits the maximum width of its child AND resets the responsive scaling logic.
 ///
@@ -48,11 +48,11 @@ class AppWidthLimiter extends StatelessWidget {
 
       // A. Retrieve existing config to maintain user settings (designWidth, etc.)
       // We try to get it from the nearest provider, or fallback to default.
-      ResponsiveConfig currentConfig;
+      ScalifyConfig currentConfig;
       try {
-        currentConfig = ResponsiveProvider.of(context).config;
+        currentConfig = ScalifyProvider.of(context).config;
       } catch (_) {
-        currentConfig = const ResponsiveConfig();
+        currentConfig = const ScalifyConfig();
       }
 
       return Container(
@@ -73,12 +73,12 @@ class AppWidthLimiter extends StatelessWidget {
             ),
 
             // D. SCALE RESET:
-            // We inject a NEW ResponsiveProvider here.
+            // We inject a NEW ScalifyProvider here.
             // It reads the modified MediaQuery above and recalculates .s/.fz
             // based on [maxWidth] instead of the huge screen width.
             child: Builder(
               builder: (innerContext) {
-                return ResponsiveProvider(
+                return ScalifyProvider(
                   config: currentConfig, // Pass through the original config
                   child: child,
                 );

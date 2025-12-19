@@ -1,6 +1,6 @@
-/// Configuration class for [ResponsiveProvider].
+/// Configuration class for [ScalifyProvider].
 /// Defines the design baseline, breakpoints, and scaling behavior.
-class ResponsiveConfig {
+class ScalifyConfig {
   /// Base design width (e.g., 375 for iPhone design).
   final double designWidth;
 
@@ -46,8 +46,8 @@ class ResponsiveConfig {
   /// The pixel width difference required to trigger a rebuild.
   final double rebuildWidthPxThreshold;
 
-  /// Creates a new [ResponsiveConfig].
-  const ResponsiveConfig({
+  /// Creates a new [ScalifyConfig].
+  const ScalifyConfig({
     this.designWidth = 375.0,
     this.designHeight = 812.0,
     this.watchBreakpoint = 300.0,
@@ -66,7 +66,7 @@ class ResponsiveConfig {
   });
 
   /// Creates a copy of this config with the given fields replaced with the new values.
-  ResponsiveConfig copyWith({
+  ScalifyConfig copyWith({
     double? designWidth,
     double? designHeight,
     double? watchBreakpoint,
@@ -83,7 +83,7 @@ class ResponsiveConfig {
     double? rebuildScaleThreshold,
     double? rebuildWidthPxThreshold,
   }) {
-    return ResponsiveConfig(
+    return ScalifyConfig(
       designWidth: designWidth ?? this.designWidth,
       designHeight: designHeight ?? this.designHeight,
       watchBreakpoint: watchBreakpoint ?? this.watchBreakpoint,

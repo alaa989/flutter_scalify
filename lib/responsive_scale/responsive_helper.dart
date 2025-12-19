@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'responsive_config.dart';
+import 'scalify_config.dart';
 import 'responsive_data.dart';
 
 /// Helper class containing utility methods for responsive logic.
@@ -13,7 +13,7 @@ class ResponsiveHelper {
   /// Creates a [ResponsiveHelper] from the current [context].
   factory ResponsiveHelper.fromContext(BuildContext context) {
     final mq = MediaQuery.maybeOf(context);
-    final data = ResponsiveData.fromMediaQuery(mq, const ResponsiveConfig());
+    final data = ResponsiveData.fromMediaQuery(mq, const ScalifyConfig());
     return ResponsiveHelper.fromData(data);
   }
 

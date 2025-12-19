@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'responsive_config.dart';
+import 'scalify_config.dart';
 
 enum ScreenType {
   watch,
@@ -15,7 +15,7 @@ class ResponsiveData {
   final Size size;
   final double textScaleFactor;
   final ScreenType screenType;
-  final ResponsiveConfig config;
+  final ScalifyConfig config;
 
   // Precomputed scales
   final double scaleWidth;
@@ -50,7 +50,7 @@ class ResponsiveData {
     size: Size(375, 812),
     textScaleFactor: 1.0,
     screenType: ScreenType.mobile,
-    config: ResponsiveConfig(),
+    config: ScalifyConfig(),
     scaleWidth: 1.0,
     scaleHeight: 1.0,
     scaleFactor: 1.0,
@@ -72,7 +72,7 @@ class ResponsiveData {
   bool get isOverMaxWidth => size.width > config.desktopBreakpoint;
 
   factory ResponsiveData.fromMediaQuery(
-      MediaQueryData? media, ResponsiveConfig cfg) {
+      MediaQueryData? media, ScalifyConfig cfg) {
     if (media == null) return ResponsiveData.identity;
 
     final width = media.size.width;

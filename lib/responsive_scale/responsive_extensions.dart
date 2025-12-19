@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'responsive_provider.dart';
+import 'scalify_provider.dart';
 import 'responsive_data.dart';
 import 'global_responsive.dart';
 import 'responsive_helper.dart';
@@ -7,7 +7,7 @@ import 'responsive_helper.dart';
 /// Context extension for accessing Responsive Data and Helpers
 extension ResponsiveContext on BuildContext {
   /// Access the responsive data directly from the context (via InheritedWidget)
-  ResponsiveData get responsiveData => ResponsiveProvider.of(this);
+  ResponsiveData get responsiveData => ScalifyProvider.of(this);
 
   /// Access the helper class for logical operations
   ResponsiveHelper get responsiveHelper =>

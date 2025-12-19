@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../responsive_scale/responsive_extensions.dart';
-import '../responsive_scale/responsive_provider.dart';
+import 'scalify_provider.dart';
 
 /// A powerful Grid wrapper supporting Manual & Auto-Fit modes.
 ///
@@ -77,7 +77,7 @@ class ResponsiveGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final responsive = ResponsiveProvider.of(context);
+    final responsive = ScalifyProvider.of(context);
     final width = responsive.size.width;
     final config = responsive.config; // ✅ Centralized Config
 

@@ -11,7 +11,7 @@ class GlobalResponsive {
   static ResponsiveData _data = ResponsiveData.identity;
 
   /// Updates the global responsive data.
-  /// This is called automatically by [ResponsiveProvider].
+  /// This is called automatically by [ScalifyProvider].
   static void update(ResponsiveData data) {
     // Optimization #2: Safety check for debug mode
     assert(() {

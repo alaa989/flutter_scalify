@@ -1,32 +1,32 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'responsive_config.dart';
+import 'package:flutter_scalify/responsive_scale/scalify_config.dart';
 import 'responsive_data.dart';
 import 'global_responsive.dart';
 
-class ResponsiveProvider extends StatefulWidget {
+class ScalifyProvider extends StatefulWidget {
   final Widget child;
-  final ResponsiveConfig config;
+  final ScalifyConfig config;
 
-  const ResponsiveProvider({
+  const ScalifyProvider({
     super.key,
     required this.child,
-    this.config = const ResponsiveConfig(),
+    this.config = const ScalifyConfig(),
   });
 
   static ResponsiveData of(BuildContext context) {
     final inherited =
-        context.dependOnInheritedWidgetOfExactType<_InheritedResponsive>();
+        context.dependOnInheritedWidgetOfExactType<_InheritedScalify>();
     if (inherited != null) return inherited.data;
     final mq = MediaQuery.maybeOf(context);
-    return ResponsiveData.fromMediaQuery(mq, const ResponsiveConfig());
+    return ResponsiveData.fromMediaQuery(mq, const ScalifyConfig());
   }
 
   @override
-  State<ResponsiveProvider> createState() => _ResponsiveProviderState();
+  State<ScalifyProvider> createState() => _ScalifyProviderState();
 }
 
-class _ResponsiveProviderState extends State<ResponsiveProvider>
+class _ScalifyProviderState extends State<ScalifyProvider>
     with WidgetsBindingObserver {
   Timer? _debounce;
   ResponsiveData _currentData = ResponsiveData.identity;
@@ -77,19 +77,19 @@ class _ResponsiveProviderState extends State<ResponsiveProvider>
       GlobalResponsive.update(newData);
     }
 
-    return _InheritedResponsive(
+    return _InheritedScalify(
       data: _currentData,
       child: widget.child,
     );
   }
 }
 
-class _InheritedResponsive extends InheritedWidget {
+class _InheritedScalify extends InheritedWidget {
   final ResponsiveData data;
-  const _InheritedResponsive({required this.data, required super.child});
+  const _InheritedScalify({required this.data, required super.child});
 
   @override
-  bool updateShouldNotify(covariant _InheritedResponsive oldWidget) {
+  bool updateShouldNotify(covariant _InheritedScalify oldWidget) {
     // The new operator == in ResponsiveData handles the logic here perfectly
     return data != oldWidget.data;
   }

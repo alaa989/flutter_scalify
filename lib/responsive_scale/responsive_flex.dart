@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../responsive_scale/responsive_extensions.dart';
-import '../responsive_scale/responsive_provider.dart';
+import 'scalify_provider.dart';
 import '../responsive_scale/responsive_data.dart';
 
 /// A smart widget that switches between [Row] and [Column].
@@ -40,7 +40,7 @@ class ResponsiveFlex extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final responsive = ResponsiveProvider.of(context);
+    final responsive = ScalifyProvider.of(context);
     final width = responsive.size.width;
     final config = responsive.config;
 
