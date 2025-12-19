@@ -31,6 +31,12 @@ class ScalifyConfig {
   /// Maximum allowed scale factor (prevents UI from exploding on huge screens).
   final double maxScale;
 
+  /// Minimum allowed font size (prevents text from becoming unreadable).
+  final double minFontSize;
+
+  /// Maximum allowed font size (prevents text from exploding on large screens).
+  final double maxFontSize;
+
   /// The width threshold where 4K/Ultra-wide protection kicks in (default `1920`).
   final double memoryProtectionThreshold;
 
@@ -58,6 +64,8 @@ class ScalifyConfig {
     this.respectTextScaleFactor = true,
     this.minScale = 0.5,
     this.maxScale = 4.0,
+    this.minFontSize = 6.0,
+    this.maxFontSize = 256.0,
     this.memoryProtectionThreshold = 1920.0,
     this.highResScaleFactor = 0.65,
     this.debounceWindowMillis = 120,
@@ -77,6 +85,8 @@ class ScalifyConfig {
     bool? respectTextScaleFactor,
     double? minScale,
     double? maxScale,
+    double? minFontSize,
+    double? maxFontSize,
     double? memoryProtectionThreshold,
     double? highResScaleFactor,
     int? debounceWindowMillis,
@@ -96,6 +106,8 @@ class ScalifyConfig {
           respectTextScaleFactor ?? this.respectTextScaleFactor,
       minScale: minScale ?? this.minScale,
       maxScale: maxScale ?? this.maxScale,
+      minFontSize: minFontSize ?? this.minFontSize,
+      maxFontSize: maxFontSize ?? this.maxFontSize,
       memoryProtectionThreshold:
           memoryProtectionThreshold ?? this.memoryProtectionThreshold,
       highResScaleFactor: highResScaleFactor ?? this.highResScaleFactor,

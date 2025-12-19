@@ -91,7 +91,8 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                 Flexible(
                   child: Text(
                     "Scalify UI Kit",
-                    style: TextStyle(fontSize: 20.fz, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 20.fz, fontWeight: FontWeight.bold),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -124,7 +125,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _SectionHeader(title: "🔥 NEW v2.2.0 FEATURES"),
-                  
+
                   // FEATURE: ResponsiveVisibility (New v2.2.0)
                   // Declaratively show or hide widgets based on ScreenType
                   ResponsiveVisibility(
@@ -132,12 +133,14 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                     child: Container(
                       padding: 12.p,
                       margin: 10.pb,
-                      decoration: BoxDecoration(color: Colors.orange.shade100, borderRadius: 8.br),
+                      decoration: BoxDecoration(
+                          color: Colors.orange.shade100, borderRadius: 8.br),
                       child: Row(
                         children: [
                           Icon(Icons.phone_android, color: Colors.orange),
                           8.sbw,
-                          Text("Visible only on Mobile!", style: TextStyle(color: Colors.orange.shade900)),
+                          Text("Visible only on Mobile!",
+                              style: TextStyle(color: Colors.orange.shade900)),
                         ],
                       ),
                     ),
@@ -148,9 +151,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                   Container(
                     padding: 16.p,
                     decoration: BoxDecoration(
-                      color: Colors.blue.shade50, 
-                      borderRadius: 12.br
-                    ),
+                        color: Colors.blue.shade50, borderRadius: 12.br),
                     child: ResponsiveLayout(
                       portrait: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -158,8 +159,9 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                           Icon(Icons.screen_lock_portrait, size: 40.iz),
                           4.sbh,
                           Text(
-                            "Portrait Mode Active", 
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.fz),
+                            "Portrait Mode Active",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 14.fz),
                             textAlign: TextAlign.center,
                           ),
                         ],
@@ -171,8 +173,9 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                           8.sbw,
                           Expanded(
                             child: Text(
-                              "Landscape Mode Active", 
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.fz),
+                              "Landscape Mode Active",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14.fz),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -181,7 +184,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
+
                   20.sbh,
 
                   // FEATURE: ResponsiveBuilder (New v2.2.0)
@@ -192,11 +195,11 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                         elevation: 2,
                         shape: RoundedRectangleBorder(borderRadius: 12.br),
                         child: Padding(
-                          padding: 12.p, 
+                          padding: 12.p,
                           child: Row(
                             children: [
                               CircleAvatar(
-                                radius: 20.s, 
+                                radius: 20.s,
                                 backgroundColor: Colors.indigo.shade100,
                                 child: Text(
                                   data.screenType.toString()[11].toUpperCase(),
@@ -207,7 +210,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              12.sbw, 
+                              12.sbw,
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,14 +218,18 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       "ResponsiveBuilder Logic",
-                                      style: TextStyle(fontSize: 15.fz, fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                          fontSize: 15.fz,
+                                          fontWeight: FontWeight.bold),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     4.sbh,
                                     Text(
                                       "W: ${data.size.width.toInt()}px | Type: ${data.screenType.name}",
-                                      style: TextStyle(fontSize: 12.fz, color: Colors.grey.shade600),
+                                      style: TextStyle(
+                                          fontSize: 12.fz,
+                                          color: Colors.grey.shade600),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -333,13 +340,13 @@ class ScalifyShowcaseScreen extends StatelessWidget {
           ),
 
           ResponsiveGrid(
-            useSliver: true, 
+            useSliver: true,
             padding: 20.ph,
             minItemWidth: 300,
-            scaleMinItemWidth: false, 
+            scaleMinItemWidth: false,
             spacing: 10,
             runSpacing: 10,
-            itemCount: 20, 
+            itemCount: 20,
             itemBuilder: (context, index) {
               return Container(
                 decoration: BoxDecoration(
@@ -356,9 +363,11 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.cloud_download, color: Colors.blueGrey, size: 28.iz),
+                        Icon(Icons.cloud_download,
+                            color: Colors.blueGrey, size: 28.iz),
                         4.sbh,
-                        Text("API Item $index", style: TextStyle(fontSize: 12.fz)),
+                        Text("API Item $index",
+                            style: TextStyle(fontSize: 12.fz)),
                       ],
                     ),
                   ),
@@ -424,7 +433,8 @@ class ScalifyShowcaseScreen extends StatelessWidget {
     final isMobile = context.responsiveData.isSmallScreen;
 
     return Column(
-      crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment:
+          isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         FittedBox(
@@ -446,7 +456,8 @@ class ScalifyShowcaseScreen extends StatelessWidget {
         FittedBox(
           fit: BoxFit.scaleDown,
           child: Row(
-            mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
+            mainAxisAlignment:
+                isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
             children: [
               _Badge(text: "Pro Member"),
               8.sbw,
@@ -482,8 +493,11 @@ class _AdaptiveProductCard extends StatelessWidget {
             children: [
               Icon(Icons.shopping_bag, color: Colors.indigo, size: 32.iz),
               8.sbh,
-              Text("Product $index", style: TextStyle(fontSize: 13.fz, fontWeight: FontWeight.bold)),
-              Text("\$99", style: TextStyle(fontSize: 12.fz, color: Colors.green)),
+              Text("Product $index",
+                  style:
+                      TextStyle(fontSize: 13.fz, fontWeight: FontWeight.bold)),
+              Text("\$99",
+                  style: TextStyle(fontSize: 12.fz, color: Colors.green)),
             ],
           ),
         ),
@@ -496,17 +510,23 @@ class _AdaptiveProductCard extends StatelessWidget {
             children: [
               Icon(Icons.shopping_bag, color: Colors.indigo, size: 40.iz),
               8.sbh,
-              Text("Product $index", style: TextStyle(fontSize: 14.fz, fontWeight: FontWeight.bold)),
-              Text("\$99.00", style: TextStyle(fontSize: 12.fz, color: Colors.green)),
+              Text("Product $index",
+                  style:
+                      TextStyle(fontSize: 14.fz, fontWeight: FontWeight.bold)),
+              Text("\$99.00",
+                  style: TextStyle(fontSize: 12.fz, color: Colors.green)),
             ],
           ),
         ),
         lg: Row(
           children: [
             Container(
-              width: 50.w, height: 50.w,
-              decoration: BoxDecoration(color: Colors.indigo.shade50, borderRadius: 8.br),
-              child: Icon(Icons.shopping_bag, color: Colors.indigo, size: 24.iz),
+              width: 50.w,
+              height: 50.w,
+              decoration: BoxDecoration(
+                  color: Colors.indigo.shade50, borderRadius: 8.br),
+              child:
+                  Icon(Icons.shopping_bag, color: Colors.indigo, size: 24.iz),
             ),
             16.sbw,
             Expanded(
@@ -514,8 +534,15 @@ class _AdaptiveProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Premium Product $index", style: TextStyle(fontSize: 16.fz, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
-                  Text("High quality item description...", style: TextStyle(fontSize: 12.fz, color: Colors.grey), maxLines: 1, overflow: TextOverflow.ellipsis),
+                  Text("Premium Product $index",
+                      style: TextStyle(
+                          fontSize: 16.fz, fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                  Text("High quality item description...",
+                      style: TextStyle(fontSize: 12.fz, color: Colors.grey),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
                 ],
               ),
             ),
@@ -543,17 +570,30 @@ class _ScalifyBoxGridItem extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: ls.br(12),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: ls.s(8), offset: Offset(0, ls.s(4)))],
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: ls.s(8),
+                  offset: Offset(0, ls.s(4)))
+            ],
           ),
           padding: ls.p(8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.dashboard_customize_rounded, color: Colors.indigo, size: ls.s(40)),
+              Icon(Icons.dashboard_customize_rounded,
+                  color: Colors.indigo, size: ls.s(40)),
               SizedBox(height: ls.s(8)),
-              Text("Item #${index + 1}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: ls.fz(12)), maxLines: 1, overflow: TextOverflow.ellipsis),
+              Text("Item #${index + 1}",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: ls.fz(12)),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
               SizedBox(height: ls.s(2)),
-              Text("ScalifyBox", style: TextStyle(color: Colors.grey, fontSize: ls.fz(9)), maxLines: 1, overflow: TextOverflow.ellipsis),
+              Text("ScalifyBox",
+                  style: TextStyle(color: Colors.grey, fontSize: ls.fz(9)),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
             ],
           ),
         );
@@ -569,8 +609,12 @@ class _Badge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: [8, 4].p,
-      decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: 4.br, border: Border.all(color: Colors.grey.shade300)),
-      child: Text(text, style: TextStyle(fontSize: 10.fz, color: Colors.grey.shade700)),
+      decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: 4.br,
+          border: Border.all(color: Colors.grey.shade300)),
+      child: Text(text,
+          style: TextStyle(fontSize: 10.fz, color: Colors.grey.shade700)),
     );
   }
 }
@@ -580,12 +624,20 @@ class _SectionHeader extends StatelessWidget {
   const _SectionHeader({required this.title});
   @override
   Widget build(BuildContext context) {
-    return Padding(padding: 10.pb, child: Text(title.toUpperCase(), style: TextStyle(fontSize: 12.fz, fontWeight: FontWeight.bold, letterSpacing: 1.2, color: Colors.blueGrey)));
+    return Padding(
+        padding: 10.pb,
+        child: Text(title.toUpperCase(),
+            style: TextStyle(
+                fontSize: 12.fz,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+                color: Colors.blueGrey)));
   }
 }
 
 // v2.2.0 FEATURE CLASSES & EXTENSIONS
-typedef ResponsiveWidgetBuilder = Widget Function(BuildContext context, ResponsiveData data);
+typedef ResponsiveWidgetBuilder = Widget Function(
+    BuildContext context, ResponsiveData data);
 
 class ResponsiveBuilder extends StatelessWidget {
   final ResponsiveWidgetBuilder builder;
@@ -599,7 +651,8 @@ class ResponsiveBuilder extends StatelessWidget {
 class ResponsiveLayout extends StatelessWidget {
   final Widget portrait;
   final Widget landscape;
-  const ResponsiveLayout({super.key, required this.portrait, required this.landscape});
+  const ResponsiveLayout(
+      {super.key, required this.portrait, required this.landscape});
   @override
   Widget build(BuildContext context) {
     final data = context.responsiveData;
@@ -620,7 +673,8 @@ class ResponsiveVisibility extends StatelessWidget {
     this.replacement = const SizedBox.shrink(),
     this.visibleOn,
     this.hiddenOn,
-  }) : assert(visibleOn == null || hiddenOn == null, 'Provide either visibleOn or hiddenOn, not both.');
+  }) : assert(visibleOn == null || hiddenOn == null,
+            'Provide either visibleOn or hiddenOn, not both.');
 
   @override
   Widget build(BuildContext context) {
@@ -637,7 +691,7 @@ class ResponsiveVisibility extends StatelessWidget {
 
 extension ScalifyThemeExtension on ThemeData {
   ThemeData scale(BuildContext context) {
-    final double scale = context.responsiveData.scaleFactor; 
+    final double scale = context.responsiveData.scaleFactor;
     if (scale == 1.0) return this;
     final TextTheme scaledTextTheme = textTheme.apply(
       fontSizeFactor: scale,

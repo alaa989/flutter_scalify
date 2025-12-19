@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_scalify/flutter_scalify.dart';
 
-
 /// A widget that builds different layouts based on the screen orientation.
 class ResponsiveLayout extends StatelessWidget {
   final Widget portrait;
@@ -15,7 +14,6 @@ class ResponsiveLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final data = context.responsiveData;
     final bool isLandscape = data.size.width > data.size.height;
 

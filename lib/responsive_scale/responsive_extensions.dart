@@ -14,6 +14,8 @@ extension ResponsiveContext on BuildContext {
       ResponsiveHelper.fromData(responsiveData);
 
   /// Helper method to return different values based on screen type
+
+  /// Usage: `context.valueByScreen<double>(mobile: 10, tablet: 20)`
   T valueByScreen<T>({
     required T mobile,
     T? watch,
@@ -71,7 +73,8 @@ extension ResponsiveExtension on num {
     if (g.config.respectTextScaleFactor) {
       size *= g.textScaleFactor;
     }
-    return size < 6.0 ? 6.0 : (size > 256.0 ? 256.0 : size);
+
+    return size.clamp(g.config.minFontSize, g.config.maxFontSize);
   }
 
   @pragma('vm:prefer-inline')
@@ -112,7 +115,7 @@ extension ResponsiveExtension on num {
       topRight: Radius.circular(r), bottomRight: Radius.circular(r));
 }
 
-/// List<num> padding shorthand with validation (allowed lengths: 1,2,4)
+/// `List<num>` padding shorthand with validation (allowed lengths: 1, 2, or 4).
 extension EdgeInsetsListExtension on List<num> {
   EdgeInsets get p {
     final len = length;

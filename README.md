@@ -10,7 +10,7 @@ Not just a screen adaptation tool, but a complete high-performance engine design
 ## Why Scalify? ⚡️
 
 | Feature | Scalify Engine 🚀 | Standard Solutions |
-| :--- | :--- | :--- |
+| --- | --- | --- |
 | **Performance** | ✅ **O(1) Inline Math** (Zero Overhead) | ❌ Complex Calculations |
 | **Memory Efficiency** | ✅ **Zero Allocation** (No GC pressure) | ❌ High Memory Usage |
 | **Layout System** | ✅ **Responsive Grid & Flex** (Built-in) | ❌ Manual calculations |
@@ -19,12 +19,13 @@ Not just a screen adaptation tool, but a complete high-performance engine design
 
 ## Features ✨
 
-- 🎯 **Simple API**: Use intuitive extensions like `16.fz`, `20.s`, `24.iz`.
-- 📐 **Responsive Layouts**: Built-in `ResponsiveGrid`, `ResponsiveFlex`, and `ResponsiveLayout`.
-- 📦 **Component-Driven**: `AdaptiveContainer` changes layout based on the widget's own size.
-- 🛡️ **Ultra-High Res Safeguard**: Smart algorithm that prevents UI "explosion" on 4K and Ultra-wide screens.
-- 📱 **Fully Responsive**: Adapts to Watch, Mobile, Tablet, Small Desktop, Desktop, and Large Desktop.
-- ⚡ **Hyper Performance**: Uses `vm:prefer-inline` for direct memory access.
+* 🎯 **Simple API**: Use intuitive extensions like `16.fz`, `20.s`, `24.iz`.
+* 📐 **Responsive Layouts**: Built-in `ResponsiveGrid`, `ResponsiveFlex`, and `ResponsiveLayout`.
+* 📦 **Component-Driven**: `AdaptiveContainer` changes layout based on the widget's own size.
+* 🛡️ **Ultra-High Res Safeguard**: Smart algorithm that prevents UI "explosion" on 4K and Ultra-wide screens.
+* 📱 **Fully Responsive**: Adapts to Watch, Mobile, Tablet, Small Desktop, Desktop, and Large Desktop.
+* ⚡ **Hyper Performance**: Uses `vm:prefer-inline` for direct memory access.
+* 🔡 **Font Clamping (New)**: Optional control over minimum and maximum font sizes (e.g., 6.0 to 256.0).
 
 ## Responsive Preview
 
@@ -51,7 +52,7 @@ flutter pub get
 
 ### Wrap your app with ScalifyProvider
 
-Initialize the engine with your design specifications.
+Initialize the engine with your design specifications. You can now optionally define font size limits.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -74,6 +75,9 @@ class MyApp extends StatelessWidget {
             designHeight: 812,
             minScale: 0.5,
             maxScale: 3.0,
+            // 🔡 Optional: Font Clamping (New in v2.2.0)
+            minFontSize: 6.0, 
+            maxFontSize: 256.0,
             // 🛡️ High-Res Adaptation (Smart Dampening)
             memoryProtectionThreshold: 1920.0, 
             highResScaleFactor: 0.60, 
@@ -96,7 +100,7 @@ Scale elements based on the screen size using simple getters.
 
 | Extension | Description | Usage |
 | --- | --- | --- |
-| `.fz` | Smart Font Size (Respects scale + accessibility) | `16.fz` |
+| `.fz` | Smart Font Size (Respects scale + accessibility + Clamping) | `16.fz` |
 | `.s` | General Scaling (Use for padding/margins) | `20.s` |
 | `.w` | Width Scaling | `100.w` |
 | `.h` | Height Scaling | `50.h` |

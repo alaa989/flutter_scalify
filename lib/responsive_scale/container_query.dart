@@ -16,8 +16,11 @@ class ContainerQuery extends StatelessWidget {
   /// - Width `< 200` -> XS
   /// - `200 <= Width < 400` -> SM
   /// - ...
+  ///
+  /// The `List<double>` must be sorted in ascending order.
   final List<double>? breakpoints;
 
+  /// Creates a [ContainerQuery] widget.
   const ContainerQuery({
     super.key,
     required this.builder,
@@ -28,21 +31,16 @@ class ContainerQuery extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // 1. Safety Check: Handle unbounded constraints (e.g., inside ScrollView)
-        // We fallback to 0.0 to allow logic checks to proceed without crashing.
         final double width =
             constraints.hasBoundedWidth ? constraints.maxWidth : 0.0;
         final double height =
             constraints.hasBoundedHeight ? constraints.maxHeight : 0.0;
 
-        // 2. Determine QueryTier based on breakpoints
         QueryTier tier = QueryTier.xs;
 
         if (breakpoints != null && breakpoints!.isNotEmpty) {
-          // Ensure breakpoints are sorted for correct logic
           final sortedBreaks = List<double>.from(breakpoints!)..sort();
 
-          // Logic: Find the highest tier threshold passed
           for (int i = 0; i < sortedBreaks.length; i++) {
             if (width >= sortedBreaks[i]) {
               if (i == 0) {
@@ -57,13 +55,11 @@ class ContainerQuery extends StatelessWidget {
                 tier = QueryTier.xxl;
               }
             } else {
-              // Optimization: Break early if width is smaller than current breakpoint
               break;
             }
           }
         }
 
-        // 3. Create Data Object
         final queryData = ContainerQueryData(
           width: width,
           height: height,
@@ -76,12 +72,18 @@ class ContainerQuery extends StatelessWidget {
   }
 }
 
-/// Data holding the exact size and the calculated semantic Tier.
+/// Data holding the exact size and the calculated semantic [QueryTier].
 class ContainerQueryData {
+  /// The current width of the container.
   final double width;
+
+  /// The current height of the container.
   final double height;
+
+  /// The semantic tier calculated based on breakpoints.
   final QueryTier tier;
 
+  /// Creates [ContainerQueryData].
   const ContainerQueryData({
     required this.width,
     required this.height,
@@ -109,10 +111,21 @@ class ContainerQueryData {
 
 /// Semantic size categories for the container.
 enum QueryTier {
-  xs, // Extra Small (Below 1st breakpoint)
-  sm, // Small (Above 1st breakpoint)
-  md, // Medium (Above 2nd breakpoint)
-  lg, // Large (Above 3rd breakpoint)
-  xl, // Extra Large (Above 4th breakpoint)
-  xxl // Double Extra Large (Above 5th breakpoint)
+  /// Extra Small (Below 1st breakpoint)
+  xs,
+
+  /// Small (Above 1st breakpoint)
+  sm,
+
+  /// Medium (Above 2nd breakpoint)
+  md,
+
+  /// Large (Above 3rd breakpoint)
+  lg,
+
+  /// Extra Large (Above 4th breakpoint)
+  xl,
+
+  /// Double Extra Large (Above 5th breakpoint)
+  xxl
 }

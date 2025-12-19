@@ -35,7 +35,7 @@ class ResponsiveFlex extends StatelessWidget {
     this.colMainAxisAlignment,
     this.rowCrossAxisAlignment,
     this.colCrossAxisAlignment,
-    this.mainAxisSize = MainAxisSize.max, // ✅ Default to max
+    this.mainAxisSize = MainAxisSize.max,
   }) : assert(spacing >= 0, "Spacing must be >= 0");
 
   @override
@@ -65,16 +65,15 @@ class ResponsiveFlex extends StatelessWidget {
       return _buildFlex(isColumn, effectiveChildren);
     }
 
-    final Widget spacer =
-        isColumn ? SizedBox(height: spacing.s) : SizedBox(width: spacing.s);
-
-    final spacedChildren = List<Widget>.generate(
-      effectiveChildren.length * 2 - 1,
-      (index) {
-        if (index.isEven) return effectiveChildren[index ~/ 2];
-        return spacer;
-      },
-    );
+    final spacedChildren = <Widget>[];
+    for (var i = 0; i < effectiveChildren.length; i++) {
+      spacedChildren.add(effectiveChildren[i]);
+      if (i < effectiveChildren.length - 1) {
+        spacedChildren.add(isColumn
+            ? SizedBox(height: spacing.s)
+            : SizedBox(width: spacing.s));
+      }
+    }
 
     return _buildFlex(isColumn, spacedChildren);
   }
@@ -88,7 +87,7 @@ class ResponsiveFlex extends StatelessWidget {
       crossAxisAlignment: isColumn
           ? (colCrossAxisAlignment ?? CrossAxisAlignment.center)
           : (rowCrossAxisAlignment ?? CrossAxisAlignment.center),
-      mainAxisSize: mainAxisSize, // ✅ Fixed here
+      mainAxisSize: mainAxisSize,
       children: children,
     );
   }
