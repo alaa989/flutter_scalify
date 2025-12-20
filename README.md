@@ -37,7 +37,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_scalify: ^2.2.1
+  flutter_scalify: ^2.2.2
 
 ```
 
@@ -230,9 +230,13 @@ Proportionally scale elements within a specific area (like a Credit Card). It en
 ScalifyBox(
   referenceWidth: 320, 
   referenceHeight: 200,
+  fit: ScalifyFit.contain,
+  alignment: Alignment.center,
   builder: (context, ls) {
     return Container(
       // Use 'ls' (Local Scaler) instead of global context
+      width: ls.w(300), 
+      height: ls.h(180),
       padding: ls.p(20), 
       child: Text("VISA", style: TextStyle(fontSize: ls.fz(18))),
     );

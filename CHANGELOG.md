@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.2] - 2025-12-20 🚀 (The Architecture & Logic Update)
+
+This major update focuses on standardizing the package architecture, improving Developer Experience (DX), and adding powerful logic controls to your UI.
+
+### ⚠️ Breaking Changes & Rebranding
+- **Renamed Provider:** `ResponsiveProvider` is now **`ScalifyProvider`**. This aligns with the package name and avoids conflicts with other libraries.
+- **Renamed Config:** `ResponsiveConfig` is now **`ScalifyConfig`**.
+
+### 🎨 Theme Integration
+- **Added `ScalifyThemeExtension`:** You can now scale your *entire* app's text theme in one line using `ThemeData.light().scale(context)`.
+  - **Smart Optimization:** It automatically checks if the scale factor is `1.0` to avoid unnecessary calculations.
+  - **Result:** No need to add `.fz` manually to every text widget anymore if you use the global theme!
+
+### 🧠 New Logic Widgets
+- **Added `ResponsiveVisibility`:** A powerful widget to conditionally show or hide elements based on screen type.
+  - Supports `visibleOn` (Whitelist) and `hiddenOn` (Blacklist).
+  - Includes assertions to ensure you don't use both lists simultaneously.
+- **Added `ResponsiveLayout`:** Effortlessly switch between `portrait` and `landscape` layouts using a clean API.
+- **Added `ResponsiveBuilder`:** A direct way to access `ResponsiveData` inside the widget tree via a builder pattern, simplifying complex logic.
+
+### 📚 Documentation
+- **Complete Overhaul:** The README has been rewritten to feature a "Why Scalify?" comparison table, better examples, and clearer categorization of features.
+
+---
+
 ## [2.2.1] - 2025-12-19 🚀 (The Architecture & Logic Update)
 
 This major update focuses on standardizing the package architecture, improving Developer Experience (DX), and adding powerful logic controls to your UI.

@@ -567,6 +567,8 @@ class _ScalifyBoxGridItem extends StatelessWidget {
       fit: ScalifyFit.contain,
       builder: (context, ls) {
         return Container(
+          width: ls.w(120),
+          height: ls.h(120),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: ls.br(12),
@@ -582,14 +584,14 @@ class _ScalifyBoxGridItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.dashboard_customize_rounded,
-                  color: Colors.indigo, size: ls.s(40)),
-              SizedBox(height: ls.s(8)),
+                  color: Colors.indigo, size: ls.iz(40)),
+              ls.sbh(8),
               Text("Item #${index + 1}",
                   style: TextStyle(
                       fontWeight: FontWeight.bold, fontSize: ls.fz(12)),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis),
-              SizedBox(height: ls.s(2)),
+              ls.sbh(2),
               Text("ScalifyBox",
                   style: TextStyle(color: Colors.grey, fontSize: ls.fz(9)),
                   maxLines: 1,

@@ -3,41 +3,45 @@ import 'package:flutter/material.dart';
 /// Defines how [ScalifyBox] should scale its content relative to its constraints.
 enum ScalifyFit {
   /// Scales content based on the width only (Standard behavior).
-  /// Best for lists, rows, and standard layouts.
   width,
 
   /// Scales content based on the height only.
-  /// Best for sidebars or horizontal scrolling strips.
   height,
 
-  /// Scales based on the smaller dimension (Width vs Height).
-  /// This ensures content ALWAYS fits inside the box without overflowing,
-  /// regardless of the Aspect Ratio (16:9, 4:3, 1:1).
-  /// Best for Grids and Cards with changing Aspect Ratios.
+  /// Scales based on the smaller dimension (Best for maintaining aspect ratio inside a box).
   contain,
 
   /// Scales based on the larger dimension.
   cover,
 }
 
+/// A widget that creates a locally scaled environment for its children.
+///
+/// It allows you to build UI components (like Cards) using a reference design size
+/// (e.g., 320x200), and they will scale proportionally to fit within any parent container.
 class ScalifyBox extends StatelessWidget {
   /// The design width of this component.
   final double referenceWidth;
 
   /// The design height of this component (Optional).
-  /// Required only if using [ScalifyFit.height], [ScalifyFit.contain], or [ScalifyFit.cover].
   final double? referenceHeight;
 
   /// How to calculate the scale factor. Defaults to [ScalifyFit.width].
   final ScalifyFit fit;
 
+  /// Builder that gives you access to [LocalScaler] (ls).
   final Widget Function(BuildContext context, LocalScaler ls) builder;
 
+  /// Optional: Alignment of the content if the box is larger than the scaled content.
+  final AlignmentGeometry alignment;
+
+  /// Creates a [ScalifyBox].
   const ScalifyBox({
     super.key,
     required this.referenceWidth,
     this.referenceHeight,
     this.fit = ScalifyFit.width,
+    this.alignment = Alignment.center,
     required this.builder,
   });
 
@@ -48,7 +52,7 @@ class ScalifyBox extends StatelessWidget {
         double currentWidth = constraints.maxWidth;
         double currentHeight = constraints.maxHeight;
 
-        // Safety check for infinite constraints (e.g. inside ScrollView without limits)
+        // Safety check for infinite constraints
         if (!currentWidth.isFinite) {
           currentWidth = MediaQuery.of(context).size.width;
         }
@@ -81,24 +85,70 @@ class ScalifyBox extends StatelessWidget {
             break;
         }
 
-        return builder(context, LocalScaler(finalScale));
+        // Align the content if needed
+        return Align(
+          alignment: alignment,
+          child: builder(context, LocalScaler(finalScale)),
+        );
       },
     );
   }
 }
 
+/// Helper class to scale values locally within a [ScalifyBox].
 class LocalScaler {
   final double _scale;
 
-  LocalScaler(this._scale);
+  /// Creates a [LocalScaler] with a specific scale factor.
+  const LocalScaler(this._scale);
 
+  /// Returns the raw scale factor being used.
   double get scaleFactor => _scale;
 
-  double s(double value) => value * _scale;
+  // --- Core Scaling ---
 
-  double fz(double value) => (value * _scale).clamp(4.0, 400.0);
+  /// Scales a generic number (like spacing or unspecified dimensions).
+  double s(num value) => value * _scale;
 
-  EdgeInsets p(double value) => EdgeInsets.all(value * _scale);
-  Radius r(double value) => Radius.circular(value * _scale);
-  BorderRadius br(double value) => BorderRadius.circular(value * _scale);
+  /// Scales font size (with limits to prevent it becoming microscopic or huge).
+  double fz(num value) => (value * _scale).clamp(4.0, 400.0);
+
+  /// Scales integer values (useful for alpha or precise counts).
+  int si(num value) => (value * _scale).round();
+
+  // --- Dimensions & Icons (New Shortcuts) ---
+
+  /// Scales width (same as .s but semantically clearer).
+  double w(num value) => value * _scale;
+
+  /// Scales height (same as .s but semantically clearer).
+  double h(num value) => value * _scale;
+
+  /// Scales icon size.
+  double iz(num value) => value * _scale;
+
+  // --- Spacing Widgets (New Shortcuts) ---
+
+  /// Returns a SizedBox with scaled height.
+  SizedBox sbh(num value) => SizedBox(height: value * _scale);
+
+  /// Returns a SizedBox with scaled width.
+  SizedBox sbw(num value) => SizedBox(width: value * _scale);
+
+  // --- Padding & Radius Shortcuts ---
+
+  /// EdgeInsets.all
+  EdgeInsets p(num value) => EdgeInsets.all(value * _scale);
+
+  /// EdgeInsets.symmetric(horizontal)
+  EdgeInsets ph(num value) => EdgeInsets.symmetric(horizontal: value * _scale);
+
+  /// EdgeInsets.symmetric(vertical)
+  EdgeInsets pv(num value) => EdgeInsets.symmetric(vertical: value * _scale);
+
+  /// BorderRadius.circular
+  BorderRadius br(num value) => BorderRadius.circular(value * _scale);
+
+  /// Radius.circular
+  Radius r(num value) => Radius.circular(value * _scale);
 }
