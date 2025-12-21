@@ -1,6 +1,6 @@
 name: flutter_scalify
 description: The Ultimate Responsive Layout System. Features smart scaling, 6-tier grids, adaptive flex layouts, container queries, and 4K protection with zero-allocation math.
-version: 2.2.2
+version: 2.2.3
 
 homepage: https://github.com/alaa989/flutter_scalify
 repository: https://github.com/alaa989/flutter_scalify

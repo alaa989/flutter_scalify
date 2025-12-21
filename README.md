@@ -37,7 +37,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_scalify: ^2.2.2
+  flutter_scalify: ^2.2.3
 
 ```
 
