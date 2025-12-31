@@ -16,3 +16,4 @@ export 'responsive_scale/theme_extension.dart';
 export 'responsive_scale/responsive_builder.dart';
 export 'responsive_scale/responsive_layout.dart';
 export 'responsive_scale/responsive_visibility.dart';
+export 'responsive_scale/scalify_builder.dart';

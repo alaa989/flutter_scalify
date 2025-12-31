@@ -1,6 +1,6 @@
 # Flutter Scalify Example (Ultimate Showcase) 🧪
 
-This project demonstrates the full power of the **Scalify Layout System v2.2.3**. It is a comprehensive showcase of how to build complex, responsive, and adaptive UIs that work perfectly on everything from a small Watch to a 4K Desktop.
+This project demonstrates the full power of the **Scalify Layout System v2.2.4**. It is a comprehensive showcase of how to build complex, responsive, and adaptive UIs that work perfectly on everything from a small Watch to a 4K Desktop.
 
 ## What to Look For? 👁️
 
