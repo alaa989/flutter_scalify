@@ -281,13 +281,13 @@ This applies to both `.fz` and `ThemeData.scale()`.
 ---
 ## 🔄 Live Resizing (Desktop & Web)
 
-```
+
 By default, Flutter optimizes performance by not rebuilding widgets that don't explicitly listen to changes. To make your UI elements (like .fz, .w, .h) adapt instantly while dragging the window on Desktop or Web, you have two professional options:
 
 Option 1: Using ScalifyBuilder (Recommended)
 Wrap your screen or specific component with ScalifyBuilder. This is the cleanest way to ensure live updates.
 
-Dart
+```dart
 
 ScalifyBuilder(
   builder: (context, data) {
@@ -298,13 +298,12 @@ ScalifyBuilder(
     );
   },
 )
-
+```
 
 Option 2: Direct Subscription
 Simply call context.responsiveData at the top of your build method. This "subscribes" the widget to resize events.
 
-Dart
-
+```dart
 @override
 Widget build(BuildContext context) {
   context.responsiveData; // 👈 Enables live scaling for this build context
