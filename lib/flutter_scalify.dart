@@ -1,3 +1,6 @@
+/// The Intelligent Scaling Engine for Flutter.
+/// Scalify provides a high-performance engine to scale UI elements
+/// across Mobile, Web, and Desktop with zero overhead.
 library flutter_scalify;
 
 export 'responsive_scale/scalify_config.dart';
