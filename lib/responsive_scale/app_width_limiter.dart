@@ -21,22 +21,22 @@ class AppWidthLimiter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 🔥 قراءة MediaQuery مرة واحدة فقط (أسرع)
-    final media = MediaQuery.sizeOf(context);
+    // 🔥 Optimization: Use sizeOf to only listen to size changes.
+    final mediaSize = MediaQuery.sizeOf(context);
 
-    // 🔥 لا تسجّل dependency كاملة — نحتاج config فقط
-    // ⚠️ يفضل أن يكون لديك enum بدل string داخل provider
+    // 🔥 Optimization: Access config via specific aspect to prevent unnecessary rebuilds.
     final cfg = ScalifyProvider.of(context, aspect: ScalifyAspect.scale).config;
     final limit = minWidth ?? cfg.minWidth;
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final width =
-            constraints.maxWidth.isFinite ? constraints.maxWidth : media.width;
+        final width = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : mediaSize.width;
 
         Widget content = child;
 
-        /// ✅ Scroll فقط عند الحاجة
+        /// ✅ Scroll only when needed.
         if (limit > 0 && width < limit) {
           content = SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -44,14 +44,10 @@ class AppWidthLimiter extends StatelessWidget {
           );
         }
 
-        /// ✅ الحالة الطبيعية — لا تفعل أي شيء
+        /// ✅ Standard case - Small screens.
         if (width <= maxWidth) {
           return content;
         }
-
-        /// 🔥 نحسب MediaQuery الجديدة مرة واحدة
-        final constrainedMedia =
-            MediaQuery.of(context).copyWith(size: Size(maxWidth, media.height));
 
         return ColoredBox(
           color: backgroundColor ?? Colors.transparent,
@@ -60,14 +56,14 @@ class AppWidthLimiter extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(),
+                constraints: BoxConstraints(maxWidth: maxWidth),
 
-                /// 🔥 RepaintBoundary يقلل الحمل أثناء resize
+                /// 🔥 RepaintBoundary significantly reduces paint cost during resize.
                 child: RepaintBoundary(
                   child: MediaQuery(
-                    data: constrainedMedia,
-
-                    /// 🔥 لا ننشئ Provider جديد إلا عند الضرورة
+                    data: MediaQuery.of(context).copyWith(
+                      size: Size(maxWidth, mediaSize.height),
+                    ),
                     child: ScalifyProvider(
                       config: cfg,
                       child: content,

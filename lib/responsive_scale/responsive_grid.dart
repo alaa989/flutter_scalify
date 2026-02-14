@@ -3,13 +3,7 @@ import '../responsive_scale/responsive_extensions.dart';
 import 'scalify_provider.dart';
 
 /// A powerful Grid wrapper supporting Manual & Auto-Fit modes.
-///
-/// Features:
-/// - Supports all screen types (Watch, Mobile, Tablet, SmallDesktop, Desktop, LargeDesktop).
-/// - Supports [SliverGrid] via [useSliver] with integrated padding.
-/// - True Lazy loading via [itemBuilder] for non-sliver mode.
-/// - Configurable scaling for [minItemWidth].
-class ResponsiveGrid extends StatelessWidget {
+class ResponsiveGrid extends StatefulWidget {
   // --- Content ---
   final List<Widget>? children;
   final IndexedWidgetBuilder? itemBuilder;
@@ -25,16 +19,12 @@ class ResponsiveGrid extends StatelessWidget {
   final int? watch;
   final int? mobile;
   final int? tablet;
-  final int? smallDesktop; // ✅ 900px - 1200px
-  final int? desktop; // ✅ 1200px - 1800px
-  final int? largeDesktop; // ✅ > 1800px
+  final int? smallDesktop;
+  final int? desktop;
+  final int? largeDesktop;
 
   // --- Layout Strategy (Auto-Fit) ---
-  /// Minimum width in logical pixels.
   final double? minItemWidth;
-
-  /// Whether to apply scaling (.s) to [minItemWidth].
-  /// Default is true. Set to false if you want exact pixel precision.
   final bool scaleMinItemWidth;
 
   // --- Performance & Behavior ---
@@ -76,98 +66,77 @@ class ResponsiveGrid extends StatelessWidget {
             "minItemWidth must be > 0");
 
   @override
+  State<ResponsiveGrid> createState() => _ResponsiveGridState();
+}
+
+class _ResponsiveGridState extends State<ResponsiveGrid> {
+  SliverGridDelegate? _cachedDelegate;
+  double? _lastWidth;
+
+  @override
   Widget build(BuildContext context) {
     final responsive = ScalifyProvider.of(context);
     final width = responsive.size.width;
-    final config = responsive.config; // ✅ Centralized Config
+    final config = responsive.config;
 
-    // 1. Calculate Delegate Strategy
-    SliverGridDelegate delegate;
-
-    if (minItemWidth != null) {
-      // Strategy: Auto-Fit (API Data / Dynamic Content)
-      final double effectiveMinWidth =
-          scaleMinItemWidth ? minItemWidth!.s : minItemWidth!;
-
-      delegate = SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: effectiveMinWidth,
-        crossAxisSpacing: spacing.s,
-        mainAxisSpacing: runSpacing.s,
-        childAspectRatio: childAspectRatio ?? 1.0,
-      );
-    } else {
-      // Strategy: Manual Control (Static UI / Dashboard)
-      int crossAxisCount;
-
-      // ✅ Logic covering ALL 6 Tiers based on Config Breakpoints
-      if (width < config.watchBreakpoint) {
-        // Watch (< 300)
-        crossAxisCount = watch ?? 1;
-      } else if (width < config.mobileBreakpoint) {
-        // Mobile (300 - 600)
-        crossAxisCount = mobile ?? 2;
-      } else if (width < config.tabletBreakpoint) {
-        // Tablet (600 - 900)
-        crossAxisCount = tablet ?? 3;
-      } else if (width < config.smallDesktopBreakpoint) {
-        // Small Desktop (900 - 1200)
-        // Fallback: If smallDesktop is not set, try tablet, then default to 4
-        crossAxisCount = smallDesktop ?? tablet ?? 4;
-      } else if (width < config.desktopBreakpoint) {
-        // Desktop (1200 - 1800)
-        // Fallback: If desktop is not set, try smallDesktop, then default to 4
-        crossAxisCount = desktop ?? smallDesktop ?? 4;
+    // 🔥 Optimization: Cache the delegate to reduce layout cost during resize.
+    if (_cachedDelegate == null || _lastWidth != width) {
+      _lastWidth = width;
+      if (widget.minItemWidth != null) {
+        final double effectiveMinWidth = widget.scaleMinItemWidth
+            ? widget.minItemWidth!.s
+            : widget.minItemWidth!;
+        _cachedDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: effectiveMinWidth,
+          crossAxisSpacing: widget.spacing.s,
+          mainAxisSpacing: widget.runSpacing.s,
+          childAspectRatio: widget.childAspectRatio ?? 1.0,
+        );
       } else {
-        // Large Desktop (> 1800)
-        // Fallback: If largeDesktop is not set, try desktop, then default to 5
-        crossAxisCount = largeDesktop ?? desktop ?? 5;
+        int crossAxisCount;
+        if (width < config.watchBreakpoint) {
+          crossAxisCount = widget.watch ?? 1;
+        } else if (width < config.mobileBreakpoint) {
+          crossAxisCount = widget.mobile ?? 2;
+        } else if (width < config.tabletBreakpoint) {
+          crossAxisCount = widget.tablet ?? 3;
+        } else if (width < config.smallDesktopBreakpoint) {
+          crossAxisCount = widget.smallDesktop ?? widget.tablet ?? 4;
+        } else if (width < config.desktopBreakpoint) {
+          crossAxisCount = widget.desktop ?? widget.smallDesktop ?? 4;
+        } else {
+          crossAxisCount = widget.largeDesktop ?? widget.desktop ?? 5;
+        }
+        _cachedDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: widget.spacing.s,
+          mainAxisSpacing: widget.runSpacing.s,
+          childAspectRatio: widget.childAspectRatio ?? 1.0,
+        );
       }
-
-      delegate = SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: spacing.s,
-        mainAxisSpacing: runSpacing.s,
-        childAspectRatio: childAspectRatio ?? 1.0,
-      );
     }
 
-    // 2. Prepare Child Delegate
-    // Use non-null assertions safely because we asserted mutual exclusivity in constructor
-    final SliverChildDelegate childDelegate = itemBuilder != null
-        ? SliverChildBuilderDelegate(itemBuilder!, childCount: itemCount!)
-        : SliverChildListDelegate(children!);
+    final SliverChildDelegate childDelegate = widget.itemBuilder != null
+        ? SliverChildBuilderDelegate(widget.itemBuilder!,
+            childCount: widget.itemCount!)
+        : SliverChildListDelegate(widget.children!);
 
-    // 3. Return Sliver Mode (For CustomScrollView)
-    if (useSliver) {
-      final sliver = SliverGrid(
-        delegate: childDelegate,
-        gridDelegate: delegate,
-      );
-      return padding != null
-          ? SliverPadding(padding: padding!, sliver: sliver)
+    if (widget.useSliver) {
+      final sliver =
+          SliverGrid(delegate: childDelegate, gridDelegate: _cachedDelegate!);
+      return widget.padding != null
+          ? SliverPadding(padding: widget.padding!, sliver: sliver)
           : sliver;
-    }
-
-    // 4. Return Box Mode (Standard GridView)
-    else {
-      if (itemBuilder != null) {
-        return GridView.builder(
-          padding: padding ?? EdgeInsets.zero,
-          shrinkWrap: shrinkWrap,
-          physics: physics,
-          gridDelegate: delegate,
-          itemCount: itemCount!,
-          itemBuilder: itemBuilder!,
-        );
-      } else {
-        return GridView(
-          padding: padding ?? EdgeInsets.zero,
-          shrinkWrap: shrinkWrap,
-          physics: physics,
-          gridDelegate: delegate,
-          children: children!,
-        );
-      }
+    } else {
+      return GridView.builder(
+        padding: widget.padding ?? EdgeInsets.zero,
+        shrinkWrap: widget.shrinkWrap,
+        physics: widget.physics,
+        gridDelegate: _cachedDelegate!,
+        itemCount: widget.itemCount ?? widget.children?.length,
+        itemBuilder:
+            widget.itemBuilder ?? (context, index) => widget.children![index],
+      );
     }
   }
 }

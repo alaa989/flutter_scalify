@@ -4,13 +4,6 @@ import 'container_query.dart';
 /// A simplified declarative wrapper around [ContainerQuery].
 /// It allows you to specify different widgets for different container sizes
 /// without writing if/else logic.
-///
-/// Example:
-/// AdaptiveContainer(
-///   xs: Icon(Icons.menu),      // Show icon on very small width
-///   md: Text("Menu"),          // Show text on medium width
-///   lg: Row(...),              // Show full row on large width
-/// )
 class AdaptiveContainer extends StatelessWidget {
   // --- The Widgets for each Tier ---
   /// The default widget (Extra Small). Required as a fallback.
@@ -33,8 +26,6 @@ class AdaptiveContainer extends StatelessWidget {
 
   // --- Configuration ---
   /// Custom breakpoints to define when to switch.
-  /// If null, default logic applies.
-  /// Example: [200, 500, 800]
   final List<double>? breakpoints;
 
   const AdaptiveContainer({
@@ -53,16 +44,14 @@ class AdaptiveContainer extends StatelessWidget {
     return ContainerQuery(
       breakpoints: breakpoints,
       builder: (context, query) {
-        // Fallback Logic (Cascading)
-        // If a larger tier is not provided, use the nearest smaller one.
+        // 🔥 Optimization: Use array lookup for CPU pipeline efficiency.
+        final widgets = <Widget?>[xs, sm, md, lg, xl, xxl];
 
-        if (query.tier == QueryTier.xxl && xxl != null) return xxl!;
-        if (query.tier.index >= QueryTier.xl.index && xl != null) return xl!;
-        if (query.tier.index >= QueryTier.lg.index && lg != null) return lg!;
-        if (query.tier.index >= QueryTier.md.index && md != null) return md!;
-        if (query.tier.index >= QueryTier.sm.index && sm != null) return sm!;
+        for (int i = query.tier.index; i >= 0; i--) {
+          final w = widgets[i];
+          if (w != null) return w;
+        }
 
-        // Default to XS (Always required)
         return xs;
       },
     );

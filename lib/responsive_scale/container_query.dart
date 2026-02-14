@@ -30,6 +30,27 @@ class ContainerQuery extends StatefulWidget {
 
 class _ContainerQueryState extends State<ContainerQuery> {
   ContainerQueryData? _prev;
+  List<double>? _sortedBreaks;
+
+  @override
+  void initState() {
+    super.initState();
+    _prepareBreaks();
+  }
+
+  @override
+  void didUpdateWidget(covariant ContainerQuery oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.breakpoints != oldWidget.breakpoints) {
+      _prepareBreaks();
+    }
+  }
+
+  void _prepareBreaks() {
+    _sortedBreaks = widget.breakpoints == null
+        ? null
+        : (List<double>.from(widget.breakpoints!)..sort());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +63,9 @@ class _ContainerQueryState extends State<ContainerQuery> {
 
         QueryTier tier = QueryTier.xs;
 
-        if (widget.breakpoints != null && widget.breakpoints!.isNotEmpty) {
-          final sortedBreaks = List<double>.from(widget.breakpoints!)..sort();
-          for (int i = 0; i < sortedBreaks.length; i++) {
-            if (width >= sortedBreaks[i]) {
+        if (_sortedBreaks != null && _sortedBreaks!.isNotEmpty) {
+          for (int i = 0; i < _sortedBreaks!.length; i++) {
+            if (width >= _sortedBreaks![i]) {
               tier = QueryTier.values[(i + 1) < QueryTier.values.length
                   ? (i + 1)
                   : QueryTier.values.length - 1];
@@ -58,17 +78,9 @@ class _ContainerQueryState extends State<ContainerQuery> {
         final current =
             ContainerQueryData(width: width, height: height, tier: tier);
 
-// احصل على tolerance من config (fallback إذا لم يوجد Provider)
-        final cfg = (() {
-          try {
-            return ScalifyProvider.of(context).config;
-          } catch (_) {
-            return const ScalifyConfig();
-          }
-        })();
+        final cfg = _getConfig(context);
         final tol = cfg.rebuildWidthPxThreshold;
 
-// استدعاء onChanged فقط إذا تغيرت الفئة (tier) أو الفرق أكبر من tolerance
         final bool widthChanged =
             _prev == null ? true : (_prev!.width - current.width).abs() >= tol;
         final bool heightChanged = _prev == null
@@ -88,6 +100,14 @@ class _ContainerQueryState extends State<ContainerQuery> {
         return widget.builder(context, current);
       },
     );
+  }
+
+  ScalifyConfig _getConfig(BuildContext context) {
+    try {
+      return ScalifyProvider.of(context).config;
+    } catch (_) {
+      return const ScalifyConfig();
+    }
   }
 }
 
