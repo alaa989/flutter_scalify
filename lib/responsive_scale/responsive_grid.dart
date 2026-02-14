@@ -59,11 +59,7 @@ class ResponsiveGrid extends StatefulWidget {
         assert(
           itemBuilder == null || itemCount != null,
           "If 'itemBuilder' is used, 'itemCount' must be provided.",
-        ),
-        assert(itemCount == null || itemCount >= 0, "itemCount must be >= 0"),
-        assert(spacing >= 0, "Spacing must be positive"),
-        assert(minItemWidth == null || minItemWidth > 0,
-            "minItemWidth must be > 0");
+        );
 
   @override
   State<ResponsiveGrid> createState() => _ResponsiveGridState();
@@ -72,6 +68,7 @@ class ResponsiveGrid extends StatefulWidget {
 class _ResponsiveGridState extends State<ResponsiveGrid> {
   SliverGridDelegate? _cachedDelegate;
   double? _lastWidth;
+  Object? _lastConfigKey;
 
   @override
   Widget build(BuildContext context) {
@@ -79,9 +76,16 @@ class _ResponsiveGridState extends State<ResponsiveGrid> {
     final width = responsive.size.width;
     final config = responsive.config;
 
-    // 🔥 Optimization: Cache the delegate to reduce layout cost during resize.
-    if (_cachedDelegate == null || _lastWidth != width) {
+    final currentConfigKey = Object.hash(widget.spacing, widget.runSpacing,
+        widget.childAspectRatio, widget.minItemWidth, widget.scaleMinItemWidth);
+
+    // Optimization: Cache updated with visual config key
+    if (_cachedDelegate == null ||
+        _lastWidth != width ||
+        _lastConfigKey != currentConfigKey) {
       _lastWidth = width;
+      _lastConfigKey = currentConfigKey;
+
       if (widget.minItemWidth != null) {
         final double effectiveMinWidth = widget.scaleMinItemWidth
             ? widget.minItemWidth!.s
@@ -107,6 +111,7 @@ class _ResponsiveGridState extends State<ResponsiveGrid> {
         } else {
           crossAxisCount = widget.largeDesktop ?? widget.desktop ?? 5;
         }
+
         _cachedDelegate = SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: widget.spacing.s,

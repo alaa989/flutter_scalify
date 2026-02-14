@@ -21,10 +21,10 @@ class AppWidthLimiter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 🔥 Optimization: Use sizeOf to only listen to size changes.
+    // Optimization: Use sizeOf to only listen to size changes.
     final mediaSize = MediaQuery.sizeOf(context);
 
-    // 🔥 Optimization: Access config via specific aspect to prevent unnecessary rebuilds.
+    // Optimization: Access config via specific aspect to prevent unnecessary rebuilds.
     final cfg = ScalifyProvider.of(context, aspect: ScalifyAspect.scale).config;
     final limit = minWidth ?? cfg.minWidth;
 
@@ -36,7 +36,7 @@ class AppWidthLimiter extends StatelessWidget {
 
         Widget content = child;
 
-        /// ✅ Scroll only when needed.
+        /// Scroll only when needed.
         if (limit > 0 && width < limit) {
           content = SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -44,7 +44,7 @@ class AppWidthLimiter extends StatelessWidget {
           );
         }
 
-        /// ✅ Standard case - Small screens.
+        /// Standard case - Small screens.
         if (width <= maxWidth) {
           return content;
         }

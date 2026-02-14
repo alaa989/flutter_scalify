@@ -54,21 +54,25 @@ class _ContainerQueryState extends State<ContainerQuery> {
 
   @override
   Widget build(BuildContext context) {
+    // Optimization: Use sizeOf to only listen to size changes of the context
+    MediaQuery.sizeOf(context);
+
     return LayoutBuilder(
       builder: (context, constraints) {
-        final double width =
-            constraints.hasBoundedWidth ? constraints.maxWidth : 0.0;
-        final double height =
-            constraints.hasBoundedHeight ? constraints.maxHeight : 0.0;
+        final double width = constraints.hasBoundedWidth
+            ? constraints.maxWidth
+            : MediaQuery.sizeOf(context).width;
+        final double height = constraints.hasBoundedHeight
+            ? constraints.maxHeight
+            : MediaQuery.sizeOf(context).height;
 
         QueryTier tier = QueryTier.xs;
 
         if (_sortedBreaks != null && _sortedBreaks!.isNotEmpty) {
           for (int i = 0; i < _sortedBreaks!.length; i++) {
             if (width >= _sortedBreaks![i]) {
-              tier = QueryTier.values[(i + 1) < QueryTier.values.length
-                  ? (i + 1)
-                  : QueryTier.values.length - 1];
+              tier = QueryTier
+                  .values[(i + 1).clamp(0, QueryTier.values.length - 1)];
             } else {
               break;
             }
@@ -77,20 +81,15 @@ class _ContainerQueryState extends State<ContainerQuery> {
 
         final current =
             ContainerQueryData(width: width, height: height, tier: tier);
-
         final cfg = _getConfig(context);
         final tol = cfg.rebuildWidthPxThreshold;
 
         final bool widthChanged =
-            _prev == null ? true : (_prev!.width - current.width).abs() >= tol;
-        final bool heightChanged = _prev == null
-            ? true
-            : (_prev!.height - current.height).abs() >= tol;
+            _prev == null ? true : (current.width - _prev!.width).abs() >= tol;
         final bool tierChanged =
             _prev == null ? true : _prev!.tier != current.tier;
 
-        if ((widthChanged || heightChanged || tierChanged) &&
-            widget.onChanged != null) {
+        if ((widthChanged || tierChanged) && widget.onChanged != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) widget.onChanged?.call(_prev ?? current, current);
           });

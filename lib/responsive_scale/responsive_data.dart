@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'scalify_config.dart';
 
@@ -79,6 +80,16 @@ class ResponsiveData {
   /// Whether the current width exceeds the design desktop breakpoint.
   bool get isOverMaxWidth => size.width > config.desktopBreakpoint;
 
+  /// Convenience getters for width/height to simplify external usage.
+  double get width => size.width;
+  double get height => size.height;
+
+  /// Public accessors for quantized ids (used for efficient comparisons).
+  int get scaleWidthId => _scaleWidthId;
+  int get scaleHeightId => _scaleHeightId;
+  int get scaleFactorId => _scaleFactorId;
+  int get textScaleFactorId => _textScaleFactorId;
+
   /// Factory to compute [ResponsiveData] from [MediaQueryData].
   factory ResponsiveData.fromMediaQuery(
       MediaQueryData? media, ScalifyConfig cfg) {
@@ -117,7 +128,10 @@ class ResponsiveData {
         calculatedScaleWidth.clamp(cfg.minScale, cfg.maxScale);
     final double finalScaleHeight =
         (height / cfg.designHeight).clamp(cfg.minScale, cfg.maxScale);
-    final double finalCombined = finalScaleWidth;
+
+    // Combine width/height scaling into a single stable scaleFactor.
+    // We use the minimum to avoid overstretching UI on one axis while the other is small.
+    final double finalCombined = math.min(finalScaleWidth, finalScaleHeight);
 
     // Use standard text scale factor
     final double systemTextScaleFactor = media.textScaleFactor;
@@ -143,6 +157,8 @@ class ResponsiveData {
     if (other is! ResponsiveData) return false;
 
     final tol = config.rebuildWidthPxThreshold;
+
+    // Use quantized ids plus size tolerance and screenType for robust equality.
     return (other.size.width - size.width).abs() < tol &&
         (other.size.height - size.height).abs() < tol &&
         other._scaleFactorId == _scaleFactorId &&

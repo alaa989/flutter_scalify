@@ -20,14 +20,17 @@ enum ScalifyAspect {
 
 /// Provider widget that calculates and shares [ResponsiveData].
 class ScalifyProvider extends StatefulWidget {
-  final Widget child;
+  final Widget? child;
+  final TransitionBuilder? builder;
   final ScalifyConfig config;
 
   const ScalifyProvider({
     super.key,
-    required this.child,
+    this.child,
+    this.builder,
     this.config = const ScalifyConfig(),
-  });
+  }) : assert(child != null || builder != null,
+            'Either child or builder must be provided');
 
   /// Accesses the nearest [ResponsiveData] and registers a dependency.
   /// Uses [aspect] to listen only to specific changes if granular notifications are enabled.
@@ -35,7 +38,7 @@ class ScalifyProvider extends StatefulWidget {
     final inherited =
         context.dependOnInheritedWidgetOfExactType<_InheritedScalify>();
 
-    // fallback عندما لا يوجد Provider (مثالي للاختبارات)
+    // Fallback: no provider above in the tree
     if (inherited == null) {
       final provWidget =
           context.findAncestorWidgetOfExactType<ScalifyProvider>();
@@ -43,8 +46,13 @@ class ScalifyProvider extends StatefulWidget {
       return ResponsiveData.fromMediaQuery(MediaQuery.maybeOf(context), cfg);
     }
 
-    // إذا granular notifications غير مفعلة — لا تستخدم InheritedModel
+    // If granular notifications disabled, just return data directly.
     if (!inherited.data.config.enableGranularNotifications) {
+      return inherited.data;
+    }
+
+    // If caller provided an aspect, subscribe to it; otherwise return data.
+    if (aspect == null) {
       return inherited.data;
     }
 
@@ -69,7 +77,6 @@ class _ScalifyProviderState extends State<ScalifyProvider>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    // إنشاء بيانات أولية بدون MediaQuery (آمن أثناء init)
     _currentData = ResponsiveData.fromMediaQuery(null, widget.config);
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _update(force: true));
@@ -96,10 +103,23 @@ class _ScalifyProviderState extends State<ScalifyProvider>
       () {
         if (!mounted) return;
 
-        final mq = MediaQuery.maybeOf(context);
+        MediaQueryData? mq = MediaQuery.maybeOf(context);
+        // Fallback: If no MediaQuery is found (e.g. above MaterialApp), try to get from View
+        if (mq == null) {
+          try {
+            mq = MediaQueryData.fromView(View.of(context));
+          } catch (_) {
+            // Fallback to window-based MediaQueryData if View is not available.
+            try {
+              mq = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
+            } catch (_) {
+              // Best-effort: leave mq null, ResponsiveData.fromMediaQuery will handle null.
+            }
+          }
+        }
+
         final newData = ResponsiveData.fromMediaQuery(mq, widget.config);
 
-        // 🔥 منع rebuild إذا الفرق غير ملحوظ
         if (newData != _currentData) {
           setState(() => _currentData = newData);
           GlobalResponsive.update(newData);
@@ -110,21 +130,37 @@ class _ScalifyProviderState extends State<ScalifyProvider>
 
   @override
   Widget build(BuildContext context) {
-    // fallback إضافي في حال identity
-    if (_currentData == ResponsiveData.identity) {
-      final mq = MediaQuery.maybeOf(context);
-      if (mq != null) {
-        _currentData = ResponsiveData.fromMediaQuery(mq, widget.config);
-        GlobalResponsive.update(_currentData);
+    // Always check for MediaQuery changes on build to handle excessive rebuilds
+    // that might bypass didChangeMetrics in some scenarios (like tests)
+    MediaQueryData? mq = MediaQuery.maybeOf(context);
+    if (mq == null) {
+      try {
+        mq = MediaQueryData.fromView(View.of(context));
+      } catch (_) {
+        // Fallback to window-based MediaQueryData if View is not available.
+        try {
+          mq = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
+        } catch (_) {
+          // Best-effort: leave mq null, ResponsiveData.fromMediaQuery will handle null.
+        }
+      }
+    }
+
+    if (mq != null) {
+      final newData = ResponsiveData.fromMediaQuery(mq, widget.config);
+      if (newData != _currentData) {
+        _currentData = newData;
+        GlobalResponsive.update(newData);
       }
     }
 
     Widget content = _InheritedScalify(
       data: _currentData,
-      child: widget.child,
+      child: widget.builder != null
+          ? widget.builder!(context, widget.child)
+          : widget.child!,
     );
 
-    // Debug-only banner (لن يظهر في release)
     if (kDebugMode &&
         widget.config.showDeprecationBanner &&
         widget.config.legacyContainerTierMapping) {
@@ -180,11 +216,11 @@ class _InheritedScalify extends InheritedModel<ScalifyAspect> {
     }
 
     if (aspects.contains(ScalifyAspect.scale)) {
-      return data.scaleFactor != oldWidget.data.scaleFactor;
+      return data.scaleFactorId != oldWidget.data.scaleFactorId;
     }
 
     if (aspects.contains(ScalifyAspect.text)) {
-      return data.textScaleFactor != oldWidget.data.textScaleFactor;
+      return data.textScaleFactorId != oldWidget.data.textScaleFactorId;
     }
 
     return data != oldWidget.data;
