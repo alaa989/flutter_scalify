@@ -10,20 +10,23 @@ enum ScreenType {
   largeDesktop,
 }
 
-/// Immutable container for responsive metrics with Quantized IDs for Stability
+/// Immutable container for responsive metrics with Quantized IDs for Stability.
 class ResponsiveData {
   final Size size;
   final double textScaleFactor;
   final ScreenType screenType;
   final ScalifyConfig config;
 
-  // Precomputed scales
+  /// Width scale ratio.
   final double scaleWidth;
+
+  /// Height scale ratio.
   final double scaleHeight;
+
+  /// General scale factor.
   final double scaleFactor;
 
-  // --- Quantized IDs for Equality Checks (Optimization #1) ---
-  // These prevent unnecessary rebuilds caused by floating-point precision errors.
+  // --- Quantized IDs for Equality Checks (Optimization) ---
   final int _scaleWidthId;
   final int _scaleHeightId;
   final int _scaleFactorId;
@@ -46,6 +49,7 @@ class ResponsiveData {
         _scaleFactorId = scaleFactorId,
         _textScaleFactorId = textScaleFactorId;
 
+  /// Identity data with default values.
   static const ResponsiveData identity = ResponsiveData._(
     size: Size(375, 812),
     textScaleFactor: 1.0,
@@ -60,17 +64,22 @@ class ResponsiveData {
     textScaleFactorId: 100,
   );
 
+  /// Helper to check if the screen is small.
   bool get isSmallScreen =>
       screenType == ScreenType.watch || screenType == ScreenType.mobile;
 
+  /// Helper to check if the screen is medium.
   bool get isMediumScreen =>
       screenType == ScreenType.tablet || screenType == ScreenType.smallDesktop;
 
+  /// Helper to check if the screen is large.
   bool get isLargeScreen =>
       screenType == ScreenType.desktop || screenType == ScreenType.largeDesktop;
 
+  /// Whether the current width exceeds the design desktop breakpoint.
   bool get isOverMaxWidth => size.width > config.desktopBreakpoint;
 
+  /// Factory to compute [ResponsiveData] from [MediaQueryData].
   factory ResponsiveData.fromMediaQuery(
       MediaQueryData? media, ScalifyConfig cfg) {
     if (media == null) return ResponsiveData.identity;
@@ -104,17 +113,14 @@ class ResponsiveData {
           ((excessWidth / cfg.designWidth) * cfg.highResScaleFactor);
     }
 
-    final double calculatedScaleHeight = height / cfg.designHeight;
-
     final double finalScaleWidth =
         calculatedScaleWidth.clamp(cfg.minScale, cfg.maxScale);
     final double finalScaleHeight =
-        calculatedScaleHeight.clamp(cfg.minScale, cfg.maxScale);
+        (height / cfg.designHeight).clamp(cfg.minScale, cfg.maxScale);
     final double finalCombined = finalScaleWidth;
 
-    // FIX: Use textScaler instead of deprecated textScaleFactor
-    // .scale(1.0) returns the raw scaling factor equivalent to the old property
-    final double systemTextScaleFactor = media.textScaler.scale(1.0);
+    // Use standard text scale factor
+    final double systemTextScaleFactor = media.textScaleFactor;
 
     return ResponsiveData._(
       size: Size(width, height),
@@ -124,7 +130,6 @@ class ResponsiveData {
       scaleWidth: finalScaleWidth,
       scaleHeight: finalScaleHeight,
       scaleFactor: finalCombined,
-      // Computing IDs (x1000 for precision retention up to 3 decimals)
       scaleWidthId: (finalScaleWidth * 1000).round(),
       scaleHeightId: (finalScaleHeight * 1000).round(),
       scaleFactorId: (finalCombined * 1000).round(),
@@ -132,21 +137,18 @@ class ResponsiveData {
     );
   }
 
-  // --- PERFORMANCE MAGIC: Integer-based Equality ---
-
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! ResponsiveData) return false;
 
-    // Compare Integers (Fast & Stable) instead of Doubles (Unstable)
-    return other._scaleFactorId == _scaleFactorId &&
+    final tol = config.rebuildWidthPxThreshold;
+    return (other.size.width - size.width).abs() < tol &&
+        (other.size.height - size.height).abs() < tol &&
+        other._scaleFactorId == _scaleFactorId &&
         other._scaleWidthId == _scaleWidthId &&
         other._scaleHeightId == _scaleHeightId &&
         other._textScaleFactorId == _textScaleFactorId &&
-        other.size.width.toInt() ==
-            size.width.toInt() && // Compare dimensions as Int logic
-        other.size.height.toInt() == size.height.toInt() &&
         other.screenType == screenType;
   }
 
@@ -157,8 +159,6 @@ class ResponsiveData {
       _scaleWidthId,
       _scaleHeightId,
       _textScaleFactorId,
-      size.width.toInt(),
-      size.height.toInt(),
       screenType,
     );
   }

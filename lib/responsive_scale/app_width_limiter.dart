@@ -1,92 +1,84 @@
 import 'package:flutter/material.dart';
 import 'scalify_provider.dart';
-import 'scalify_config.dart';
 
-/// A widget that limits the maximum width of its child AND resets the responsive scaling logic.
-///
-/// This is crucial for large screens (Web/Desktop). It ensures that if the UI stops stretching
-/// at [maxWidth], the font sizes and icons also stop growing, preventing gigantic elements.
+/// Limits maximum width AND resets scaling. Supports [minWidth] for scrolling.
+/// Optimized version to reduce rebuild cost and resize jank.
 class AppWidthLimiter extends StatelessWidget {
-  /// The child widget to be constrained.
   final Widget child;
-
-  /// The maximum width allowed for the content.
   final double maxWidth;
-
-  /// The background color of the outer container.
   final Color? backgroundColor;
-
-  /// Padding applied horizontally when the screen is wider than [maxWidth].
   final double horizontalPadding;
+  final double? minWidth;
 
-  /// Creates an [AppWidthLimiter].
   const AppWidthLimiter({
     super.key,
     required this.child,
     this.maxWidth = 1000.0,
     this.backgroundColor,
     this.horizontalPadding = 16.0,
+    this.minWidth,
   });
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      // 1. Get safe screen width
-      final double screenWidth = constraints.maxWidth.isFinite
-          ? constraints.maxWidth
-          : MediaQuery.maybeOf(context)?.size.width ?? 0.0;
+    // 🔥 قراءة MediaQuery مرة واحدة فقط (أسرع)
+    final media = MediaQuery.sizeOf(context);
 
-      // 2. PERFORMANCE CHECK:
-      // If screen is smaller than limit (Mobile/Tablet), return child immediately.
-      // This ensures ZERO overhead for 90% of users.
-      if (screenWidth <= maxWidth) {
-        return child;
-      }
+    // 🔥 لا تسجّل dependency كاملة — نحتاج config فقط
+    // ⚠️ يفضل أن يكون لديك enum بدل string داخل provider
+    final cfg = ScalifyProvider.of(context, aspect: ScalifyAspect.scale).config;
+    final limit = minWidth ?? cfg.minWidth;
 
-      // 3. DESKTOP/WEB LOGIC:
-      // Screen is huge. We need to clamp both Layout AND Scaling.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width =
+            constraints.maxWidth.isFinite ? constraints.maxWidth : media.width;
 
-      // A. Retrieve existing config to maintain user settings (designWidth, etc.)
-      // We try to get it from the nearest provider, or fallback to default.
-      ScalifyConfig currentConfig;
-      try {
-        currentConfig = ScalifyProvider.of(context).config;
-      } catch (_) {
-        currentConfig = const ScalifyConfig();
-      }
+        Widget content = child;
 
-      return Container(
-        color: backgroundColor,
-        alignment: Alignment.topCenter,
-        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+        /// ✅ Scroll فقط عند الحاجة
+        if (limit > 0 && width < limit) {
+          content = SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SizedBox(width: limit, child: child),
+          );
+        }
 
-        // B. Visually constrain the child width
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: maxWidth),
+        /// ✅ الحالة الطبيعية — لا تفعل أي شيء
+        if (width <= maxWidth) {
+          return content;
+        }
 
-          // C. LOGIC OVERRIDE:
-          // We inject a modified MediaQuery.
-          // We tell the subtree: "The screen width is exactly [maxWidth]".
-          child: MediaQuery(
-            data: MediaQuery.of(context).copyWith(
-              size: Size(maxWidth, MediaQuery.of(context).size.height),
-            ),
+        /// 🔥 نحسب MediaQuery الجديدة مرة واحدة
+        final constrainedMedia =
+            MediaQuery.of(context).copyWith(size: Size(maxWidth, media.height));
 
-            // D. SCALE RESET:
-            // We inject a NEW ScalifyProvider here.
-            // It reads the modified MediaQuery above and recalculates .s/.fz
-            // based on [maxWidth] instead of the huge screen width.
-            child: Builder(
-              builder: (innerContext) {
-                return ScalifyProvider(
-                  config: currentConfig, // Pass through the original config
-                  child: child,
-                );
-              },
+        return ColoredBox(
+          color: backgroundColor ?? Colors.transparent,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(),
+
+                /// 🔥 RepaintBoundary يقلل الحمل أثناء resize
+                child: RepaintBoundary(
+                  child: MediaQuery(
+                    data: constrainedMedia,
+
+                    /// 🔥 لا ننشئ Provider جديد إلا عند الضرورة
+                    child: ScalifyProvider(
+                      config: cfg,
+                      child: content,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }

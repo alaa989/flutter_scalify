@@ -52,6 +52,18 @@ class ScalifyConfig {
   /// The pixel width difference required to trigger a rebuild.
   final double rebuildWidthPxThreshold;
 
+  /// Whether to use legacy tier mapping for [ContainerQuery] (Compatibility).
+  final bool legacyContainerTierMapping;
+
+  /// Enable granular notifications using InheritedModel to limit rebuilds (Performance).
+  final bool enableGranularNotifications;
+
+  /// Whether to show a deprecation banner in debug mode for legacy settings.
+  final bool showDeprecationBanner;
+
+  /// Minimum width before the UI stops shrinking and enables horizontal scrolling.
+  final double minWidth;
+
   /// Creates a new [ScalifyConfig].
   const ScalifyConfig({
     this.designWidth = 375.0,
@@ -69,9 +81,18 @@ class ScalifyConfig {
     this.memoryProtectionThreshold = 1920.0,
     this.highResScaleFactor = 0.65,
     this.debounceWindowMillis = 120,
-    this.rebuildScaleThreshold = 0.005,
-    this.rebuildWidthPxThreshold = 3.0,
-  });
+    this.rebuildScaleThreshold = 0.01,
+    this.rebuildWidthPxThreshold = 4.0,
+    this.legacyContainerTierMapping = false,
+    this.enableGranularNotifications = false,
+    this.showDeprecationBanner = true,
+    this.minWidth = 0.0,
+  })  : assert(minScale <= maxScale,
+            'minScale must be less than or equal to maxScale'),
+        assert(
+            minFontSize <= maxFontSize, 'minFontSize must be <= maxFontSize'),
+        assert(designWidth > 0),
+        assert(designHeight > 0);
 
   /// Creates a copy of this config with the given fields replaced with the new values.
   ScalifyConfig copyWith({
@@ -92,6 +113,10 @@ class ScalifyConfig {
     int? debounceWindowMillis,
     double? rebuildScaleThreshold,
     double? rebuildWidthPxThreshold,
+    bool? legacyContainerTierMapping,
+    bool? enableGranularNotifications,
+    bool? showDeprecationBanner,
+    double? minWidth,
   }) {
     return ScalifyConfig(
       designWidth: designWidth ?? this.designWidth,
@@ -116,6 +141,13 @@ class ScalifyConfig {
           rebuildScaleThreshold ?? this.rebuildScaleThreshold,
       rebuildWidthPxThreshold:
           rebuildWidthPxThreshold ?? this.rebuildWidthPxThreshold,
+      legacyContainerTierMapping:
+          legacyContainerTierMapping ?? this.legacyContainerTierMapping,
+      enableGranularNotifications:
+          enableGranularNotifications ?? this.enableGranularNotifications,
+      showDeprecationBanner:
+          showDeprecationBanner ?? this.showDeprecationBanner,
+      minWidth: minWidth ?? this.minWidth,
     );
   }
 }

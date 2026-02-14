@@ -1,31 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_scalify/responsive_scale/scalify_config.dart';
+import 'package:flutter_scalify/responsive_scale/scalify_provider.dart';
 
-/// A powerful widget that enables "Component-Driven Design".
-/// It rebuilds its child based on the parent container's size, not the screen size.
-///
-/// Use cases:
-/// - Cards that change layout when placed in a narrow sidebar vs wide main area.
-/// - Reusable components that adapt to their surroundings.
-class ContainerQuery extends StatelessWidget {
-  /// The builder that provides layout data based on current constraints.
+/// Semantic size categories for the container.
+enum QueryTier { xs, sm, md, lg, xl, xxl }
+
+/// Rebuilds its child based on the parent container's size.
+class ContainerQuery extends StatefulWidget {
+  /// The builder function that receives [ContainerQueryData].
   final Widget Function(BuildContext context, ContainerQueryData query) builder;
 
-  /// Custom breakpoints to categorize size into Tiers (XS, SM, MD, LG, XL).
-  /// Default logic will be applied if null.
-  /// Example: `[200, 400, 600]`
-  /// - Width `< 200` -> XS
-  /// - `200 <= Width < 400` -> SM
-  /// - ...
-  ///
-  /// The `List<double>` must be sorted in ascending order.
+  /// Custom breakpoints to categorize size into Tiers.
   final List<double>? breakpoints;
 
-  /// Creates a [ContainerQuery] widget.
+  /// Callback triggered when the calculated tier or size changes.
+  final void Function(ContainerQueryData previous, ContainerQueryData current)?
+      onChanged;
+
   const ContainerQuery({
     super.key,
     required this.builder,
     this.breakpoints,
+    this.onChanged,
   });
+
+  @override
+  State<ContainerQuery> createState() => _ContainerQueryState();
+}
+
+class _ContainerQueryState extends State<ContainerQuery> {
+  ContainerQueryData? _prev;
 
   @override
   Widget build(BuildContext context) {
@@ -38,35 +42,50 @@ class ContainerQuery extends StatelessWidget {
 
         QueryTier tier = QueryTier.xs;
 
-        if (breakpoints != null && breakpoints!.isNotEmpty) {
-          final sortedBreaks = List<double>.from(breakpoints!)..sort();
-
+        if (widget.breakpoints != null && widget.breakpoints!.isNotEmpty) {
+          final sortedBreaks = List<double>.from(widget.breakpoints!)..sort();
           for (int i = 0; i < sortedBreaks.length; i++) {
             if (width >= sortedBreaks[i]) {
-              if (i == 0) {
-                tier = QueryTier.sm;
-              } else if (i == 1) {
-                tier = QueryTier.md;
-              } else if (i == 2) {
-                tier = QueryTier.lg;
-              } else if (i == 3) {
-                tier = QueryTier.xl;
-              } else {
-                tier = QueryTier.xxl;
-              }
+              tier = QueryTier.values[(i + 1) < QueryTier.values.length
+                  ? (i + 1)
+                  : QueryTier.values.length - 1];
             } else {
               break;
             }
           }
         }
 
-        final queryData = ContainerQueryData(
-          width: width,
-          height: height,
-          tier: tier,
-        );
+        final current =
+            ContainerQueryData(width: width, height: height, tier: tier);
 
-        return builder(context, queryData);
+// احصل على tolerance من config (fallback إذا لم يوجد Provider)
+        final cfg = (() {
+          try {
+            return ScalifyProvider.of(context).config;
+          } catch (_) {
+            return const ScalifyConfig();
+          }
+        })();
+        final tol = cfg.rebuildWidthPxThreshold;
+
+// استدعاء onChanged فقط إذا تغيرت الفئة (tier) أو الفرق أكبر من tolerance
+        final bool widthChanged =
+            _prev == null ? true : (_prev!.width - current.width).abs() >= tol;
+        final bool heightChanged = _prev == null
+            ? true
+            : (_prev!.height - current.height).abs() >= tol;
+        final bool tierChanged =
+            _prev == null ? true : _prev!.tier != current.tier;
+
+        if ((widthChanged || heightChanged || tierChanged) &&
+            widget.onChanged != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) widget.onChanged?.call(_prev ?? current, current);
+          });
+        }
+        _prev = current;
+
+        return widget.builder(context, current);
       },
     );
   }
@@ -74,26 +93,17 @@ class ContainerQuery extends StatelessWidget {
 
 /// Data holding the exact size and the calculated semantic [QueryTier].
 class ContainerQueryData {
-  /// The current width of the container.
   final double width;
-
-  /// The current height of the container.
   final double height;
-
-  /// The semantic tier calculated based on breakpoints.
   final QueryTier tier;
 
-  /// Creates [ContainerQueryData].
   const ContainerQueryData({
     required this.width,
     required this.height,
     required this.tier,
   });
 
-  /// Returns true if the container width is strictly less than [value].
   bool isLessThan(double value) => width < value;
-
-  /// Returns true if the container width is greater than or equal to [value].
   bool isAtLeast(double value) => width >= value;
 
   @override
@@ -107,25 +117,13 @@ class ContainerQueryData {
 
   @override
   int get hashCode => Object.hash(width, height, tier);
-}
 
-/// Semantic size categories for the container.
-enum QueryTier {
-  /// Extra Small (Below 1st breakpoint)
-  xs,
+  /// Whether the container is considered mobile size.
+  bool get isMobile => tier == QueryTier.xs || tier == QueryTier.sm;
 
-  /// Small (Above 1st breakpoint)
-  sm,
+  /// Whether the container is considered tablet size.
+  bool get isTablet => tier == QueryTier.md;
 
-  /// Medium (Above 2nd breakpoint)
-  md,
-
-  /// Large (Above 3rd breakpoint)
-  lg,
-
-  /// Extra Large (Above 4th breakpoint)
-  xl,
-
-  /// Double Extra Large (Above 5th breakpoint)
-  xxl
+  /// Whether the container is considered desktop size.
+  bool get isDesktop => tier.index >= QueryTier.lg.index;
 }

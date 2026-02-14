@@ -15,8 +15,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Scalify Ultimate Showcase',
       debugShowCheckedModeBanner: false,
-
-      // Global Configuration via ScalifyProvider
       builder: (context, child) {
         return ScalifyProvider(
           config: const ScalifyConfig(
@@ -24,11 +22,11 @@ class MyApp extends StatelessWidget {
             designHeight: 812,
             minScale: 0.5,
             maxScale: 3.0,
+            debounceWindowMillis: 16,
+            enableGranularNotifications: true,
             memoryProtectionThreshold: 1920.0,
             highResScaleFactor: 0.60,
           ),
-          // FEATURE: ScalifyThemeExtension (New v2.2.0)
-          // Automatically scales the entire app's text theme based on screen size
           child: Builder(builder: (ctx) {
             return Theme(
               data: Theme.of(ctx).scale(ctx),
@@ -48,11 +46,10 @@ class MyApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-      // FEATURE: AppWidthLimiter
-      // Centers and limits app width on ultra-wide screens/desktops
       home: AppWidthLimiter(
         maxWidth: 1400,
         horizontalPadding: 16,
+        minWidth: 230,
         backgroundColor: const Color(0xFFE2E8F0),
         child: const ScalifyShowcaseScreen(),
       ),
@@ -65,9 +62,8 @@ class ScalifyShowcaseScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = context.responsiveData;
+    final data = ScalifyProvider.of(context, aspect: ScalifyAspect.scale);
 
-    // valueByScreen helper to return specific values for each breakpoint
     final double dynamicAspectRatio = context.valueByScreen(
       mobile: 2,
       tablet: 1.5,
@@ -78,7 +74,6 @@ class ScalifyShowcaseScreen extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // Responsive AppBar using height (.h), icon size (.iz), and font size (.fz)
           SliverAppBar(
             floating: true,
             pinned: true,
@@ -117,17 +112,13 @@ class ScalifyShowcaseScreen extends StatelessWidget {
               )
             ],
           ),
-
           SliverToBoxAdapter(
             child: Padding(
               padding: 20.p,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _SectionHeader(title: "🔥 NEW v2.2.0 FEATURES"),
-
-                  // FEATURE: ResponsiveVisibility (New v2.2.0)
-                  // Declaratively show or hide widgets based on ScreenType
+                  _SectionHeader(title: "🔥 NEW v3.0.0 FEATURES"),
                   ResponsiveVisibility(
                     visibleOn: [ScreenType.mobile],
                     child: Container(
@@ -145,9 +136,6 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                  // FEATURE: ResponsiveLayout (New v2.2.0)
-                  // Toggle UI between Portrait and Landscape orientations
                   Container(
                     padding: 16.p,
                     decoration: BoxDecoration(
@@ -184,11 +172,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   20.sbh,
-
-                  // FEATURE: ResponsiveBuilder (New v2.2.0)
-                  // Access ResponsiveData anywhere in the widget tree for complex logic
                   ResponsiveBuilder(
                     builder: (context, data) {
                       return Card(
@@ -202,7 +186,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                                 radius: 20.s,
                                 backgroundColor: Colors.indigo.shade100,
                                 child: Text(
-                                  data.screenType.toString()[11].toUpperCase(),
+                                  data.screenType.name[0].toUpperCase(),
                                   style: TextStyle(
                                     fontSize: 14.fz,
                                     fontWeight: FontWeight.bold,
@@ -242,18 +226,10 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                       );
                     },
                   ),
-
                   Divider(height: 40.h),
-
-                  // FEATURE: ResponsiveFlex
-                  // Switches from Row to Column automatically based on breakpoint
                   _SectionHeader(title: "1. Responsive Flex (Profile)"),
                   _buildProfileHeader(context),
-
                   30.sbh,
-
-                  // FEATURE: AdaptiveContainer
-                  // Component-driven queries based on parent width, not screen width
                   _SectionHeader(title: "2. Adaptive Cards (Layout Change)"),
                   Text(
                     "Cards change layout (Row/Column) based on their own width.",
@@ -264,9 +240,6 @@ class ScalifyShowcaseScreen extends StatelessWidget {
               ),
             ),
           ),
-
-          // FEATURE: ResponsiveGrid (Manual Mode)
-          // Define columns explicitly for each breakpoint
           ResponsiveGrid(
             useSliver: true,
             padding: 20.ph,
@@ -283,7 +256,6 @@ class ScalifyShowcaseScreen extends StatelessWidget {
               return _AdaptiveProductCard(index: index);
             },
           ),
-
           SliverToBoxAdapter(
             child: Padding(
               padding: 20.p,
@@ -291,8 +263,6 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   30.sbh,
-                  // FEATURE: ScalifyBox
-                  // Ideal for widgets requiring exact geometric scaling (Vector-like)
                   _SectionHeader(title: "3. ScalifyBox Grid (Perfect Scale)"),
                   Text(
                     "Items scale geometrically. Ideal for complex UI that shouldn't break.",
@@ -303,7 +273,6 @@ class ScalifyShowcaseScreen extends StatelessWidget {
               ),
             ),
           ),
-
           ResponsiveGrid(
             useSliver: true,
             padding: 20.ph,
@@ -318,7 +287,6 @@ class ScalifyShowcaseScreen extends StatelessWidget {
               return _ScalifyBoxGridItem(index: index);
             },
           ),
-
           SliverToBoxAdapter(
             child: Padding(
               padding: 20.p,
@@ -326,8 +294,6 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   30.sbh,
-                  // FEATURE: Auto-Fit Grid (ResponsiveGrid Mode B)
-                  // Automatically calculates columns based on minItemWidth (Perfect for APIs)
                   _SectionHeader(title: "4. Auto-Fit Grid (API & Lazy Load)"),
                   Text(
                     "Items lazy load and wrap automatically based on minWidth.",
@@ -338,7 +304,6 @@ class ScalifyShowcaseScreen extends StatelessWidget {
               ),
             ),
           ),
-
           ResponsiveGrid(
             useSliver: true,
             padding: 20.ph,
@@ -375,7 +340,6 @@ class ScalifyShowcaseScreen extends StatelessWidget {
               );
             },
           ),
-
           SliverToBoxAdapter(child: 50.sbh),
         ],
       ),
@@ -412,7 +376,6 @@ class ScalifyShowcaseScreen extends StatelessWidget {
             _buildInfoColumn(context),
           Container(
             alignment: isMobile ? Alignment.center : Alignment.centerRight,
-            padding: isMobile ? EdgeInsets.zero : 8.pl,
             child: ElevatedButton.icon(
               onPressed: () {},
               icon: Icon(Icons.message, size: 18.iz),
@@ -461,7 +424,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
             children: [
               _Badge(text: "Pro Member"),
               8.sbw,
-              _Badge(text: "Available for Hire"),
+              _Badge(text: "Available for Hire")
             ],
           ),
         )
@@ -483,73 +446,82 @@ class _AdaptiveProductCard extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade200),
       ),
       padding: 12.p,
-      child: AdaptiveContainer(
+      child: ContainerQuery(
         breakpoints: const [200, 350],
-        xs: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.shopping_bag, color: Colors.indigo, size: 32.iz),
-              8.sbh,
-              Text("Product $index",
-                  style:
-                      TextStyle(fontSize: 13.fz, fontWeight: FontWeight.bold)),
-              Text("\$99",
-                  style: TextStyle(fontSize: 12.fz, color: Colors.green)),
-            ],
-          ),
-        ),
-        md: FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.shopping_bag, color: Colors.indigo, size: 40.iz),
-              8.sbh,
-              Text("Product $index",
-                  style:
-                      TextStyle(fontSize: 14.fz, fontWeight: FontWeight.bold)),
-              Text("\$99.00",
-                  style: TextStyle(fontSize: 12.fz, color: Colors.green)),
-            ],
-          ),
-        ),
-        lg: Row(
-          children: [
-            Container(
-              width: 50.w,
-              height: 50.w,
-              decoration: BoxDecoration(
-                  color: Colors.indigo.shade50, borderRadius: 8.br),
-              child:
-                  Icon(Icons.shopping_bag, color: Colors.indigo, size: 24.iz),
-            ),
-            16.sbw,
-            Expanded(
+        builder: (context, query) {
+          // حالة الحاوية الصغيرة جداً
+          if (query.tier == QueryTier.xs) {
+            return FittedBox(
+              fit: BoxFit.scaleDown,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Premium Product $index",
+                  Icon(Icons.shopping_bag, color: Colors.indigo, size: 32.iz),
+                  8.sbh,
+                  Text("Product $index",
                       style: TextStyle(
-                          fontSize: 16.fz, fontWeight: FontWeight.bold),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                  Text("High quality item description...",
-                      style: TextStyle(fontSize: 12.fz, color: Colors.grey),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
+                          fontSize: 13.fz, fontWeight: FontWeight.bold)),
+                  Text("\$99",
+                      style: TextStyle(fontSize: 12.fz, color: Colors.green)),
                 ],
               ),
-            ),
-            12.sbw,
-            ElevatedButton(onPressed: () {}, child: Text("Buy"))
-          ],
-        ),
+            );
+          }
+
+          if (query.tier == QueryTier.sm) {
+            return FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.shopping_bag, color: Colors.indigo, size: 40.iz),
+                  8.sbh,
+                  Text("Product $index",
+                      style: TextStyle(
+                          fontSize: 14.fz, fontWeight: FontWeight.bold)),
+                  Text("\$99.00",
+                      style: TextStyle(fontSize: 12.fz, color: Colors.green)),
+                ],
+              ),
+            );
+          }
+
+          return Row(
+            children: [
+              Container(
+                width: 50.w,
+                height: 50.w,
+                decoration: BoxDecoration(
+                    color: Colors.indigo.shade50, borderRadius: 8.br),
+                child:
+                    Icon(Icons.shopping_bag, color: Colors.indigo, size: 24.iz),
+              ),
+              16.sbw,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("Premium Product $index",
+                        style: TextStyle(
+                            fontSize: 16.fz, fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                    Text("High quality item description...",
+                        style: TextStyle(fontSize: 12.fz, color: Colors.grey),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                  ],
+                ),
+              ),
+              12.sbw,
+              ElevatedButton(onPressed: () {}, child: Text("Buy"))
+            ],
+          );
+        },
       ),
     );
   }
@@ -608,31 +580,28 @@ class _Badge extends StatelessWidget {
   final String text;
   const _Badge({required this.text});
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: [8, 4].p,
-      decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: 4.br,
-          border: Border.all(color: Colors.grey.shade300)),
-      child: Text(text,
-          style: TextStyle(fontSize: 10.fz, color: Colors.grey.shade700)),
-    );
-  }
+  Widget build(BuildContext context) => Container(
+        padding: [8, 4].p,
+        decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: 4.br,
+            border: Border.all(color: Colors.grey.shade300)),
+        child: Text(text,
+            style: TextStyle(fontSize: 10.fz, color: Colors.grey.shade700)),
+      );
 }
 
 class _SectionHeader extends StatelessWidget {
   final String title;
   const _SectionHeader({required this.title});
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
         padding: 10.pb,
         child: Text(title.toUpperCase(),
             style: TextStyle(
                 fontSize: 12.fz,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
-                color: Colors.blueGrey)));
-  }
+                color: Colors.blueGrey)),
+      );
 }
