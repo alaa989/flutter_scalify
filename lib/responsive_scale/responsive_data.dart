@@ -134,7 +134,7 @@ class ResponsiveData {
     final double finalCombined = math.min(finalScaleWidth, finalScaleHeight);
 
     // Use standard text scale factor
-    final double systemTextScaleFactor = media.textScaleFactor;
+    final double systemTextScaleFactor = media.textScaler.scale(1.0);
 
     return ResponsiveData._(
       size: Size(width, height),

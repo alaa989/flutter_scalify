@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'responsive_data.dart';
@@ -107,15 +108,14 @@ class _ScalifyProviderState extends State<ScalifyProvider>
         // Fallback: If no MediaQuery is found (e.g. above MaterialApp), try to get from View
         if (mq == null) {
           try {
-            mq = MediaQueryData.fromView(View.of(context));
-          } catch (_) {
-            // Fallback to window-based MediaQueryData if View is not available.
-            try {
-              mq = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
-            } catch (_) {
-              // Best-effort: leave mq null, ResponsiveData.fromMediaQuery will handle null.
+            final ui.FlutterView? view = View.maybeOf(context);
+            if (view != null) {
+              mq = MediaQueryData.fromView(view);
+            } else {
+              mq = MediaQueryData.fromView(
+                  ui.PlatformDispatcher.instance.views.first);
             }
-          }
+          } catch (_) {}
         }
 
         final newData = ResponsiveData.fromMediaQuery(mq, widget.config);
@@ -135,15 +135,14 @@ class _ScalifyProviderState extends State<ScalifyProvider>
     MediaQueryData? mq = MediaQuery.maybeOf(context);
     if (mq == null) {
       try {
-        mq = MediaQueryData.fromView(View.of(context));
-      } catch (_) {
-        // Fallback to window-based MediaQueryData if View is not available.
-        try {
-          mq = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
-        } catch (_) {
-          // Best-effort: leave mq null, ResponsiveData.fromMediaQuery will handle null.
+        final ui.FlutterView? view = View.maybeOf(context);
+        if (view != null) {
+          mq = MediaQueryData.fromView(view);
+        } else {
+          mq = MediaQueryData.fromView(
+              ui.PlatformDispatcher.instance.views.first);
         }
-      }
+      } catch (_) {}
     }
 
     if (mq != null) {
