@@ -116,18 +116,29 @@ class ResponsiveData {
     }
 
     // Scale Logic
-    double calculatedScaleWidth = width / cfg.designWidth;
+    double designWidth = cfg.designWidth;
+    double designHeight = cfg.designHeight;
+
+    if (cfg.autoSwapDimensions) {
+      final bool isLandscape = width > height;
+      if (isLandscape) {
+        designWidth = cfg.designHeight;
+        designHeight = cfg.designWidth;
+      }
+    }
+
+    double calculatedScaleWidth = width / designWidth;
     if (width > cfg.memoryProtectionThreshold) {
-      final thresholdScale = cfg.memoryProtectionThreshold / cfg.designWidth;
+      final thresholdScale = cfg.memoryProtectionThreshold / designWidth;
       final excessWidth = width - cfg.memoryProtectionThreshold;
       calculatedScaleWidth = thresholdScale +
-          ((excessWidth / cfg.designWidth) * cfg.highResScaleFactor);
+          ((excessWidth / designWidth) * cfg.highResScaleFactor);
     }
 
     final double finalScaleWidth =
         calculatedScaleWidth.clamp(cfg.minScale, cfg.maxScale);
     final double finalScaleHeight =
-        (height / cfg.designHeight).clamp(cfg.minScale, cfg.maxScale);
+        (height / designHeight).clamp(cfg.minScale, cfg.maxScale);
 
     // Combine width/height scaling into a single stable scaleFactor.
     // We use the minimum to avoid overstretching UI on one axis while the other is small.

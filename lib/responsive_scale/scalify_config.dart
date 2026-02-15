@@ -64,6 +64,9 @@ class ScalifyConfig {
   /// Minimum width before the UI stops shrinking and enables horizontal scrolling.
   final double minWidth;
 
+  /// Whether to automatically swap design width/height in landscape mode.
+  final bool autoSwapDimensions;
+
   /// Creates a new [ScalifyConfig].
   const ScalifyConfig({
     this.designWidth = 375.0,
@@ -87,6 +90,7 @@ class ScalifyConfig {
     this.enableGranularNotifications = false,
     this.showDeprecationBanner = true,
     this.minWidth = 0.0,
+    this.autoSwapDimensions = false,
   })  : assert(minScale <= maxScale,
             'minScale must be less than or equal to maxScale'),
         assert(
@@ -117,6 +121,7 @@ class ScalifyConfig {
     bool? enableGranularNotifications,
     bool? showDeprecationBanner,
     double? minWidth,
+    bool? autoSwapDimensions,
   }) {
     return ScalifyConfig(
       designWidth: designWidth ?? this.designWidth,
@@ -148,6 +153,7 @@ class ScalifyConfig {
       showDeprecationBanner:
           showDeprecationBanner ?? this.showDeprecationBanner,
       minWidth: minWidth ?? this.minWidth,
+      autoSwapDimensions: autoSwapDimensions ?? this.autoSwapDimensions,
     );
   }
 }

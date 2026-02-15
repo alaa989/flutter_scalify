@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
         enableGranularNotifications: true,
         memoryProtectionThreshold: 1920.0,
         highResScaleFactor: 0.60,
+        autoSwapDimensions: true,
       ),
       builder: (context, child) {
         final base = ThemeData(
@@ -135,6 +136,87 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const _SectionHeader(title: "🔥 NEW v3.0.0 FEATURES"),
+                  Container(
+                    padding: 12.p,
+                    margin: 10.pb,
+                    decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        border: Border.all(color: Colors.green.shade200),
+                        borderRadius: 8.br),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("1. Auto-Swap Dimensions: ENABLED ✅",
+                            style: TextStyle(
+                                color: Colors.green.shade800,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.fz)),
+                        4.sbh,
+                        Text(
+                            "Rotate your device! Design width/height will utilize landscape space intelligently.",
+                            style: TextStyle(
+                                color: Colors.green.shade700, fontSize: 14.fz)),
+                      ],
+                    ),
+                  ),
+                  Text("2. Fractional Scaling (42.pw)",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16.fz)),
+                  8.sbh,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: 42.pw,
+                        height: 50.h,
+                        decoration: BoxDecoration(
+                            color: Colors.purple.shade300, borderRadius: 8.br),
+                        alignment: Alignment.center,
+                        child: Text("42% Width",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.fz)),
+                      ),
+                      Container(
+                        width: 42.pw,
+                        height: 50.h,
+                        decoration: BoxDecoration(
+                            color: Colors.purple.shade300, borderRadius: 8.br),
+                        alignment: Alignment.center,
+                        child: Text("42% Width",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.fz)),
+                      ),
+                    ],
+                  ),
+                  16.sbh,
+                  Text("3. Context API (Reactive)",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16.fz)),
+                  8.sbh,
+                  Container(
+                    width: context.w(375),
+                    padding: 16.p,
+                    decoration: BoxDecoration(
+                        color: Colors.teal.shade100, borderRadius: 8.br),
+                    child: Row(
+                      children: [
+                        Icon(Icons.monitor_heart, color: Colors.teal.shade800),
+                        8.sbw,
+                        Expanded(
+                          child: Text(
+                            "I use context.w()! Resize window to see me adapt instantly.",
+                            style: TextStyle(
+                                color: Colors.teal.shade900, fontSize: 15.fz),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  20.sbh,
                   ResponsiveVisibility(
                     visibleOn: const [ScreenType.mobile],
                     child: Container(

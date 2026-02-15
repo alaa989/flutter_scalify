@@ -33,6 +33,17 @@ extension ResponsiveContext on BuildContext {
       largeDesktop: largeDesktop,
     );
   }
+
+  double w(double value) => value * responsiveData.scaleWidth;
+  double h(double value) => value * responsiveData.scaleHeight;
+  double r(double value) {
+    final s = responsiveData.scaleWidth < responsiveData.scaleHeight
+        ? responsiveData.scaleWidth
+        : responsiveData.scaleHeight;
+    return value * s;
+  }
+
+  double sp(double value) => value * responsiveData.scaleFactor;
 }
 
 /// Numeric extensions for responsive scaling
@@ -79,6 +90,16 @@ extension ResponsiveExtension on num {
 
   @pragma('vm:prefer-inline')
   int get si => (this * _g.scaleFactor).round();
+
+  // --- Percentage Scaling ---
+  /// Percentage of screen width (e.g. 50.pw = 50% of screen width)
+  @pragma('vm:prefer-inline')
+  double get pw => (this / 100) * _g.width;
+
+  /// Percentage of screen height (e.g. 50.hp = 50% of screen height)
+  /// Note: We use 'hp' because 'ph' is reserved for horizontal padding.
+  @pragma('vm:prefer-inline')
+  double get hp => (this / 100) * _g.height;
 
   // --- Spacing (SizedBox) ---
   SizedBox get sbh => SizedBox(height: h);
