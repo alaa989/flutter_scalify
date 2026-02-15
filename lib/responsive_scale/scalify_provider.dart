@@ -137,25 +137,33 @@ class _ScalifyProviderState extends State<ScalifyProvider>
 
   @override
   Widget build(BuildContext context) {
-    Widget content = _InheritedScalify(
-      data: _currentData,
-      child: widget.builder != null
-          ? widget.builder!(context, widget.child)
-          : widget.child!,
-    );
-
-    if (kDebugMode &&
+    final showBanner = kDebugMode &&
         widget.config.showDeprecationBanner &&
-        widget.config.legacyContainerTierMapping) {
-      return Stack(
+        widget.config.legacyContainerTierMapping;
+
+    // Wrap widget.child with the banner Stack so the banner renders
+    // INSIDE the MaterialApp (the child becomes the `home:` parameter).
+    Widget? innerChild = widget.child;
+    if (showBanner && innerChild != null) {
+      innerChild = Stack(
         children: [
-          content,
+          innerChild,
           _DeprecationBanner(onTap: () => _showMigrationDialog(context)),
         ],
       );
     }
 
-    return content;
+    Widget child;
+    if (widget.builder != null) {
+      child = widget.builder!(context, innerChild);
+    } else {
+      child = innerChild!;
+    }
+
+    return _InheritedScalify(
+      data: _currentData,
+      child: child,
+    );
   }
 
   void _showMigrationDialog(BuildContext context) {

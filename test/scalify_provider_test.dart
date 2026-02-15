@@ -147,21 +147,17 @@ void main() {
 
     testWidgets('shows deprecation banner with legacy mode in debug',
         (tester) async {
-      // Note: The deprecation banner renders as a sibling to the builder
-      // output, so it needs Material ancestors. We use the child pattern
-      // (ScalifyProvider inside MaterialApp) for this specific test.
       await pumpApp(
         tester,
         MediaQuery(
           data: const MediaQueryData(size: Size(375, 812)),
-          child: MaterialApp(
-            home: ScalifyProvider(
-              config: const ScalifyConfig(
-                legacyContainerTierMapping: true,
-                showDeprecationBanner: true,
-              ),
-              child: const SizedBox(),
+          child: ScalifyProvider(
+            config: const ScalifyConfig(
+              legacyContainerTierMapping: true,
+              showDeprecationBanner: true,
             ),
+            builder: (context, child) => MaterialApp(home: child),
+            child: const SizedBox(),
           ),
         ),
       );
@@ -175,14 +171,13 @@ void main() {
         tester,
         MediaQuery(
           data: const MediaQueryData(size: Size(375, 812)),
-          child: MaterialApp(
-            home: ScalifyProvider(
-              config: const ScalifyConfig(
-                legacyContainerTierMapping: true,
-                showDeprecationBanner: false,
-              ),
-              child: const SizedBox(),
+          child: ScalifyProvider(
+            config: const ScalifyConfig(
+              legacyContainerTierMapping: true,
+              showDeprecationBanner: false,
             ),
+            builder: (context, child) => MaterialApp(home: child),
+            child: const SizedBox(),
           ),
         ),
       );

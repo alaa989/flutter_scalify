@@ -2,459 +2,695 @@
 
 [![pub package](https://img.shields.io/pub/v/flutter_scalify.svg)](https://pub.dev/packages/flutter_scalify)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2.svg)](https://dart.dev)
+[![Tests](https://img.shields.io/badge/Tests-203%20passed-brightgreen.svg)](#)
+[![Platform](https://img.shields.io/badge/Platform-Android%20|%20iOS%20|%20Web%20|%20macOS%20|%20Linux%20|%20Windows-purple.svg)](#)
 
 **The Intelligent Scaling Engine for Flutter.**
 
-Not just a screen adaptation tool, but a complete high-performance engine designed for Mobile, Web, and Desktop. Easily scale your UI elements (text, spacing, icons, containers) across all screen sizes with simple extensions and smart container queries.
+A complete, high-performance responsive system — not just a sizing tool. Scale your entire UI across Mobile, Web, and Desktop with simple extensions, smart container queries, and zero overhead.
+
+---
 
 ## Why Scalify? ⚡️
 
-| Feature | Scalify Engine 🚀 | Standard Solutions |
-| :--- | :--- | :--- |
-| **Performance** | ✅ **O(1) Inline Math** (Zero Overhead) | ❌ Complex Calculations |
-| **Memory Efficiency** | ✅ **Zero Allocation** (No GC pressure) | ❌ High Memory Usage |
-| **Layout System** | ✅ **Responsive Grid & Flex** (Built-in) | ❌ Manual calculations |
-| **High-Res Adaptation** | ✅ **Smart Dampening** (Prevents UI explosion) | ❌ Linear Scaling Only |
-| **Container Queries** | ✅ **AdaptiveContainer** (Scale by parent size) | ❌ Global Screen Only |
+| Feature | Scalify |
+| :--- | :---: |
+| **O(1) Inline Math** (vm:prefer-inline) | ✅ |
+| **Container Queries** (Rebuild by parent size) | ✅ |
+| **4K/Ultra-Wide Smart Dampening** | ✅ |
+| **Responsive Grid System** (6-Tier) | ✅ |
+| **Builder Pattern** (Above MaterialApp) | ✅ |
+| **InheritedModel** (Granular Rebuild) | ✅ |
+| **Debounce on Resize** (Desktop/Web) | ✅ |
+| **Local Scaler** (ScalifyBox) | ✅ |
+| **6 Screen Types** (Watch → Large Desktop) | ✅ |
+| **Theme Auto-Scaling** (One line) | ✅ |
+| **Percentage Scaling** (.pw .hp) | ✅ |
+| **Zero External Dependencies** | ✅ |
+| **203 Tests Passing** | ✅ |
+
+---
 
 ## Features ✨
 
-- 🎯 **Simple API**: Use intuitive extensions like `16.fz`, `20.s`, `24.iz`.
-- 📐 **Responsive Layouts**: Built-in `ResponsiveGrid`, `ResponsiveFlex`, and `ResponsiveLayout`.
-- 📦 **Component-Driven**: `AdaptiveContainer` changes layout based on the widget's own size.
-- 🛡️ **Ultra-High Res Safeguard**: Smart algorithm that prevents UI "explosion" on 4K and Ultra-wide screens.
-- 📱 **Fully Responsive**: Adapts to Watch, Mobile, Tablet, Small Desktop, Desktop, and Large Desktop.
-- ⚡ **Hyper Performance**: Uses `vm:prefer-inline` for direct memory access.
-- 🔡 **Font Clamping (New)**: Optional control over minimum and maximum font sizes (e.g., 6.0 to 256.0).
+- 🎯 **Simple API** — `16.fz`, `20.s`, `24.iz`, `300.w` — just add an extension
+- 📐 **Responsive Layouts** — Built-in `ResponsiveGrid`, `ResponsiveFlex`, `ResponsiveLayout`
+- 📦 **Container Queries** — `ContainerQuery` & `AdaptiveContainer` rebuild based on parent size
+- 🛡️ **4K Protection** — Smart dampening prevents UI explosion on ultra-wide screens
+- 📱 **6-Tier System** — Watch, Mobile, Tablet, Small Desktop, Desktop, Large Desktop
+- ⚡ **Hyper Performance** — `vm:prefer-inline`, Quantized IDs, InheritedModel, Debounce
+- 🔡 **Font Clamping** — Configurable min/max font bounds (never too small or too big)
+- 🎨 **Theme Scaling** — `ThemeData.scale(context)` — one line, entire theme scaled
+- 🧱 **Local Scaling** — `ScalifyBox` scales elements relative to their container
+- 📊 **Percentage Scaling** — `50.pw` = 50% of screen width, `25.hp` = 25% of height
+
+---
 
 ## Responsive Preview
 
 ![Responsive Design Screenshots](./screenshots/screen.jpg)
 
-## Installation
+---
 
-Add this to your package's `pubspec.yaml` file:
+## Installation
 
 ```yaml
 dependencies:
-  flutter_scalify: ^2.2.4
-
+  flutter_scalify: ^3.0.0
 ```
-
-Then run:
 
 ```bash
 flutter pub get
-
 ```
+
+---
 
 ## Quick Start
 
-### Wrap your app with ScalifyProvider
+### ✅ Recommended: Builder Pattern (ScalifyProvider wraps MaterialApp)
 
-Initialize the engine with your design specifications.
+This is the **best practice** for maximum performance. Placing `ScalifyProvider` **above** `MaterialApp` prevents cascading rebuilds when screen size changes.
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:flutter_scalify/flutter_scalify.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      builder: (context, child) {
-        return ScalifyProvider(
-          config: const ScalifyConfig(
-            designWidth: 375,
-            designHeight: 812,
-            minScale: 0.5,
-            maxScale: 3.0,
-            // 🛡️ High-Res Adaptation (Smart Dampening)
-            memoryProtectionThreshold: 1920.0, 
-            highResScaleFactor: 0.60, 
-          ),
-          child: child ?? const SizedBox(),
-        );
-      },
-      home: const HomeScreen(),
+    return ScalifyProvider(
+      config: const ScalifyConfig(
+        designWidth: 375,    // Your Figma/XD design width
+        designHeight: 812,   // Your Figma/XD design height
+      ),
+      builder: (context, child) => MaterialApp(
+        theme: ThemeData.light().scale(context), // 🎨 Auto-scale theme
+        home: child,
+      ),
+      child: const HomeScreen(),
     );
   }
 }
+```
 
+### Alternative: Child Pattern (ScalifyProvider inside MaterialApp)
+
+```dart
+MaterialApp(
+  builder: (context, child) {
+    return ScalifyProvider(
+      config: const ScalifyConfig(designWidth: 375, designHeight: 812),
+      child: child ?? const SizedBox(),
+    );
+  },
+  home: const HomeScreen(),
+);
+```
+
+> 💡 **Tip:** The builder pattern is recommended because it puts `ScalifyProvider` above `MaterialApp`, so changing window size doesn't rebuild `MaterialApp` itself.
+
+---
+
+## 📚 API Cheat Sheet
+
+### 1. Size & Font
+
+| Extension | Example | Description |
+| :---: | :--- | :--- |
+| `.w` | `100.w` | **Width** — Scales based on screen width ratio |
+| `.h` | `50.h` | **Height** — Scales based on screen height ratio |
+| `.s` | `20.s` | **Size** — General scaling (min of width/height) |
+| `.fz` | `16.fz` | **Font Size** — Scaled + clamped + accessibility |
+| `.iz` | `24.iz` | **Icon Size** — Proportional icon scaling |
+| `.r` | `12.r` | **Radius** — Based on min(scaleWidth, scaleHeight) |
+| `.si` | `10.si` | **Scaled Int** — Rounded integer for native APIs |
+| `.sc` | `16.sc` | **Scale** — Alias for `.s` |
+| `.ui` | `16.ui` | **UI** — Alias for `.s` |
+
+### 2. Percentage Scaling
+
+| Extension | Example | Description |
+| :---: | :--- | :--- |
+| `.pw` | `50.pw` | **50% of screen width** |
+| `.hp` | `25.hp` | **25% of screen height** |
+
+### 3. Spacing (SizedBox)
+
+| Extension | Example | Output |
+| :---: | :--- | :--- |
+| `.sbh` | `20.sbh` | `SizedBox(height: 20.h)` |
+| `.sbw` | `10.sbw` | `SizedBox(width: 10.w)` |
+| `.sbhw()` | `20.sbhw(width: 10)` | `SizedBox(height: 20.h, width: 10.w)` |
+| `.sbwh()` | `10.sbwh(height: 20)` | `SizedBox(width: 10.w, height: 20.h)` |
+
+### 4. Padding (EdgeInsets)
+
+| Extension | Example | Output |
+| :---: | :--- | :--- |
+| `.p` | `16.p` | `EdgeInsets.all(16.s)` |
+| `.ph` | `16.ph` | `EdgeInsets.symmetric(horizontal: 16.w)` |
+| `.pv` | `16.pv` | `EdgeInsets.symmetric(vertical: 16.h)` |
+| `.pt` | `16.pt` | `EdgeInsets.only(top: 16.h)` |
+| `.pb` | `16.pb` | `EdgeInsets.only(bottom: 16.h)` |
+| `.pl` | `16.pl` | `EdgeInsets.only(left: 16.w)` |
+| `.pr` | `16.pr` | `EdgeInsets.only(right: 16.w)` |
+
+**List Shorthand:**
+
+```dart
+[20, 10].p      // EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h)
+[10, 5, 10, 5].p // EdgeInsets.fromLTRB(10.w, 5.h, 10.w, 5.h)
+```
+
+### 5. Border Radius
+
+| Extension | Example | Output |
+| :---: | :--- | :--- |
+| `.br` | `12.br` | `BorderRadius.circular(12.r)` |
+| `.brt` | `12.brt` | Top corners only |
+| `.brb` | `12.brb` | Bottom corners only |
+| `.brl` | `12.brl` | Left corners only |
+| `.brr` | `12.brr` | Right corners only |
+
+### 6. Context API (for `const` widgets)
+
+When widgets are inside a `const` tree and can't use global extensions, use context:
+
+```dart
+context.w(100)    // Width scaling via context
+context.h(50)     // Height scaling via context
+context.r(12)     // Radius via context
+context.sp(16)    // Scale factor via context
 ```
 
 ---
 
-## 📚 API Cheat Sheet (All Shortcuts)
-
-Scalify provides a comprehensive set of extensions to make every part of your UI responsive.
-
-### 1. Size & Font
-
-| Extension | Usage | Result (Description) |
-| --- | --- | --- |
-| `.fz` | `16.fz` | **Font Size**: Scales text smartly + respects bounds. |
-| `.iz` | `24.iz` | **Icon Size**: Scales icons proportionally. |
-| `.s` | `20.s` | **Size/Space**: General scaling (margins/offsets). |
-| `.w` | `100.w` | **Width**: Scales based on screen width. |
-| `.h` | `50.h` | **Height**: Scales based on screen height. |
-| `.r` | `12.r` | **Radius**: Calculates radius based on min(w, h). |
-| `.si` | `10.si` | **Int**: Returns rounded integer for native APIs. |
-
-### 2. Spacing (SizedBox)
-
-Replace `SizedBox(height: 20)` with clean shortcuts.
-
-| Extension | Usage | Result |
-| --- | --- | --- |
-| `.sbh` | `20.sbh` | `SizedBox(height: 20.h)` |
-| `.sbw` | `10.sbw` | `SizedBox(width: 10.w)` |
-| `.sbhw` | `20.sbhw(width: 10)` | `SizedBox(height: 20.h, width: 10.w)` |
-| `.sbwh` | `10.sbwh(height: 20)` | `SizedBox(width: 10.w, height: 20.h)` |
-
-### 3. Padding (EdgeInsets)
-
-Use on `double` or `List<num>`.
-
-| Extension | Usage | Result |
-| --- | --- | --- |
-| `.p` | `16.p` | `EdgeInsets.all(16)` |
-| `.ph` | `16.ph` | `EdgeInsets.symmetric(horizontal: 16)` |
-| `.pv` | `16.pv` | `EdgeInsets.symmetric(vertical: 16)` |
-| `.pt` | `16.pt` | `EdgeInsets.only(top: 16)` |
-| `.pb` | `16.pb` | `EdgeInsets.only(bottom: 16)` |
-| `.pl` | `16.pl` | `EdgeInsets.only(left: 16)` |
-| `.pr` | `16.pr` | `EdgeInsets.only(right: 16)` |
-| **List API** | `[20, 10].p` | `EdgeInsets.symmetric(h: 20, v: 10)` |
-| **List API** | `[10, 5, 10, 5].p` | `EdgeInsets.fromLTRB(10, 5, 10, 5)` |
-
-### 4. Border Radius
-
-| Extension | Usage | Result |
-| --- | --- | --- |
-| `.br` | `12.br` | `BorderRadius.circular(12)` |
-| `.brt` | `12.brt` | `BorderRadius.only(topLeft, topRight)` |
-| `.brb` | `12.brb` | `BorderRadius.only(bottomLeft, bottomRight)` |
-| `.brl` | `12.brl` | `BorderRadius.only(topLeft, bottomLeft)` |
-| `.brr` | `12.brr` | `BorderRadius.only(topRight, bottomRight)` |
-
----
-
-## 💻 All-in-One Example
-
-Here is how you write clean, responsive UI code using Scalify shortcuts:
+## 💻 Complete Example
 
 ```dart
 Container(
-  // Symmetric Padding: Horizontal 20, Vertical 10
-  padding: [20, 10].p, 
-  
-  // Responsive Width & Height
-  width: 300.w,
-  height: 200.h,
-  
+  padding: [20, 10].p,           // Symmetric padding
+  width: 300.w,                   // Responsive width
+  height: 200.h,                  // Responsive height
   decoration: BoxDecoration(
     color: Colors.white,
-    // Top-only Border Radius
-    borderRadius: 20.brt, 
+    borderRadius: 20.brt,         // Top border radius
     boxShadow: [
       BoxShadow(
         color: Colors.black12,
-        // General scaling for offsets
-        offset: Offset(0, 4.s), 
+        offset: Offset(0, 4.s),   // Scaled offset
         blurRadius: 10.s,
       )
     ],
   ),
   child: Column(
     children: [
-      // Icon Size
-      Icon(Icons.star, size: 32.iz), 
-      
-      // Spacing (Height)
-      16.sbh, 
-      
-      Text(
-        "Scalify",
-        // Smart Font Size
-        style: TextStyle(fontSize: 24.fz, fontWeight: FontWeight.bold), 
-      ),
-      
-      // Spacing (Height)
+      Icon(Icons.star, size: 32.iz),                                  // Scaled icon
+      16.sbh,                                                          // Spacing
+      Text("Scalify", style: TextStyle(fontSize: 24.fz)),             // Scaled font
       8.sbh,
-      
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("Start", style: TextStyle(fontSize: 14.fz)),
-          // Spacing (Width)
-          8.sbw, 
+          8.sbw,                                                       // Width spacing
           Icon(Icons.arrow_forward, size: 16.iz),
         ],
       )
     ],
   ),
 )
-
 ```
 
 ---
 
-## 🛡️ AppWidthLimiter (Ultra-High Res Safeguard)
+## 🚀 Responsive Widgets
 
-Wrap your screen to center content and reset scaling on ultra-wide screens. This prevents your UI from becoming excessively large on 4K monitors/Desktops while maintaining aesthetic proportions.
+### ResponsiveGrid — The Ultimate Grid
 
-```dart
-AppWidthLimiter(
-  maxWidth: 1400,
-  horizontalPadding: 16,
-  backgroundColor: const Color(0xFFE2E8F0),
-  child: YourMainScreen(),
-)
+Supports **Manual Columns** (per screen type) and **Auto-Fit** (dynamic data).
 
-```
-
----
-
-## 📦 ScalifyBox (Local Scaling)
-
-Proportionally scale elements within a specific area (like a Credit Card). It ensures elements maintain their positions and ratios exactly regardless of screen size.
-
-```dart
-ScalifyBox(
-  referenceWidth: 320, 
-  referenceHeight: 200,
-  fit: ScalifyFit.contain,
-  alignment: Alignment.center,
-  builder: (context, ls) {
-    return Container(
-      // Use 'ls' (Local Scaler) instead of global context
-      width: ls.w(300), 
-      height: ls.h(180),
-      padding: ls.p(20), 
-      child: Text("VISA", style: TextStyle(fontSize: ls.fz(18))),
-    );
-  },
-)
-
-```
-
----
-
-## 🎨 Scalify Theme Scaling (Zero Boilerplate)
-
-Automatically scale your entire app's text theme with a single line. No need to add `.fz` manually to every text widget.
-
-```dart
-MaterialApp(
-  // Scales all text styles in the theme automatically
-  theme: ThemeData.light().scale(context), 
-  home: const HomeScreen(),
-)
-
-```
-
----
-
-## 🔡 Font Clamping (Advanced Control)
-
-Sometimes you want the UI to scale, but you need to ensure text remains readable (not too small) and doesn't break layout (not too big).
-
-You can globally clamp font sizes in `ScalifyConfig`:
-
-```dart
-ScalifyConfig(
-  // ... other config
-  minFontSize: 6.0,   // Text will never be smaller than 6px
-  maxFontSize: 256.0,   // Text will never exceed 256px
-)
-
-```
-This applies to both `.fz` and `ThemeData.scale()`.
-
----
-## 🔄 Live Resizing (Desktop & Web)
-
-
-By default, Flutter optimizes performance by not rebuilding widgets that don't explicitly listen to changes. To make your UI elements (like .fz, .w, .h) adapt instantly while dragging the window on Desktop or Web, you have two professional options:
-
-Option 1: Using ScalifyBuilder (Recommended)
-Wrap your screen or specific component with ScalifyBuilder. This is the cleanest way to ensure live updates.
-
-```dart
-
-ScalifyBuilder(
-  builder: (context, data) {
-    return Scaffold(
-      body: Center(
-        child: Text("Responsive Text", style: TextStyle(fontSize: 20.fz)),
-      ),
-    );
-  },
-)
-```
-
-Option 2: Direct Subscription
-Simply call context.responsiveData at the top of your build method. This "subscribes" the widget to resize events.
-
-```dart
-@override
-Widget build(BuildContext context) {
-  context.responsiveData; // 👈 Enables live scaling for this build context
-  return Scaffold(...);
-}
-
-
-```
-
----
-
-## 🚀 Responsive Layout Widgets
-
-### 1. ResponsiveGrid (The Ultimate Grid)
-
-A powerful grid that supports **Manual Control** (columns per screen) and **Auto-Fit** (API data). It handles spacing automatically.
-
-**Mode A: Manual Columns (Static UI)**
+**Manual Mode:**
 
 ```dart
 ResponsiveGrid(
-  useSliver: false,
   spacing: 16,
   runSpacing: 16,
   watch: 1,
   mobile: 2,
   tablet: 3,
+  smallDesktop: 3,
   desktop: 4,
-  children: [/* ... widgets ... */],
+  largeDesktop: 5,
+  children: [/* widgets */],
 )
-
 ```
 
-**Mode B: Auto-Fit (Dynamic/API Data)**
+**Auto-Fit Mode (API data):**
 
 ```dart
 ResponsiveGrid(
-  minItemWidth: 150, 
-  itemCount: apiData.length,
-  itemBuilder: (context, index) => MyCard(data: apiData[index]),
+  minItemWidth: 150,
+  itemCount: products.length,
+  itemBuilder: (context, index) => ProductCard(data: products[index]),
 )
-
 ```
 
-### 2. ResponsiveFlex (Row <-> Column)
+**Sliver Mode (infinite scroll):**
 
-A smart widget that switches between `Row` and `Column` based on the screen width.
+```dart
+CustomScrollView(
+  slivers: [
+    ResponsiveGrid(
+      useSliver: true,
+      mobile: 2,
+      desktop: 4,
+      itemCount: 100,
+      itemBuilder: (context, i) => ItemCard(i),
+    ),
+  ],
+)
+```
+
+---
+
+### ResponsiveFlex — Row ↔ Column
+
+Automatically switches between `Row` and `Column` based on screen width.
 
 ```dart
 ResponsiveFlex(
-  switchOn: ScreenType.mobile, 
+  switchOn: ScreenType.mobile,    // Column on mobile, Row on larger
   spacing: 20,
+  flipOnRtl: true,                // RTL support
   children: [
     UserAvatar(),
-    UserName(),
+    UserInfo(),
   ],
 )
-
 ```
 
-### 3. ResponsiveLayout (Orientation Switch)
+**Custom breakpoint:**
 
-Effortlessly switch between Portrait and Landscape layouts using Scalify metrics.
+```dart
+ResponsiveFlex(
+  breakpoint: 600,                // Column when width < 600
+  children: [Widget1(), Widget2()],
+)
+```
+
+---
+
+### ResponsiveLayout — Orientation Switch
 
 ```dart
 ResponsiveLayout(
   portrait: Column(children: [Image(), Bio()]),
   landscape: Row(children: [Image(), Bio()]),
 )
-
-```
-
-### 4. AdaptiveContainer (Component-Driven)
-
-This widget rebuilds based on its **own width** (Parent Constraints), NOT the screen width.
-
-```dart
-AdaptiveContainer(
-  breakpoints: const [200, 500], 
-  xs: Icon(Icons.home),
-  sm: Column(children: [...]),
-  lg: Row(children: [...]),
-)
-
 ```
 
 ---
 
-## 👁️ Logic & Visibility
-
-### ResponsiveVisibility (The Bouncer)
-
-Show or hide widgets based on the current screen type without using messy `if` statements.
+### ResponsiveVisibility — Show/Hide by Screen Type
 
 ```dart
+// Whitelist: Show ONLY on mobile
 ResponsiveVisibility(
-  visibleOn: [ScreenType.mobile], // Whitelist
-  child: MobileOnlyWidget(),
+  visibleOn: [ScreenType.mobile],
+  child: MobileNavBar(),
 )
 
+// Blacklist: Hide on desktop
 ResponsiveVisibility(
-  hiddenOn: [ScreenType.desktop], // Blacklist
-  child: SideDrawer(),
+  hiddenOn: [ScreenType.desktop, ScreenType.largeDesktop],
+  replacement: DesktopSidebar(),   // Optional replacement widget
+  child: MobileDrawer(),
 )
-
 ```
 
-### ResponsiveBuilder (Direct Logic)
+---
 
-Access `ResponsiveData` directly inside your widget tree for complex custom logic.
+### ResponsiveBuilder — Direct Data Access
 
 ```dart
 ResponsiveBuilder(
   builder: (context, data) {
-    return Text("Current Width: ${data.size.width}");
+    return Text("Screen: ${data.screenType} — ${data.width.toInt()}px");
   },
 )
-
-```
-
-### Conditional Logic (`valueByScreen`)
-
-Return different values based on the device type.
-
-```dart
-double width = context.valueByScreen(
-  mobile: 300, 
-  tablet: 500, 
-  desktop: 800
-);
-
 ```
 
 ---
 
-## Screen Breakpoints
+### Conditional Logic — `valueByScreen`
 
-| Device Type | Width Range |
-| --- | --- |
-| **Watch** | `< 300px` |
-| **Mobile** | `300px - 600px` |
-| **Tablet** | `600px - 900px` |
-| **Small Desktop** | `900px - 1200px` |
-| **Desktop** | `1200px - 1800px` |
-| **Large Desktop** | `> 1800px` |
+```dart
+final columns = context.valueByScreen<int>(
+  mobile: 2,
+  tablet: 3,
+  desktop: 4,
+  largeDesktop: 6,
+);
+```
 
-Check out the [example](example/) directory for a complete, beautiful example app that demonstrates all features including a responsive grid that adapts to different screen sizes.
+---
+
+## 📦 Container Queries
+
+### ContainerQuery — Rebuild by Parent Size
+
+Unlike `MediaQuery` which reads the **screen** size, `ContainerQuery` reads the **parent widget's** size. Perfect for reusable components.
+
+```dart
+ContainerQuery(
+  breakpoints: [200, 400, 800],
+  onChanged: (prev, current) => print("Tier: ${current.tier}"),
+  builder: (context, query) {
+    if (query.isMobile) return CompactCard();
+    if (query.isTablet) return MediumCard();
+    return FullCard();
+  },
+)
+```
+
+**QueryTier values:** `xs`, `sm`, `md`, `lg`, `xl`, `xxl`
+
+---
+
+### AdaptiveContainer — Tier-Based Widgets
+
+```dart
+AdaptiveContainer(
+  breakpoints: [200, 500],
+  xs: Icon(Icons.home),                    // < 200px
+  sm: Column(children: [Icon(), Text()]),  // 200-500px
+  lg: Row(children: [Icon(), Text(), Button()]),  // > 500px
+)
+```
+
+---
+
+## 🧱 ScalifyBox — Local Scaling
+
+Scale elements relative to a **specific container** instead of the screen. Perfect for credit cards, game UIs, and embedded components.
+
+```dart
+ScalifyBox(
+  referenceWidth: 320,
+  referenceHeight: 200,
+  fit: ScalifyFit.contain,    // width | height | contain | cover
+  builder: (context, ls) {
+    return Container(
+      width: ls.w(300),         // Local width scaling
+      height: ls.h(180),        // Local height scaling
+      padding: ls.p(20),        // Local padding
+      decoration: BoxDecoration(
+        borderRadius: ls.br(12), // Local border radius
+      ),
+      child: Column(
+        children: [
+          Text("VISA", style: TextStyle(fontSize: ls.fz(18))),
+          ls.sbh(10),            // Local spacing
+        ],
+      ),
+    );
+  },
+)
+```
+
+**LocalScaler API:**
+
+| Method | Description |
+| :--- | :--- |
+| `ls.w(value)` | Local width scaling |
+| `ls.h(value)` | Local height scaling |
+| `ls.s(value)` | Local general scaling |
+| `ls.fz(value)` | Local font size (clamped) |
+| `ls.iz(value)` | Local icon size |
+| `ls.si(value)` | Rounded int |
+| `ls.p(value)` | `EdgeInsets.all` |
+| `ls.ph(value)` | Horizontal padding |
+| `ls.pv(value)` | Vertical padding |
+| `ls.br(value)` | `BorderRadius.circular` |
+| `ls.r(value)` | `Radius.circular` |
+| `ls.sbh(value)` | `SizedBox(height:)` |
+| `ls.sbw(value)` | `SizedBox(width:)` |
+| `ls.scaleFactor` | Current scale value |
+
+---
+
+## 🛡️ AppWidthLimiter — Ultra-Wide Protection
+
+Centers and constrains your app on ultra-wide monitors.
+
+```dart
+AppWidthLimiter(
+  maxWidth: 1400,
+  minWidth: 360,               // Enables horizontal scroll below 360px
+  horizontalPadding: 16,
+  backgroundColor: Color(0xFFE2E8F0),
+  child: YourApp(),
+)
+```
+
+---
+
+## 🎨 Theme Auto-Scaling
+
+Scale your **entire** app theme with one line — no need to add `.fz` to every text widget.
+
+```dart
+ScalifyProvider(
+  builder: (context, child) => MaterialApp(
+    theme: ThemeData.light().scale(context),  // ✨ One line!
+    home: child,
+  ),
+  child: const HomeScreen(),
+)
+```
+
+> 💡 Automatically skips scaling when `scaleFactor == 1.0` for zero overhead.
+
+---
+
+## 🔄 Live Resizing (Desktop & Web)
+
+For instant UI updates while dragging the window:
+
+**Option 1: ScalifyBuilder (Recommended)**
+
+```dart
+ScalifyBuilder(
+  builder: (context, data) {
+    return Scaffold(
+      body: Center(
+        child: Text("${data.width.toInt()}px", style: TextStyle(fontSize: 20.fz)),
+      ),
+    );
+  },
+)
+```
+
+**Option 2: Direct Subscription**
+
+```dart
+@override
+Widget build(BuildContext context) {
+  context.responsiveData;  // 👈 Subscribe to resize events
+  return Scaffold(/* ... */);
+}
+```
+
+---
+
+## ⚙️ ScalifyConfig — Full Reference
+
+```dart
+ScalifyConfig(
+  // 📐 Design Baseline
+  designWidth: 375.0,             // Figma/XD design width
+  designHeight: 812.0,            // Figma/XD design height
+
+  // 📱 Breakpoints (Customizable)
+  watchBreakpoint: 300.0,         // < 300 = Watch
+  mobileBreakpoint: 600.0,        // 300-600 = Mobile
+  tabletBreakpoint: 900.0,        // 600-900 = Tablet
+  smallDesktopBreakpoint: 1200.0,  // 900-1200 = Small Desktop
+  desktopBreakpoint: 1800.0,      // 1200-1800 = Desktop
+  //                               // > 1800 = Large Desktop
+
+  // 🔡 Font Control
+  minFontSize: 6.0,               // Floor for .fz
+  maxFontSize: 256.0,             // Ceiling for .fz
+  respectTextScaleFactor: true,   // System accessibility support
+
+  // 📏 Scale Bounds
+  minScale: 0.5,                  // Minimum scale factor
+  maxScale: 4.0,                  // Maximum scale factor
+
+  // 🛡️ 4K Protection
+  memoryProtectionThreshold: 1920.0,  // Where dampening kicks in
+  highResScaleFactor: 0.65,           // Dampening strength (0-1)
+
+  // ⚡ Performance
+  debounceWindowMillis: 120,          // Resize debounce (ms)
+  rebuildScaleThreshold: 0.01,        // Min scale change to rebuild
+  rebuildWidthPxThreshold: 4.0,       // Min px change to rebuild
+  enableGranularNotifications: false, // InheritedModel aspects
+
+  // 🔄 Orientation
+  autoSwapDimensions: false,          // Swap design W/H in landscape
+
+  // 🔧 Minimum Window Width
+  minWidth: 0.0,                      // Enables horizontal scroll below this
+
+  // 🏷️ Legacy
+  legacyContainerTierMapping: false,  // v1 compatibility
+  showDeprecationBanner: true,        // Debug banner for legacy mode
+)
+```
+
+---
+
+## 📱 Screen Breakpoints
+
+```
+┌──────────────┬─────────────────┬──────────────────────────┐
+│  Screen Type │   Width Range   │        Enum Value        │
+├──────────────┼─────────────────┼──────────────────────────┤
+│  Watch       │     < 300px     │  ScreenType.watch        │
+│  Mobile      │  300px - 600px  │  ScreenType.mobile       │
+│  Tablet      │  600px - 900px  │  ScreenType.tablet       │
+│  Small DT    │  900px - 1200px │  ScreenType.smallDesktop │
+│  Desktop     │ 1200px - 1800px │  ScreenType.desktop      │
+│  Large DT    │    > 1800px     │  ScreenType.largeDesktop │
+└──────────────┴─────────────────┴──────────────────────────┘
+```
+
+---
+
+## 🧠 Advanced: How the Engine Works
+
+### Quantized IDs (Jitter Prevention)
+
+Scalify converts floating-point scale values to integer IDs (×1000). This prevents "phantom rebuilds" caused by microscopic floating-point differences:
+
+```
+100.0 → ID: 1000
+100.0000001 → ID: 1000  ← Same ID, no rebuild!
+```
+
+### InheritedModel Aspects
+
+Enable granular notifications to rebuild widgets **only** when specific data changes:
+
+```dart
+// Only rebuilds when screen TYPE changes (not on every pixel resize)
+ScalifyProvider.of(context, aspect: ScalifyAspect.type);
+
+// Only rebuilds when scale FACTOR changes
+ScalifyProvider.of(context, aspect: ScalifyAspect.scale);
+
+// Only rebuilds when text scale changes (accessibility)
+ScalifyProvider.of(context, aspect: ScalifyAspect.text);
+```
+
+Enable in config:
+
+```dart
+ScalifyConfig(enableGranularNotifications: true)
+```
+
+### Debounce on Resize
+
+On Desktop/Web, window resizing fires hundreds of events per second. Scalify debounces these with a configurable window (default 120ms), calculating the layout **once** after the user stops dragging.
+
+### 4K Smart Dampening
+
+For screens wider than `memoryProtectionThreshold` (default 1920px):
+
+```
+Normal: scale = screenWidth / designWidth
+4K:     scale = thresholdScale + (excessWidth / designWidth × dampFactor)
+```
+
+This prevents text from becoming 5× the intended size on ultra-wide monitors.
+
+---
+
+## 📋 Migration from v2.x → v3.0.0
+
+### 1. Builder Pattern (Recommended)
+
+```diff
+- MaterialApp(
+-   builder: (context, child) => ScalifyProvider(child: child),
+-   home: HomeScreen(),
+- )
++ ScalifyProvider(
++   builder: (context, child) => MaterialApp(home: child),
++   child: const HomeScreen(),
++ )
+```
+
+### 2. Context API for `const` Widgets
+
+```diff
+- // Won't update in const trees
+- Text("Hi", style: TextStyle(fontSize: 16.fz))
+
++ // Always updates via context
++ Builder(
++   builder: (context) => Text(
++     "Hi",
++     style: TextStyle(fontSize: context.sp(16)),
++   ),
++ )
+```
+
+### 3. Percentage Scaling (New)
+
+```dart
+SizedBox(width: 50.pw)   // 50% of screen width
+SizedBox(height: 25.hp)  // 25% of screen height
+```
+
+### 4. Theme Scaling (New)
+
+```dart
+MaterialApp(
+  theme: ThemeData.light().scale(context),
+)
+```
+
+---
+
+## 🧪 Testing
+
+The package includes **203 comprehensive tests** covering all widgets, extensions, and edge cases:
+
+```bash
+flutter test --reporter compact
+# 00:02 +203: All tests passed!
+```
+
+---
 
 ## Author
 
 **Alaa Hassan Damad**
+- Email: alaahassanak772@gmail.com
+- Country: Iraq
 
-  - Email: alaahassanak772@gmail.com
-  - Country: Iraq
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
