@@ -96,6 +96,26 @@ class _ScalifyProviderState extends State<ScalifyProvider>
   @override
   void didChangeTextScaleFactor() => _update();
 
+  /// Resolves [MediaQueryData] from context, with fallback to [View] or [PlatformDispatcher].
+  MediaQueryData? _resolveMediaQuery() {
+    MediaQueryData? mq = MediaQuery.maybeOf(context);
+    if (mq != null) return mq;
+
+    try {
+      final ui.FlutterView? view = View.maybeOf(context);
+      if (view != null) return MediaQueryData.fromView(view);
+      return MediaQueryData.fromView(
+          ui.PlatformDispatcher.instance.views.first);
+    } catch (e) {
+      debugPrint(
+        'Scalify: Could not resolve MediaQuery or View from context. '
+        'Ensure ScalifyProvider is placed inside a WidgetsApp or MaterialApp, '
+        'or that a valid View is available. Error: $e',
+      );
+      return null;
+    }
+  }
+
   void _update({bool force = false}) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
@@ -104,20 +124,7 @@ class _ScalifyProviderState extends State<ScalifyProvider>
       () {
         if (!mounted) return;
 
-        MediaQueryData? mq = MediaQuery.maybeOf(context);
-        // Fallback: If no MediaQuery is found (e.g. above MaterialApp), try to get from View
-        if (mq == null) {
-          try {
-            final ui.FlutterView? view = View.maybeOf(context);
-            if (view != null) {
-              mq = MediaQueryData.fromView(view);
-            } else {
-              mq = MediaQueryData.fromView(
-                  ui.PlatformDispatcher.instance.views.first);
-            }
-          } catch (_) {}
-        }
-
+        final mq = _resolveMediaQuery();
         final newData = ResponsiveData.fromMediaQuery(mq, widget.config);
 
         if (newData != _currentData) {
@@ -130,29 +137,6 @@ class _ScalifyProviderState extends State<ScalifyProvider>
 
   @override
   Widget build(BuildContext context) {
-    // Always check for MediaQuery changes on build to handle excessive rebuilds
-    // that might bypass didChangeMetrics in some scenarios (like tests)
-    MediaQueryData? mq = MediaQuery.maybeOf(context);
-    if (mq == null) {
-      try {
-        final ui.FlutterView? view = View.maybeOf(context);
-        if (view != null) {
-          mq = MediaQueryData.fromView(view);
-        } else {
-          mq = MediaQueryData.fromView(
-              ui.PlatformDispatcher.instance.views.first);
-        }
-      } catch (_) {}
-    }
-
-    if (mq != null) {
-      final newData = ResponsiveData.fromMediaQuery(mq, widget.config);
-      if (newData != _currentData) {
-        _currentData = newData;
-        GlobalResponsive.update(newData);
-      }
-    }
-
     Widget content = _InheritedScalify(
       data: _currentData,
       child: widget.builder != null

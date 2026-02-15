@@ -54,9 +54,6 @@ class _ContainerQueryState extends State<ContainerQuery> {
 
   @override
   Widget build(BuildContext context) {
-    // Optimization: Use sizeOf to only listen to size changes of the context
-    MediaQuery.sizeOf(context);
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final double width = constraints.hasBoundedWidth

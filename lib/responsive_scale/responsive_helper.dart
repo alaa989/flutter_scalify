@@ -72,6 +72,6 @@ class ResponsiveHelper {
     if (type == ScreenType.desktop) {
       return desktop ?? smallDesktop ?? tablet ?? mobile;
     }
-    return largeDesktop ?? mobile;
+    return largeDesktop ?? desktop ?? smallDesktop ?? tablet ?? mobile;
   }
 }
