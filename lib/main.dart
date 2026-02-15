@@ -135,7 +135,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const _SectionHeader(title: "🔥 NEW v3.0.0 FEATURES"),
+                  _SectionHeader(title: "NEW v3.0.0 FEATURES"),
                   Container(
                     padding: 12.p,
                     margin: 10.pb,
@@ -164,31 +164,35 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold, fontSize: 16.fz)),
                   8.sbh,
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        width: 42.pw,
-                        height: 50.h,
-                        decoration: BoxDecoration(
-                            color: Colors.purple.shade300, borderRadius: 8.br),
-                        alignment: Alignment.center,
-                        child: Text("42% Width",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.fz)),
+                      Expanded(
+                        child: Container(
+                          height: 50.h,
+                          decoration: BoxDecoration(
+                              color: Colors.purple.shade300,
+                              borderRadius: 8.br),
+                          alignment: Alignment.center,
+                          child: Text("42% Width",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14.fz)),
+                        ),
                       ),
-                      Container(
-                        width: 42.pw,
-                        height: 50.h,
-                        decoration: BoxDecoration(
-                            color: Colors.purple.shade300, borderRadius: 8.br),
-                        alignment: Alignment.center,
-                        child: Text("42% Width",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.fz)),
+                      12.sbw,
+                      Expanded(
+                        child: Container(
+                          height: 50.h,
+                          decoration: BoxDecoration(
+                              color: Colors.purple.shade300,
+                              borderRadius: 8.br),
+                          alignment: Alignment.center,
+                          child: Text("42% Width",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14.fz)),
+                        ),
                       ),
                     ],
                   ),
@@ -329,11 +333,10 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                     },
                   ),
                   Divider(height: 40.h),
-                  const _SectionHeader(title: "1. Responsive Flex (Profile)"),
+                  _SectionHeader(title: "1. RESPONSIVE FLEX (PROFILE)"),
                   _buildProfileHeader(context),
                   30.sbh,
-                  const _SectionHeader(
-                      title: "2. Adaptive Cards (Layout Change)"),
+                  _SectionHeader(title: "2. ADAPTIVE CARDS (LAYOUT CHANGE)"),
                   Text(
                     "Cards change layout (Row/Column) based on their own width.",
                     style: TextStyle(color: Colors.grey[600], fontSize: 19.fz),
@@ -369,8 +372,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   30.sbh,
-                  const _SectionHeader(
-                      title: "3. ScalifyBox Grid (Perfect Scale)"),
+                  _SectionHeader(title: "3. SCALIFYBOX GRID (PERFECT SCALE)"),
                   Text(
                     "Items scale geometrically. Ideal for complex UI that shouldn't break.",
                     style: TextStyle(color: Colors.grey[600], fontSize: 19.fz),
@@ -404,8 +406,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   30.sbh,
-                  const _SectionHeader(
-                      title: "4. Auto-Fit Grid (API & Lazy Load)"),
+                  _SectionHeader(title: "4. AUTO-FIT GRID (API & LAZY LOAD)"),
                   Text(
                     "Items lazy load and wrap automatically based on minWidth.",
                     style: TextStyle(color: Colors.grey[600], fontSize: 19.fz),
@@ -707,9 +708,9 @@ class _SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
         padding: 10.pb,
-        child: Text(title.toUpperCase(),
+        child: Text(title,
             style: TextStyle(
-                fontSize: 24.fz,
+                fontSize: context.fz(24),
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
                 color: Colors.blueGrey)),

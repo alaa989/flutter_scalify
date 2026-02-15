@@ -44,6 +44,28 @@ extension ResponsiveContext on BuildContext {
   }
 
   double sp(double value) => value * responsiveData.scaleFactor;
+
+  /// Font size with clamp and accessibility support (matches `.fz`)
+  double fz(double value) {
+    final g = responsiveData;
+    double size = value * g.scaleFactor;
+    if (g.config.respectTextScaleFactor) {
+      size *= g.textScaleFactor;
+    }
+    return size.clamp(g.config.minFontSize, g.config.maxFontSize);
+  }
+
+  /// Icon size (matches `.iz`)
+  double iz(double value) => value * responsiveData.scaleFactor;
+
+  /// General scale factor (matches `.s`)
+  double s(double value) => value * responsiveData.scaleFactor;
+
+  /// Percentage of screen width (e.g. `context.pw(50)` = 50% of screen width)
+  double pw(double percent) => (percent / 100) * responsiveData.width;
+
+  /// Percentage of screen height (e.g. `context.hp(25)` = 25% of screen height)
+  double hp(double percent) => (percent / 100) * responsiveData.height;
 }
 
 /// Numeric extensions for responsive scaling

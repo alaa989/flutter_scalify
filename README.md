@@ -11,6 +11,10 @@
 
 A complete, high-performance responsive system — not just a sizing tool. Scale your entire UI across Mobile, Web, and Desktop with simple extensions, smart container queries, and zero overhead.
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/alaa989/flutter_scalify/master/screenshots/demo.gif" alt="Scalify Responsive Demo" width="600"/>
+</p>
+
 ---
 
 ## Why Scalify? ⚡️
@@ -183,10 +187,15 @@ MaterialApp(
 When widgets are inside a `const` tree and can't use global extensions, use context:
 
 ```dart
-context.w(100)    // Width scaling via context
-context.h(50)     // Height scaling via context
-context.r(12)     // Radius via context
-context.sp(16)    // Scale factor via context
+context.w(100)    // Width scaling
+context.h(50)     // Height scaling
+context.r(12)     // Radius (min of scaleWidth/scaleHeight)
+context.sp(16)    // Scale factor
+context.fz(18)    // Font size (clamped + accessibility)
+context.iz(24)    // Icon size
+context.s(10)     // General scale
+context.pw(50)    // 50% of screen width
+context.hp(25)    // 25% of screen height
 ```
 
 ---

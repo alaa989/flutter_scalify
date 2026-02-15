@@ -33,3 +33,6 @@ platforms:
   macos:
   web:
   windows:
+
+flutter:
+  uses-material-design: true
