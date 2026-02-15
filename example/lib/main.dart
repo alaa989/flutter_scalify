@@ -487,26 +487,61 @@ class ScalifyShowcaseScreen extends StatelessWidget {
             Expanded(child: _buildInfoColumn(context))
           else
             _buildInfoColumn(context),
-          Container(
-            alignment: isMobile ? Alignment.center : Alignment.centerRight,
-            child: Tooltip(
-              message: 'Contact user',
-              child: Semantics(
-                button: true,
-                label: 'Contact the user',
-                child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.message, size: 18.iz),
-                  label: Text("Contact", style: TextStyle(fontSize: 20.fz)),
-                  style: ElevatedButton.styleFrom(
-                    padding: [20, 12].p,
-                    backgroundColor: Colors.indigo,
-                    foregroundColor: Colors.white,
+          if (!isMobile)
+            Flexible(
+              child: Container(
+                alignment: isMobile ? Alignment.center : Alignment.centerRight,
+                child: Tooltip(
+                  message: 'Contact user',
+                  child: Semantics(
+                      button: true,
+                      label: 'Contact the user',
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          padding: [16, 12].p,
+                          backgroundColor: Colors.indigo,
+                          foregroundColor: Colors.white,
+                        ),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.message, size: 16.iz),
+                              6.sbw,
+                              Text(
+                                "Contact",
+                                style: TextStyle(fontSize: 16.fz),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )),
+                ),
+              ),
+            )
+          else
+            Container(
+              alignment: isMobile ? Alignment.center : Alignment.centerRight,
+              child: Tooltip(
+                message: 'Contact user',
+                child: Semantics(
+                  button: true,
+                  label: 'Contact the user',
+                  child: ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: Icon(Icons.message, size: 18.iz),
+                    label: Text("Contact", style: TextStyle(fontSize: 20.fz)),
+                    style: ElevatedButton.styleFrom(
+                      padding: [20, 12].p,
+                      backgroundColor: Colors.indigo,
+                      foregroundColor: Colors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-          )
+            )
         ],
       ),
     );
@@ -530,13 +565,13 @@ class ScalifyShowcaseScreen extends StatelessWidget {
           style: TextStyle(fontSize: 16.fz, color: Colors.grey),
         ),
         8.sbh,
-        Row(
-          mainAxisAlignment:
-              isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
-          children: [
-            const _Badge(text: "Pro Member"),
-            8.sbw,
-            const _Badge(text: "Available for Hire")
+        Wrap(
+          alignment: isMobile ? WrapAlignment.center : WrapAlignment.start,
+          spacing: 8.s,
+          runSpacing: 4.s,
+          children: const [
+            _Badge(text: "Pro Member"),
+            _Badge(text: "Available for Hire")
           ],
         )
       ],
