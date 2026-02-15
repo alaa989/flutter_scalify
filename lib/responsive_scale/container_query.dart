@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_scalify/responsive_scale/scalify_config.dart';
-import 'package:flutter_scalify/responsive_scale/scalify_provider.dart';
+import 'scalify_config.dart';
+import 'scalify_provider.dart';
 
 /// Semantic size categories for the container.
 enum QueryTier { xs, sm, md, lg, xl, xxl }

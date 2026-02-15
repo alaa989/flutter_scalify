@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_scalify/flutter_scalify.dart';
+import 'scalify_provider.dart';
 
 /// Extension to scale [ThemeData] based on [ResponsiveData] metrics.
 extension ScalifyThemeExtension on ThemeData {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_scalify/flutter_scalify.dart';
+import 'responsive_data.dart';
+import 'responsive_extensions.dart';
 
 /// A widget that conditionally shows its [child] based on the current [ScreenType].
 class ResponsiveVisibility extends StatelessWidget {

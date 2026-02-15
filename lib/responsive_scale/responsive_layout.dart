@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_scalify/flutter_scalify.dart';
+import 'responsive_extensions.dart';
 
 /// A widget that builds different layouts based on the screen orientation.
 class ResponsiveLayout extends StatelessWidget {

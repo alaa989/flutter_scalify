@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_scalify/flutter_scalify.dart';
+import 'responsive_data.dart';
+import 'responsive_extensions.dart';
 
 /// A builder widget that ensures live responsive updates for its subtree.
 ///
