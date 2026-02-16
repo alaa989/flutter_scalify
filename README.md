@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2.svg)](https://dart.dev)
-[![Tests](https://img.shields.io/badge/Tests-203%20passed-brightgreen.svg)](#)
+[![Tests](https://img.shields.io/badge/Tests-208%20passed-brightgreen.svg)](#)
 [![Platform](https://img.shields.io/badge/Platform-Android%20|%20iOS%20|%20Web%20|%20macOS%20|%20Linux%20|%20Windows-purple.svg)](#)
 
 **The Intelligent Scaling Engine for Flutter.**
@@ -28,12 +28,13 @@ A complete, high-performance responsive system — not just a sizing tool. Scale
 | **Builder Pattern** (Above MaterialApp) | ✅ |
 | **InheritedModel** (Granular Rebuild) | ✅ |
 | **Debounce on Resize** (Desktop/Web) | ✅ |
+| **Section Scaling** (ScalifySection) | ✅ |
 | **Local Scaler** (ScalifyBox) | ✅ |
 | **6 Screen Types** (Watch → Large Desktop) | ✅ |
 | **Theme Auto-Scaling** (One line) | ✅ |
 | **Percentage Scaling** (.pw .hp) | ✅ |
 | **Zero External Dependencies** | ✅ |
-| **203 Tests Passing** | ✅ |
+| **208 Tests Passing** | ✅ |
 
 ---
 
@@ -48,6 +49,7 @@ A complete, high-performance responsive system — not just a sizing tool. Scale
 - 🔡 **Font Clamping** — Configurable min/max font bounds (never too small or too big)
 - 🎨 **Theme Scaling** — `ThemeData.scale(context)` — one line, entire theme scaled
 - 🧱 **Local Scaling** — `ScalifyBox` scales elements relative to their container
+- 🧩 **Section Scaling** — `ScalifySection` creates independent scaling per section for split layouts
 - 📊 **Percentage Scaling** — `50.pw` = 50% of screen width, `25.hp` = 25% of height
 
 ---
@@ -455,6 +457,62 @@ ScalifyBox(
 
 ---
 
+## 🧩 ScalifySection — Independent Section Scaling
+
+Creates an **independent scaling context** for any part of your UI. Essential for **split-screen** / **master-detail** layouts where each section should scale based on its own width.
+
+```dart
+Row(
+  children: [
+    // Sidebar: scales based on 300px width
+    SizedBox(
+      width: 300,
+      child: ScalifySection(child: Sidebar()),
+    ),
+    // Main content: scales based on remaining width
+    Expanded(
+      child: ScalifySection(child: MainContent()),
+    ),
+  ],
+)
+```
+
+> 💡 **Tip:** Inside a `ScalifySection`, use **context-based** extensions (`context.fz(16)`, `context.w(100)`) instead of global extensions (`16.fz`, `100.w`) for accurate section-local scaling.
+
+**Full Master-Detail Example:**
+
+```dart
+class MasterDetailLayout extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+
+    // Mobile: bottom navigation
+    if (width < 900) {
+      return Scaffold(
+        body: MainPages(),
+        bottomNavigationBar: BottomNav(),
+      );
+    }
+
+    // Desktop: sidebar + content — each scales independently
+    return Row(
+      children: [
+        SizedBox(
+          width: 300,
+          child: ScalifySection(child: Sidebar()),
+        ),
+        Expanded(
+          child: ScalifySection(child: MainPages()),
+        ),
+      ],
+    );
+  }
+}
+```
+
+---
+
 ## 🛡️ AppWidthLimiter — Ultra-Wide Protection
 
 Centers and constrains your app on ultra-wide monitors.
@@ -467,6 +525,37 @@ AppWidthLimiter(
   backgroundColor: Color(0xFFE2E8F0),
   child: YourApp(),
 )
+```
+
+---
+
+## 📏 Best Practices — Consistent UI
+
+Use the right extension for each element to maintain a consistent UI across all screen sizes:
+
+| Element | Use | Why |
+| :--- | :---: | :--- |
+| **Text / Fonts** | `.fz` | Scaled + clamped + accessibility |
+| **Icons** | `.iz` / `.s` | Proportional to screen |
+| **Button height** | `.s` | ❌ Never `.h` — distorts on wide screens |
+| **Input field height** | `.s` | ❌ Never `.h` — text overflows |
+| **Container width** | `.w` | Follows screen width |
+| **Container height** | `.s` | Stays proportional |
+| **Horizontal padding** | `.w` | Follows width |
+| **Vertical spacing** | `.h` | Adapts to screen height |
+| **General spacing** | `.s` | Balanced proportional |
+| **Border radius** | `.r` / `.br` | Uses min(scaleW, scaleH) |
+
+> ⚠️ **Common Mistake:** Using `.h` for button/input heights causes them to shrink on wide screens (where height < width), making text overflow.
+>
+> ✅ **Fix:** Use `.s` — it uses `min(scaleWidth, scaleHeight)` which stays balanced.
+
+```dart
+// ❌ Wrong — height shrinks on wide screens
+SizedBox(height: 48.h, child: ElevatedButton(...))
+
+// ✅ Correct — stays proportional everywhere
+SizedBox(height: 48.s, child: ElevatedButton(...))
 ```
 
 ---
@@ -635,6 +724,22 @@ ScalifyConfig(debounceWindowMillis: 0)
 ScalifyConfig(debounceWindowMillis: 200)
 ```
 
+### Nested Providers & Performance (`observeMetrics`)
+
+When nesting `ScalifyProvider` (e.g., for a split-screen section), the inner provider should **not** listen to window resize events directly, as this creates a "double debounce" race condition with the parent provider, causing UI lag.
+
+To fix this, set `observeMetrics: false` on the nested provider:
+
+```dart
+ScalifyProvider(
+  config: sectionConfig,
+  observeMetrics: false, // ⚡️ Disables internal resize listener
+  child: SectionContent(),
+)
+```
+
+This ensures the inner provider updates **synchronously** when its parent rebuilds, resulting in 60fps performance during window resizing. `ScalifySection` handles this automatically.
+
 ### 4K Smart Dampening
 
 For screens wider than `memoryProtectionThreshold` (default 1920px):
@@ -697,11 +802,11 @@ MaterialApp(
 
 ## 🧪 Testing
 
-The package includes **203 comprehensive tests** covering all widgets, extensions, and edge cases:
+The package includes **208 comprehensive tests** covering all widgets, extensions, and edge cases:
 
 ```bash
 flutter test --reporter compact
-# 00:02 +203: All tests passed!
+# 00:02 +208: All tests passed!
 ```
 
 ---

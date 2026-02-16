@@ -20,3 +20,4 @@ export 'responsive_scale/responsive_builder.dart';
 export 'responsive_scale/responsive_layout.dart';
 export 'responsive_scale/responsive_visibility.dart';
 export 'responsive_scale/scalify_builder.dart';
+export 'responsive_scale/scalify_section.dart';

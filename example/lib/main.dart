@@ -456,6 +456,33 @@ class ScalifyShowcaseScreen extends StatelessWidget {
               );
             },
           ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: 20.p,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  30.sbh,
+                  const _SectionHeader(
+                      title: "5. SCALIFY SECTION (SPLIT SCALING)"),
+                  Text(
+                    "Each panel scales independently based on its own width, not the screen width.",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 19.fz),
+                  ),
+                  10.sbh,
+                  const _SplitSectionDemo(),
+                  30.sbh,
+                  const _SectionHeader(title: "6. BEST PRACTICE: .s vs .h"),
+                  Text(
+                    "Use .s for button & input heights to keep UI consistent on all screens.",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 19.fz),
+                  ),
+                  10.sbh,
+                  const _ScaleComparisonDemo(),
+                ],
+              ),
+            ),
+          ),
           SliverToBoxAdapter(child: 50.sbh),
         ],
       ),
@@ -759,4 +786,476 @@ class _SectionHeader extends StatelessWidget {
                 letterSpacing: 1.2,
                 color: Colors.blueGrey)),
       );
+}
+
+/// Demonstrates ScalifySection — responsive split with nested navigation.
+class _SplitSectionDemo extends StatefulWidget {
+  const _SplitSectionDemo();
+
+  @override
+  State<_SplitSectionDemo> createState() => _SplitSectionDemoState();
+}
+
+class _SplitSectionDemoState extends State<_SplitSectionDemo> {
+  int _mobileTab = 0; // 0 = sidebar, 1 = content
+  int? _selectedItem; // null = list, non-null = detail
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final isWide = screenWidth >= 600;
+
+    return Container(
+      height: 280.s,
+      decoration: BoxDecoration(
+        borderRadius: 12.br,
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: isWide ? _buildSplitView() : _buildMobileView(),
+    );
+  }
+
+  Widget _buildSplitView() {
+    return Row(
+      children: [
+        Expanded(
+          flex: 3,
+          child: ScalifySection(child: _buildSidebar()),
+        ),
+        Container(width: 1, color: Colors.grey.shade300),
+        Expanded(
+          flex: 7,
+          child: ScalifySection(child: _buildMainContent()),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMobileView() {
+    return Column(
+      children: [
+        Container(
+          color: Colors.grey.shade100,
+          child: Row(
+            children: [
+              Expanded(
+                child: _TabBtn(
+                  label: "Sidebar",
+                  icon: Icons.view_sidebar,
+                  isActive: _mobileTab == 0,
+                  onTap: () => setState(() => _mobileTab = 0),
+                ),
+              ),
+              Expanded(
+                child: _TabBtn(
+                  label: "Content",
+                  icon: Icons.dashboard,
+                  isActive: _mobileTab == 1,
+                  onTap: () => setState(() => _mobileTab = 1),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: _mobileTab == 0 ? _buildSidebar() : _buildMainContent(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSidebar() {
+    return Builder(builder: (context) {
+      final data = ScalifyProvider.of(context);
+      return Container(
+        color: Colors.indigo.shade50,
+        padding: EdgeInsets.all(context.s(12)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.view_sidebar,
+                size: context.iz(28), color: Colors.indigo),
+            SizedBox(height: context.s(8)),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text("Sidebar Panel",
+                  style: TextStyle(
+                    fontSize: context.fz(16),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.indigo.shade800,
+                  )),
+            ),
+            SizedBox(height: context.s(6)),
+            Container(
+              padding: EdgeInsets.symmetric(
+                  horizontal: context.s(8), vertical: context.s(4)),
+              decoration: BoxDecoration(
+                color: Colors.indigo.shade100,
+                borderRadius: BorderRadius.circular(context.r(6)),
+              ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text("W: ${data.size.width.toInt()}px",
+                    style: TextStyle(
+                      fontSize: context.fz(13),
+                      fontWeight: FontWeight.w600,
+                      color: Colors.indigo.shade700,
+                    )),
+              ),
+            ),
+            SizedBox(height: context.s(4)),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text("Scale: ${data.scaleWidth.toStringAsFixed(2)}",
+                  style: TextStyle(
+                    fontSize: context.fz(11),
+                    color: Colors.indigo.shade400,
+                  )),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget _buildMainContent() {
+    return Builder(builder: (context) {
+      final data = ScalifyProvider.of(context);
+      return Container(
+        color: Colors.teal.shade50,
+        padding: EdgeInsets.all(context.s(12)),
+        child: _selectedItem == null
+            ? _listView(context, data)
+            : _detailView(context, data),
+      );
+    });
+  }
+
+  Widget _listView(BuildContext context, ResponsiveData data) {
+    return Column(
+      children: [
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Text("Content — ${data.size.width.toInt()}px",
+              style: TextStyle(
+                fontSize: context.fz(15),
+                fontWeight: FontWeight.bold,
+                color: Colors.teal.shade800,
+              )),
+        ),
+        SizedBox(height: context.s(8)),
+        Expanded(
+          child: ListView.separated(
+            padding: EdgeInsets.zero,
+            itemCount: 3,
+            separatorBuilder: (_, __) => SizedBox(height: context.s(6)),
+            itemBuilder: (ctx, index) {
+              return Material(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(context.r(8)),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(context.r(8)),
+                  onTap: () => setState(() => _selectedItem = index),
+                  child: Padding(
+                    padding: EdgeInsets.all(context.s(10)),
+                    child: Row(
+                      children: [
+                        Icon(Icons.article_outlined,
+                            size: context.iz(20), color: Colors.teal),
+                        SizedBox(width: context.s(8)),
+                        Expanded(
+                          child: Text("Item ${index + 1} — Tap for detail",
+                              style: TextStyle(
+                                  fontSize: context.fz(13),
+                                  color: Colors.teal.shade700)),
+                        ),
+                        Icon(Icons.chevron_right,
+                            size: context.iz(18), color: Colors.teal.shade300),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _detailView(BuildContext context, ResponsiveData data) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          children: [
+            GestureDetector(
+              onTap: () => setState(() => _selectedItem = null),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.arrow_back,
+                      size: context.iz(18), color: Colors.teal.shade700),
+                  SizedBox(width: context.s(4)),
+                  Text("Back",
+                      style: TextStyle(
+                          fontSize: context.fz(13),
+                          color: Colors.teal.shade700,
+                          fontWeight: FontWeight.w600)),
+                ],
+              ),
+            ),
+            const Spacer(),
+            Container(
+              padding: EdgeInsets.symmetric(
+                  horizontal: context.s(6), vertical: context.s(2)),
+              decoration: BoxDecoration(
+                color: Colors.teal.shade100,
+                borderRadius: BorderRadius.circular(context.r(4)),
+              ),
+              child: Text("W: ${data.size.width.toInt()}px",
+                  style: TextStyle(
+                      fontSize: context.fz(11), color: Colors.teal.shade600)),
+            ),
+          ],
+        ),
+        const Spacer(),
+        Icon(Icons.check_circle,
+            size: context.iz(40), color: Colors.teal.shade400),
+        SizedBox(height: context.s(8)),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text("Detail: Item ${_selectedItem! + 1}",
+              style: TextStyle(
+                fontSize: context.fz(18),
+                fontWeight: FontWeight.bold,
+                color: Colors.teal.shade800,
+              )),
+        ),
+        SizedBox(height: context.s(6)),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text("Split stays fixed! ✅",
+              style: TextStyle(
+                fontSize: context.fz(14),
+                color: Colors.teal.shade600,
+              )),
+        ),
+        const Spacer(),
+      ],
+    );
+  }
+}
+
+class _TabBtn extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _TabBtn({
+    required this.label,
+    required this.icon,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 8.s),
+        decoration: BoxDecoration(
+          color: isActive ? Colors.indigo.shade50 : Colors.transparent,
+          border: Border(
+            bottom: BorderSide(
+              color: isActive ? Colors.indigo : Colors.transparent,
+              width: 2,
+            ),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon,
+                size: 16.iz, color: isActive ? Colors.indigo : Colors.grey),
+            SizedBox(width: 4.s),
+            Text(label,
+                style: TextStyle(
+                  fontSize: 13.fz,
+                  fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                  color: isActive ? Colors.indigo : Colors.grey,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Demonstrates .s (correct) vs .h (problematic) for button & input heights.
+class _ScaleComparisonDemo extends StatelessWidget {
+  const _ScaleComparisonDemo();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text("✅ height: 48.s",
+                        style: TextStyle(
+                            fontSize: 13.fz,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green.shade700)),
+                  ),
+                  6.sbh,
+                  SizedBox(
+                    height: 48.s,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green.shade600,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child:
+                            Text("Buy Now", style: TextStyle(fontSize: 16.fz)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            12.sbw,
+            Expanded(
+              child: Column(
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text("⚠️ height: 48.h",
+                        style: TextStyle(
+                            fontSize: 13.fz,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange.shade700)),
+                  ),
+                  6.sbh,
+                  SizedBox(
+                    height: 48.h,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange.shade600,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child:
+                            Text("Buy Now", style: TextStyle(fontSize: 16.fz)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        16.sbh,
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text("✅ height: 48.s",
+                        style: TextStyle(
+                            fontSize: 13.fz,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green.shade700)),
+                  ),
+                  6.sbh,
+                  SizedBox(
+                    height: 48.s,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: "Search...",
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(borderRadius: 8.br),
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 8.s),
+                      ),
+                      style: TextStyle(fontSize: 14.fz),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            12.sbw,
+            Expanded(
+              child: Column(
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text("⚠️ height: 48.h",
+                        style: TextStyle(
+                            fontSize: 13.fz,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange.shade700)),
+                  ),
+                  6.sbh,
+                  SizedBox(
+                    height: 48.h,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: "Search...",
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(borderRadius: 8.br),
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 8.h),
+                      ),
+                      style: TextStyle(fontSize: 14.fz),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        12.sbh,
+        Container(
+          padding: 10.p,
+          decoration: BoxDecoration(
+            color: Colors.blue.shade50,
+            borderRadius: 8.br,
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.info_outline,
+                  color: Colors.blue.shade700, size: 18.iz),
+              8.sbw,
+              Expanded(
+                child: Text(
+                  "Resize the window — .s stays proportional while .h may shrink on wide screens.",
+                  style:
+                      TextStyle(fontSize: 12.fz, color: Colors.blue.shade800),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }

@@ -25,11 +25,22 @@ class ScalifyProvider extends StatefulWidget {
   final TransitionBuilder? builder;
   final ScalifyConfig config;
 
+  /// Whether to observe platform metric changes (window resize, text scale).
+  ///
+  /// Set to `false` for nested providers (e.g., inside [ScalifySection]) that
+  /// should only react to parent-driven [MediaQuery] changes, not platform
+  /// events directly. This prevents duplicate debounce timers and ensures
+  /// the nested provider updates synchronously when its [MediaQuery] changes.
+  ///
+  /// Defaults to `true` for top-level providers.
+  final bool observeMetrics;
+
   const ScalifyProvider({
     super.key,
     this.child,
     this.builder,
     this.config = const ScalifyConfig(),
+    this.observeMetrics = true,
   }) : assert(child != null || builder != null,
             'Either child or builder must be provided');
 
@@ -76,7 +87,9 @@ class _ScalifyProviderState extends State<ScalifyProvider>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    if (widget.observeMetrics) {
+      WidgetsBinding.instance.addObserver(this);
+    }
 
     _currentData = ResponsiveData.fromMediaQuery(null, widget.config);
 
@@ -86,7 +99,9 @@ class _ScalifyProviderState extends State<ScalifyProvider>
   @override
   void dispose() {
     _debounceTimer?.cancel();
-    WidgetsBinding.instance.removeObserver(this);
+    if (widget.observeMetrics) {
+      WidgetsBinding.instance.removeObserver(this);
+    }
     super.dispose();
   }
 

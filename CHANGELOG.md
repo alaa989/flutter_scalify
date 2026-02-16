@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [3.0.0] - 2025-02-16 🚀 (The Performance & Stability Update)
 
-This is a **major release** that re-engineers the core scaling engine, introduces powerful developer experience improvements, and brings the test suite to 203 fully passing tests.
+This is a **major release** that re-engineers the core scaling engine, introduces powerful developer experience improvements, and brings the following:
+- **Advanced**: Added `observeMetrics` to `ScalifyProvider` to prevent race conditions in nested providers (fixes resize lag).
+- **Example**: Added comprehensive `ScalifySection` demo with split-view, nested navigation, and best practices guide.
+- **Tests**: Reached 208 passing tests.
 
 ### ⚡ Core Engine Overhaul
 
@@ -19,6 +22,7 @@ This is a **major release** that re-engineers the core scaling engine, introduce
 ### 🎨 Developer Experience (DX)
 
 - **Builder Pattern in `ScalifyProvider`:** Added optional `builder` property. Place `ScalifyProvider` as parent of `MaterialApp` to prevent cascading rebuilds on window resize.
+- **`ScalifySection` Widget:** New widget for split-screen/master-detail patterns. Creates an independent scaling context based on the section's actual layout width, not the full screen width. Essential for sidebar + content layouts.
 - **`ScalifyBuilder` Deprecated:** Unified builder widgets — use `ResponsiveBuilder` instead. `ScalifyBuilder` remains as a backward-compatible alias.
 - **Context API for `const` Widgets:** Added `context.w()`, `context.h()`, `context.r()`, `context.sp()` methods. Ensures responsive values update even inside `const` widget trees.
 - **Percentage Scaling:** Added `.pw` (% of screen width) and `.hp` (% of screen height) extensions.
@@ -48,7 +52,7 @@ This is a **major release** that re-engineers the core scaling engine, introduce
 
 ### 🧪 Test Suite
 
-- **203 tests passing** with optimized test infrastructure.
+- **208 tests passing** with optimized test infrastructure.
 - Replaced `pumpAndSettle()` with targeted `pump()` for 10× faster test execution.
 - Added `pumpApp()` helper that correctly handles ScalifyProvider's debounce timer.
 - All tests use the recommended builder pattern (`ScalifyProvider` as parent of `MaterialApp`).
