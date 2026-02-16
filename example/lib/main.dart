@@ -91,24 +91,24 @@ class ScalifyShowcaseScreen extends StatelessWidget {
             floating: true,
             pinned: true,
             expandedHeight: expandedHeight,
-            title: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Semantics(
-                  label: 'App icon',
-                  child: Icon(Icons.layers, size: 28.iz),
-                ),
-                14.sbw,
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: Text(
+            title: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Semantics(
+                    label: 'App icon',
+                    child: Icon(Icons.layers, size: 28.iz),
+                  ),
+                  14.sbw,
+                  Text(
                     "Scalify UI Kit",
                     style:
                         TextStyle(fontSize: 28.fz, fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             actions: [
               Center(
@@ -597,34 +597,40 @@ class _AdaptiveProductCard extends StatelessWidget {
         builder: (context, query) {
           // حالة الحاوية الصغيرة جداً
           if (query.tier == QueryTier.xs) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.shopping_bag, color: Colors.indigo, size: 32.iz),
-                8.sbh,
-                Text("Product $index",
-                    style: TextStyle(
-                        fontSize: 19.fz, fontWeight: FontWeight.bold)),
-                Text("\$99",
-                    style: TextStyle(fontSize: 18.fz, color: Colors.green)),
-              ],
+            return FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.shopping_bag, color: Colors.indigo, size: 32.iz),
+                  8.sbh,
+                  Text("Product $index",
+                      style: TextStyle(
+                          fontSize: 19.fz, fontWeight: FontWeight.bold)),
+                  Text("\$99",
+                      style: TextStyle(fontSize: 18.fz, color: Colors.green)),
+                ],
+              ),
             );
           }
 
           if (query.tier == QueryTier.sm) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.shopping_bag, color: Colors.indigo, size: 40.iz),
-                8.sbh,
-                Text("Product $index",
-                    style: TextStyle(
-                        fontSize: 20.fz, fontWeight: FontWeight.bold)),
-                Text("\$99.00",
-                    style: TextStyle(fontSize: 18.fz, color: Colors.green)),
-              ],
+            return FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.shopping_bag, color: Colors.indigo, size: 40.iz),
+                  8.sbh,
+                  Text("Product $index",
+                      style: TextStyle(
+                          fontSize: 20.fz, fontWeight: FontWeight.bold)),
+                  Text("\$99.00",
+                      style: TextStyle(fontSize: 18.fz, color: Colors.green)),
+                ],
+              ),
             );
           }
 

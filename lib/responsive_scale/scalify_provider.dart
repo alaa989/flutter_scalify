@@ -80,7 +80,7 @@ class _ScalifyProviderState extends State<ScalifyProvider>
 
     _currentData = ResponsiveData.fromMediaQuery(null, widget.config);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _update(force: true));
+    WidgetsBinding.instance.addPostFrameCallback((_) => _performUpdate());
   }
 
   @override
@@ -90,15 +90,22 @@ class _ScalifyProviderState extends State<ScalifyProvider>
     super.dispose();
   }
 
+  /// Responds to MediaQuery changes from parent widgets (e.g. DevicePreview).
   @override
-  void didChangeMetrics() => _update();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _performUpdate();
+  }
 
   @override
-  void didChangeTextScaleFactor() => _update();
+  void didChangeMetrics() => _performUpdate();
+
+  @override
+  void didChangeTextScaleFactor() => _performUpdate();
 
   /// Resolves [MediaQueryData] from context, with fallback to [View] or [PlatformDispatcher].
   MediaQueryData? _resolveMediaQuery() {
-    MediaQueryData? mq = MediaQuery.maybeOf(context);
+    final mq = MediaQuery.maybeOf(context);
     if (mq != null) return mq;
 
     try {
@@ -116,23 +123,22 @@ class _ScalifyProviderState extends State<ScalifyProvider>
     }
   }
 
-  void _update({bool force = false}) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
+  /// Synchronous update — called by all lifecycle methods to ensure
+  /// the scale factor is updated in the SAME frame as the constraints.
+  void _performUpdate() {
+    if (!mounted) return;
+    _debounce?.cancel();
 
-    _debounce = Timer(
-      Duration(milliseconds: force ? 0 : widget.config.debounceWindowMillis),
-      () {
-        if (!mounted) return;
+    final mq = _resolveMediaQuery();
+    final newData = ResponsiveData.fromMediaQuery(mq, widget.config);
 
-        final mq = _resolveMediaQuery();
-        final newData = ResponsiveData.fromMediaQuery(mq, widget.config);
-
-        if (newData != _currentData) {
-          setState(() => _currentData = newData);
-          GlobalResponsive.update(newData);
-        }
-      },
-    );
+    if (newData != _currentData) {
+      setState(() => _currentData = newData);
+      // Defer global update to avoid calling during persistentCallbacks phase.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) GlobalResponsive.update(newData);
+      });
+    }
   }
 
   @override
