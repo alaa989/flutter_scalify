@@ -169,12 +169,15 @@ class ResponsiveData {
 
     final tol = config.rebuildWidthPxThreshold;
 
-    // Use quantized ids plus size tolerance and screenType for robust equality.
+    final scaleTol = config.rebuildScaleThreshold;
+
+    // Use configurable tolerance for scale comparisons,
+    // quantized IDs for InheritedModel aspect checks (see ScalifyProvider).
     return (other.size.width - size.width).abs() < tol &&
         (other.size.height - size.height).abs() < tol &&
-        other._scaleFactorId == _scaleFactorId &&
-        other._scaleWidthId == _scaleWidthId &&
-        other._scaleHeightId == _scaleHeightId &&
+        (other.scaleFactor - scaleFactor).abs() < scaleTol &&
+        (other.scaleWidth - scaleWidth).abs() < scaleTol &&
+        (other.scaleHeight - scaleHeight).abs() < scaleTol &&
         other._textScaleFactorId == _textScaleFactorId &&
         other.screenType == screenType;
   }

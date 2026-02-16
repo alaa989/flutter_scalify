@@ -493,10 +493,10 @@ ScalifyProvider(
 
 For instant UI updates while dragging the window:
 
-**Option 1: ScalifyBuilder (Recommended)**
+**Option 1: ResponsiveBuilder (Recommended)**
 
 ```dart
-ScalifyBuilder(
+ResponsiveBuilder(
   builder: (context, data) {
     return Scaffold(
       body: Center(
@@ -587,14 +587,20 @@ ScalifyConfig(
 
 ## 🧠 Advanced: How the Engine Works
 
-### Quantized IDs (Jitter Prevention)
+### Configurable Rebuild Tolerance
 
-Scalify converts floating-point scale values to integer IDs (×1000). This prevents "phantom rebuilds" caused by microscopic floating-point differences:
+Scalify uses a **dual-tolerance** system to prevent unnecessary rebuilds:
+
+- **`rebuildWidthPxThreshold`** (default 4.0px) — Ignores sub-pixel size changes
+- **`rebuildScaleThreshold`** (default 0.01) — Ignores scale changes < 1%
 
 ```
-100.0 → ID: 1000
-100.0000001 → ID: 1000  ← Same ID, no rebuild!
+Screen: 375px → 377px (2px diff < 4px threshold)
+Scale:  1.000 → 1.005 (0.005 diff < 0.01 threshold)
+→ No rebuild! ✅
 ```
+
+Internally, Quantized IDs (×1000) are still used for `InheritedModel` aspect-based comparisons to ensure fast integer equality checks.
 
 ### InheritedModel Aspects
 
@@ -619,7 +625,15 @@ ScalifyConfig(enableGranularNotifications: true)
 
 ### Debounce on Resize
 
-On Desktop/Web, window resizing fires hundreds of events per second. Scalify debounces these with a configurable window (default 120ms), calculating the layout **once** after the user stops dragging.
+On Desktop/Web, window resizing fires hundreds of events per second. Scalify debounces platform-driven resize events with a configurable window (`debounceWindowMillis`, default 120ms), calculating the layout **once** after the user stops dragging. Parent-driven updates (e.g., `didChangeDependencies`) remain synchronous for instant response.
+
+```dart
+// Disable debounce for instant updates:
+ScalifyConfig(debounceWindowMillis: 0)
+
+// Increase debounce for weaker devices:
+ScalifyConfig(debounceWindowMillis: 200)
+```
 
 ### 4K Smart Dampening
 

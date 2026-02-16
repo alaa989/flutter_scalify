@@ -122,12 +122,16 @@ class ContainerQueryData {
   bool isLessThan(double value) => width < value;
   bool isAtLeast(double value) => width >= value;
 
+  /// Sub-pixel tolerance for equality comparison.
+  /// Prevents unnecessary rebuilds from fractional pixel differences.
+  static const double _tolerance = 0.5;
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is ContainerQueryData &&
-        other.width == width &&
-        other.height == height &&
+        (other.width - width).abs() < _tolerance &&
+        (other.height - height).abs() < _tolerance &&
         other.tier == tier;
   }
 

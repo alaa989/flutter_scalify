@@ -311,10 +311,10 @@ void main() {
         const mqB = MediaQueryData(size: Size(377, 812));
         final a = ResponsiveData.fromMediaQuery(mqA, config);
         final b = ResponsiveData.fromMediaQuery(mqB, config);
-        // Difference 2px < 4px threshold — but scale IDs may differ
-        // The equality uses both size tolerance AND quantized IDs
-        // 377/375 = 1.00533, id = 1005 vs 1000 → not equal because IDs differ
-        expect(a == b, false);
+        // Difference 2px < 4px threshold, and scale difference
+        // (377/375 - 1.0 = 0.00533) < rebuildScaleThreshold (0.01)
+        // Both size and scale are within tolerance → equal
+        expect(a == b, true);
       });
 
       test('not equal to non-ResponsiveData object', () {

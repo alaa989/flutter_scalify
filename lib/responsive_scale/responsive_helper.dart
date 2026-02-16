@@ -11,6 +11,10 @@ class ResponsiveHelper {
   ResponsiveHelper.fromData(this.data);
 
   /// Creates a [ResponsiveHelper] from the current [context].
+  ///
+  /// **Note:** This factory uses the default [ScalifyConfig] and does not
+  /// inherit the config from [ScalifyProvider]. For config-aware behavior,
+  /// use `context.responsiveHelper` instead.
   factory ResponsiveHelper.fromContext(BuildContext context) {
     final mq = MediaQuery.maybeOf(context);
     final data = ResponsiveData.fromMediaQuery(mq, const ScalifyConfig());

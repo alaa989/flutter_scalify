@@ -2,20 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.0.0] - 2025-02-15 🚀 (The Performance & Stability Update)
+## [3.0.0] - 2025-02-16 🚀 (The Performance & Stability Update)
 
 This is a **major release** that re-engineers the core scaling engine, introduces powerful developer experience improvements, and brings the test suite to 203 fully passing tests.
 
 ### ⚡ Core Engine Overhaul
 
 - **InheritedModel with `ScalifyAspect`:** Replaced global subscription with granular aspects (`type`, `scale`, `text`). Widgets that only need screen type information won't rebuild when scale changes, massively reducing unnecessary rebuilds.
-- **Quantized IDs (Jitter Prevention):** Internal float-to-int conversion (×1000) for equality checks. Eliminates phantom rebuilds caused by microscopic floating-point differences (e.g., `100.0` vs `100.0000001`).
+- **Quantized IDs (Jitter Prevention):** Internal float-to-int conversion (×1000) for `InheritedModel` aspect equality checks. Eliminates phantom rebuilds caused by microscopic floating-point differences.
+- **Configurable Rebuild Tolerance:** `ResponsiveData.==` now uses `rebuildScaleThreshold` (default 0.01) for scale comparisons and `rebuildWidthPxThreshold` (default 4.0px) for size comparisons, giving users control over rebuild sensitivity.
+- **Active Debounce:** `debounceWindowMillis` is now actively implemented via `Timer` in `ScalifyProvider`. Platform-driven events (resize, text scale) are debounced while parent-driven updates remain synchronous.
 - **Balanced `scaleFactor`:** Now uses `math.min(scaleWidth, scaleHeight)` to prevent UI overstretching on non-standard aspect ratios.
 - **Modern `textScaler`:** Replaced deprecated `textScaleFactor` with Flutter 3.x `textScaler` API for full Material 3 and accessibility compliance.
+- **ContainerQueryData Tolerance:** Added 0.5px sub-pixel tolerance to `ContainerQueryData.==` to prevent unnecessary rebuilds from fractional pixel differences.
 
 ### 🎨 Developer Experience (DX)
 
 - **Builder Pattern in `ScalifyProvider`:** Added optional `builder` property. Place `ScalifyProvider` as parent of `MaterialApp` to prevent cascading rebuilds on window resize.
+- **`ScalifyBuilder` Deprecated:** Unified builder widgets — use `ResponsiveBuilder` instead. `ScalifyBuilder` remains as a backward-compatible alias.
 - **Context API for `const` Widgets:** Added `context.w()`, `context.h()`, `context.r()`, `context.sp()` methods. Ensures responsive values update even inside `const` widget trees.
 - **Percentage Scaling:** Added `.pw` (% of screen width) and `.hp` (% of screen height) extensions.
 - **Deprecation Banner Fix:** The `_DeprecationBanner` now renders inside the `MaterialApp` context when using the builder pattern, fixing the crash caused by missing Material ancestors.
@@ -33,17 +37,21 @@ This is a **major release** that re-engineers the core scaling engine, introduce
 - **Fixed `valueByScreen` fallback:** Now correctly cascades from `largeDesktop → desktop → tablet → mobile` instead of skipping tiers.
 - **Assert everywhere:** Added debug assertions for negative scales, invalid configs, and missing providers.
 
+### 📚 Documentation
+
+- **Enhanced `GlobalResponsive` docs:** Clarified singleton design, nested provider behavior, and added `@visibleForTesting reset()` method.
+- **Enhanced `AppWidthLimiter` docs:** Documented MediaQuery override behavior, RepaintBoundary rationale, and minWidth scrolling.
+- **Enhanced `ResponsiveHelper.fromContext` docs:** Added note about default config behavior.
+- **Enhanced `ResponsiveBuilder` docs:** Added usage example and clarified it's the primary builder widget.
+- **Complete README rewrite** with comparison tables, full API cheat sheet, all widget examples, ScalifyConfig reference, migration guide, and advanced engine internals.
+- **Updated CHANGELOG** with comprehensive v3.0.0 release notes.
+
 ### 🧪 Test Suite
 
 - **203 tests passing** with optimized test infrastructure.
 - Replaced `pumpAndSettle()` with targeted `pump()` for 10× faster test execution.
 - Added `pumpApp()` helper that correctly handles ScalifyProvider's debounce timer.
 - All tests use the recommended builder pattern (`ScalifyProvider` as parent of `MaterialApp`).
-
-### 📚 Documentation
-
-- **Complete README rewrite** with comparison tables, full API cheat sheet, all widget examples, ScalifyConfig reference, migration guide, and advanced engine internals.
-- **Updated CHANGELOG** with comprehensive v3.0.0 release notes.
 
 ---
 

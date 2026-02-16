@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +71,7 @@ class ScalifyProvider extends StatefulWidget {
 class _ScalifyProviderState extends State<ScalifyProvider>
     with WidgetsBindingObserver {
   ResponsiveData _currentData = ResponsiveData.identity;
+  Timer? _debounceTimer;
 
   @override
   void initState() {
@@ -83,6 +85,7 @@ class _ScalifyProviderState extends State<ScalifyProvider>
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -95,10 +98,22 @@ class _ScalifyProviderState extends State<ScalifyProvider>
   }
 
   @override
-  void didChangeMetrics() => _performUpdate();
+  void didChangeMetrics() => _debouncedUpdate();
 
   @override
-  void didChangeTextScaleFactor() => _performUpdate();
+  void didChangeTextScaleFactor() => _debouncedUpdate();
+
+  /// Debounced update for platform-driven events (resize, text scale).
+  /// Prevents jank during rapid Desktop/Web window resizing.
+  void _debouncedUpdate() {
+    final ms = widget.config.debounceWindowMillis;
+    if (ms <= 0) {
+      _performUpdate();
+      return;
+    }
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(Duration(milliseconds: ms), _performUpdate);
+  }
 
   /// Resolves [MediaQueryData] from context, with fallback to [View] or [PlatformDispatcher].
   MediaQueryData? _resolveMediaQuery() {

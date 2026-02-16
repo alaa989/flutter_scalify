@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'responsive_data.dart';
-import 'responsive_extensions.dart';
+import 'package:flutter_scalify/flutter_scalify.dart';
 
 /// A builder widget that ensures live responsive updates for its subtree.
 ///
@@ -8,22 +6,15 @@ import 'responsive_extensions.dart';
 /// adapt instantly while resizing the app window on Desktop or Web.
 /// It creates a formal subscription to the responsive state, forcing a
 /// rebuild with the latest scaled values.
-class ScalifyBuilder extends StatelessWidget {
-  /// A builder function that provides the current [ResponsiveData].
-  final Widget Function(BuildContext context, ResponsiveData data) builder;
-
+///
+/// **Deprecated**: Use [ResponsiveBuilder] instead, which provides the same
+/// functionality. [ScalifyBuilder] will be removed in a future major version.
+@Deprecated(
+    'Use ResponsiveBuilder instead. ScalifyBuilder will be removed in v4.0.')
+class ScalifyBuilder extends ResponsiveBuilder {
   /// Creates a [ScalifyBuilder] to enable live scaling.
   const ScalifyBuilder({
     super.key,
-    required this.builder,
+    required super.builder,
   });
-
-  @override
-  Widget build(BuildContext context) {
-    // This line creates the active subscription to the provider
-    final data = context.responsiveData;
-
-    // Executing the builder function with fresh data
-    return builder(context, data);
-  }
 }
