@@ -13,9 +13,9 @@ void main() {
           data: const MediaQueryData(size: Size(375, 812)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: ResponsiveVisibility(
-              visibleOn: const [ScreenType.mobile],
-              child: const Text('Mobile Content'),
+            child: const ResponsiveVisibility(
+              visibleOn: [ScreenType.mobile],
+              child: Text('Mobile Content'),
             ),
           ),
         ),
@@ -32,9 +32,9 @@ void main() {
           data: const MediaQueryData(size: Size(375, 812)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: ResponsiveVisibility(
-              visibleOn: const [ScreenType.tablet],
-              child: const Text('Tablet Content'),
+            child: const ResponsiveVisibility(
+              visibleOn: [ScreenType.tablet],
+              child: Text('Tablet Content'),
             ),
           ),
         ),
@@ -51,9 +51,9 @@ void main() {
           data: const MediaQueryData(size: Size(375, 812)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: ResponsiveVisibility(
-              hiddenOn: const [ScreenType.mobile],
-              child: const Text('Hidden on Mobile'),
+            child: const ResponsiveVisibility(
+              hiddenOn: [ScreenType.mobile],
+              child: Text('Hidden on Mobile'),
             ),
           ),
         ),
@@ -70,9 +70,9 @@ void main() {
           data: const MediaQueryData(size: Size(375, 812)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: ResponsiveVisibility(
-              hiddenOn: const [ScreenType.tablet],
-              child: const Text('Not Hidden'),
+            child: const ResponsiveVisibility(
+              hiddenOn: [ScreenType.tablet],
+              child: Text('Not Hidden'),
             ),
           ),
         ),
@@ -88,10 +88,10 @@ void main() {
           data: const MediaQueryData(size: Size(375, 812)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: ResponsiveVisibility(
-              visibleOn: const [ScreenType.tablet],
-              replacement: const Text('Replacement'),
-              child: const Text('Original'),
+            child: const ResponsiveVisibility(
+              visibleOn: [ScreenType.tablet],
+              replacement: Text('Replacement'),
+              child: Text('Original'),
             ),
           ),
         ),
@@ -109,9 +109,9 @@ void main() {
           data: const MediaQueryData(size: Size(375, 812)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: ResponsiveVisibility(
-              visibleOn: const [ScreenType.tablet],
-              child: const Text('Hidden'),
+            child: const ResponsiveVisibility(
+              visibleOn: [ScreenType.tablet],
+              child: Text('Hidden'),
             ),
           ),
         ),
@@ -128,8 +128,8 @@ void main() {
           data: const MediaQueryData(size: Size(375, 812)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: ResponsiveVisibility(
-              child: const Text('Always Visible'),
+            child: const ResponsiveVisibility(
+              child: Text('Always Visible'),
             ),
           ),
         ),
@@ -145,9 +145,9 @@ void main() {
           data: const MediaQueryData(size: Size(375, 812)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: ResponsiveVisibility(
-              visibleOn: const [ScreenType.mobile, ScreenType.tablet],
-              child: const Text('Mobile or Tablet'),
+            child: const ResponsiveVisibility(
+              visibleOn: [ScreenType.mobile, ScreenType.tablet],
+              child: Text('Mobile or Tablet'),
             ),
           ),
         ),

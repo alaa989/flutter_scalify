@@ -135,7 +135,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _SectionHeader(title: "NEW v3.0.0 FEATURES"),
+                  const _SectionHeader(title: "NEW v3.0.0 FEATURES"),
                   Container(
                     padding: 12.p,
                     margin: 10.pb,
@@ -333,10 +333,11 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                     },
                   ),
                   Divider(height: 40.h),
-                  _SectionHeader(title: "1. RESPONSIVE FLEX (PROFILE)"),
+                  const _SectionHeader(title: "1. RESPONSIVE FLEX (PROFILE)"),
                   _buildProfileHeader(context),
                   30.sbh,
-                  _SectionHeader(title: "2. ADAPTIVE CARDS (LAYOUT CHANGE)"),
+                  const _SectionHeader(
+                      title: "2. ADAPTIVE CARDS (LAYOUT CHANGE)"),
                   Text(
                     "Cards change layout (Row/Column) based on their own width.",
                     style: TextStyle(color: Colors.grey[600], fontSize: 19.fz),
@@ -372,7 +373,8 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   30.sbh,
-                  _SectionHeader(title: "3. SCALIFYBOX GRID (PERFECT SCALE)"),
+                  const _SectionHeader(
+                      title: "3. SCALIFYBOX GRID (PERFECT SCALE)"),
                   Text(
                     "Items scale geometrically. Ideal for complex UI that shouldn't break.",
                     style: TextStyle(color: Colors.grey[600], fontSize: 19.fz),
@@ -406,7 +408,8 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   30.sbh,
-                  _SectionHeader(title: "4. AUTO-FIT GRID (API & LAZY LOAD)"),
+                  const _SectionHeader(
+                      title: "4. AUTO-FIT GRID (API & LAZY LOAD)"),
                   Text(
                     "Items lazy load and wrap automatically based on minWidth.",
                     style: TextStyle(color: Colors.grey[600], fontSize: 19.fz),

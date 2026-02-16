@@ -25,14 +25,14 @@ void main() {
         tester,
         buildApp(
           size: const Size(375, 812),
-          child: SizedBox(
+          child: const SizedBox(
             width: 100,
             height: 100,
             child: AdaptiveContainer(
-              breakpoints: const [200, 500],
-              xs: const Text('XS'),
-              sm: const Text('SM'),
-              lg: const Text('LG'),
+              breakpoints: [200, 500],
+              xs: Text('XS'),
+              sm: Text('SM'),
+              lg: Text('LG'),
             ),
           ),
         ),
@@ -48,14 +48,14 @@ void main() {
         tester,
         buildApp(
           size: const Size(375, 812),
-          child: SizedBox(
+          child: const SizedBox(
             width: 300,
             height: 200,
             child: AdaptiveContainer(
-              breakpoints: const [200, 500],
-              xs: const Text('XS'),
-              sm: const Text('SM'),
-              lg: const Text('LG'),
+              breakpoints: [200, 500],
+              xs: Text('XS'),
+              sm: Text('SM'),
+              lg: Text('LG'),
             ),
           ),
         ),
@@ -70,12 +70,12 @@ void main() {
         tester,
         buildApp(
           size: const Size(375, 812),
-          child: SizedBox(
+          child: const SizedBox(
             width: 600,
             height: 400,
             child: AdaptiveContainer(
-              breakpoints: const [200, 500],
-              xs: const Text('XS'),
+              breakpoints: [200, 500],
+              xs: Text('XS'),
             ),
           ),
         ),
@@ -89,11 +89,11 @@ void main() {
         tester,
         buildApp(
           size: const Size(375, 812),
-          child: SizedBox(
+          child: const SizedBox(
             width: 300,
             height: 200,
             child: AdaptiveContainer(
-              xs: const Text('Default'),
+              xs: Text('Default'),
             ),
           ),
         ),
@@ -107,12 +107,12 @@ void main() {
         tester,
         buildApp(
           size: const Size(375, 812),
-          child: SizedBox(
+          child: const SizedBox(
             width: 50,
             height: 50,
             child: AdaptiveContainer(
-              breakpoints: const [200, 400, 600, 800, 1000],
-              xs: const Text('Fallback'),
+              breakpoints: [200, 400, 600, 800, 1000],
+              xs: Text('Fallback'),
             ),
           ),
         ),

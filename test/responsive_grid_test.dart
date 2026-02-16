@@ -26,10 +26,10 @@ void main() {
           tester,
           buildApp(
             size: const Size(375, 812),
-            child: ResponsiveGrid(
+            child: const ResponsiveGrid(
               mobile: 2,
               shrinkWrap: true,
-              children: const [
+              children: [
                 Text('1'),
                 Text('2'),
                 Text('3'),
@@ -181,9 +181,9 @@ void main() {
       test('asserts when both children and itemBuilder provided', () {
         expect(
           () => ResponsiveGrid(
-            children: const [Text('a')],
             itemBuilder: (_, __) => const Text('b'),
             itemCount: 1,
+            children: const [Text('a')],
           ),
           throwsA(isA<AssertionError>()),
         );

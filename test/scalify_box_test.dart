@@ -199,7 +199,7 @@ void main() {
     test('p returns EdgeInsets.all scaled', () {
       const ls = LocalScaler(2.0);
       final p = ls.p(16);
-      expect(p, EdgeInsets.all(32));
+      expect(p, const EdgeInsets.all(32));
     });
 
     test('ph returns horizontal EdgeInsets scaled', () {

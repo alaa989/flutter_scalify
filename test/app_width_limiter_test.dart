@@ -14,9 +14,9 @@ void main() {
             builder: (context, child) => MaterialApp(
               home: Scaffold(body: child),
             ),
-            child: AppWidthLimiter(
+            child: const AppWidthLimiter(
               maxWidth: 1400,
-              child: const Text('Content'),
+              child: Text('Content'),
             ),
           ),
         ),
@@ -34,10 +34,10 @@ void main() {
             builder: (context, child) => MaterialApp(
               home: Scaffold(body: child),
             ),
-            child: AppWidthLimiter(
+            child: const AppWidthLimiter(
               maxWidth: 1400,
               backgroundColor: Colors.grey,
-              child: const Text('Limited Content'),
+              child: Text('Limited Content'),
             ),
           ),
         ),
@@ -56,10 +56,10 @@ void main() {
             builder: (context, child) => MaterialApp(
               home: Scaffold(body: child),
             ),
-            child: AppWidthLimiter(
+            child: const AppWidthLimiter(
               maxWidth: 1400,
-              backgroundColor: const Color(0xFFE2E8F0),
-              child: const Text('Colored'),
+              backgroundColor: Color(0xFFE2E8F0),
+              child: Text('Colored'),
             ),
           ),
         ),
@@ -78,12 +78,12 @@ void main() {
             builder: (context, child) => MaterialApp(
               home: Scaffold(body: child),
             ),
-            child: SizedBox(
+            child: const SizedBox(
               width: 300,
               child: AppWidthLimiter(
                 maxWidth: 1400,
                 minWidth: 360,
-                child: const Text('Scrollable'),
+                child: Text('Scrollable'),
               ),
             ),
           ),
@@ -103,10 +103,10 @@ void main() {
             builder: (context, child) => MaterialApp(
               home: Scaffold(body: child),
             ),
-            child: AppWidthLimiter(
+            child: const AppWidthLimiter(
               maxWidth: 1400,
               minWidth: 360,
-              child: const Text('Not Scrollable'),
+              child: Text('Not Scrollable'),
             ),
           ),
         ),
@@ -126,9 +126,9 @@ void main() {
             builder: (context, child) => MaterialApp(
               home: Scaffold(body: child),
             ),
-            child: AppWidthLimiter(
+            child: const AppWidthLimiter(
               maxWidth: 1400,
-              child: const Text('Perf Bounded'),
+              child: Text('Perf Bounded'),
             ),
           ),
         ),

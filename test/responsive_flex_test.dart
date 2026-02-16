@@ -14,9 +14,9 @@ void main() {
             builder: (context, child) => MaterialApp(
               home: Scaffold(body: child),
             ),
-            child: ResponsiveFlex(
+            child: const ResponsiveFlex(
               switchOn: ScreenType.mobile,
-              children: const [
+              children: [
                 Text('Child 1'),
                 Text('Child 2'),
               ],
@@ -40,9 +40,9 @@ void main() {
             builder: (context, child) => MaterialApp(
               home: Scaffold(body: child),
             ),
-            child: ResponsiveFlex(
+            child: const ResponsiveFlex(
               switchOn: ScreenType.mobile,
-              children: const [
+              children: [
                 Text('Child A'),
                 Text('Child B'),
               ],
@@ -64,9 +64,9 @@ void main() {
             builder: (context, child) => MaterialApp(
               home: Scaffold(body: child),
             ),
-            child: ResponsiveFlex(
+            child: const ResponsiveFlex(
               switchOn: ScreenType.tablet,
-              children: const [Text('A'), Text('B')],
+              children: [Text('A'), Text('B')],
             ),
           ),
         ),
@@ -85,9 +85,9 @@ void main() {
             builder: (context, child) => MaterialApp(
               home: Scaffold(body: child),
             ),
-            child: ResponsiveFlex(
+            child: const ResponsiveFlex(
               breakpoint: 600,
-              children: const [Text('A'), Text('B')],
+              children: [Text('A'), Text('B')],
             ),
           ),
         ),
@@ -106,10 +106,10 @@ void main() {
             builder: (context, child) => MaterialApp(
               home: Scaffold(body: child),
             ),
-            child: ResponsiveFlex(
+            child: const ResponsiveFlex(
               switchOn: ScreenType.mobile,
               spacing: 16,
-              children: const [Text('A'), Text('B'), Text('C')],
+              children: [Text('A'), Text('B'), Text('C')],
             ),
           ),
         ),
@@ -128,10 +128,10 @@ void main() {
             builder: (context, child) => MaterialApp(
               home: Scaffold(body: child),
             ),
-            child: ResponsiveFlex(
+            child: const ResponsiveFlex(
               switchOn: ScreenType.mobile,
               spacing: 0,
-              children: const [Text('A'), Text('B')],
+              children: [Text('A'), Text('B')],
             ),
           ),
         ),
@@ -153,10 +153,10 @@ void main() {
                 child: Scaffold(body: child!),
               ),
             ),
-            child: ResponsiveFlex(
+            child: const ResponsiveFlex(
               switchOn: ScreenType.mobile,
               flipOnRtl: true,
-              children: const [Text('A'), Text('B')],
+              children: [Text('A'), Text('B')],
             ),
           ),
         ),
@@ -174,11 +174,11 @@ void main() {
             builder: (context, child) => MaterialApp(
               home: Scaffold(body: child),
             ),
-            child: ResponsiveFlex(
+            child: const ResponsiveFlex(
               switchOn: ScreenType.mobile,
               colMainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
-              children: const [Text('A')],
+              children: [Text('A')],
             ),
           ),
         ),

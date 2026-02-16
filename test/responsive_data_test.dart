@@ -166,7 +166,7 @@ void main() {
         // excessWidth = 2560 - 1920 = 640
         // dampenedPart = (640 / 375) * 0.65 = 1.1093
         // total = 5.12 + 1.1093 = 6.2293
-        final expected = (1920 / 375) + ((640 / 375) * 0.65);
+        const expected = (1920 / 375) + ((640 / 375) * 0.65);
         expect(data.scaleWidth, closeTo(expected, 0.01));
       });
 
@@ -275,8 +275,8 @@ void main() {
         const mq = MediaQueryData(size: Size(750, 812));
         final data = ResponsiveData.fromMediaQuery(mq, config);
 
-        final expectedW = 750 / 375; // 2.0
-        final expectedH = 812 / 812; // 1.0
+        const expectedW = 750 / 375; // 2.0
+        const expectedH = 812 / 812; // 1.0
         expect(data.scaleFactor, math.min(expectedW, expectedH));
       });
     });

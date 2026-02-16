@@ -12,9 +12,9 @@ void main() {
           data: const MediaQueryData(size: Size(375, 812)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: ResponsiveLayout(
-              portrait: const Text('Portrait'),
-              landscape: const Text('Landscape'),
+            child: const ResponsiveLayout(
+              portrait: Text('Portrait'),
+              landscape: Text('Landscape'),
             ),
           ),
         ),
@@ -31,9 +31,9 @@ void main() {
           data: const MediaQueryData(size: Size(812, 375)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: ResponsiveLayout(
-              portrait: const Text('Portrait'),
-              landscape: const Text('Landscape'),
+            child: const ResponsiveLayout(
+              portrait: Text('Portrait'),
+              landscape: Text('Landscape'),
             ),
           ),
         ),
@@ -51,9 +51,9 @@ void main() {
           data: const MediaQueryData(size: Size(500, 500)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: ResponsiveLayout(
-              portrait: const Text('Portrait'),
-              landscape: const Text('Landscape'),
+            child: const ResponsiveLayout(
+              portrait: Text('Portrait'),
+              landscape: Text('Landscape'),
             ),
           ),
         ),
