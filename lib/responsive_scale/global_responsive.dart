@@ -1,5 +1,3 @@
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/material.dart';
 import 'responsive_data.dart';
 
 /// A global singleton that holds the current [ResponsiveData].
@@ -13,18 +11,6 @@ class GlobalResponsive {
   /// Updates the global responsive data.
   /// This is called automatically by [ScalifyProvider].
   static void update(ResponsiveData data) {
-    assert(() {
-      final phase = WidgetsBinding.instance.schedulerPhase;
-      if (phase == SchedulerPhase.persistentCallbacks) {
-        debugPrint(
-          'Scalify Warning: GlobalResponsive.update() called during '
-          'SchedulerPhase.persistentCallbacks. This may cause unexpected '
-          'rebuilds. Prefer updating during idle or postFrameCallbacks phase.',
-        );
-      }
-      return true;
-    }());
-
     _data = data;
   }
 

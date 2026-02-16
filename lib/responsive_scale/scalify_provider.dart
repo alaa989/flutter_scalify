@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +69,6 @@ class ScalifyProvider extends StatefulWidget {
 
 class _ScalifyProviderState extends State<ScalifyProvider>
     with WidgetsBindingObserver {
-  Timer? _debounce;
   ResponsiveData _currentData = ResponsiveData.identity;
 
   @override
@@ -86,7 +84,6 @@ class _ScalifyProviderState extends State<ScalifyProvider>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _debounce?.cancel();
     super.dispose();
   }
 
@@ -127,17 +124,16 @@ class _ScalifyProviderState extends State<ScalifyProvider>
   /// the scale factor is updated in the SAME frame as the constraints.
   void _performUpdate() {
     if (!mounted) return;
-    _debounce?.cancel();
 
     final mq = _resolveMediaQuery();
     final newData = ResponsiveData.fromMediaQuery(mq, widget.config);
 
     if (newData != _currentData) {
+      // Update GlobalResponsive BEFORE setState so that
+      // all num extensions (.fz, .iz, .s, .w, .h, etc.)
+      // read the correct data during the rebuild.
+      GlobalResponsive.update(newData);
       setState(() => _currentData = newData);
-      // Defer global update to avoid calling during persistentCallbacks phase.
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) GlobalResponsive.update(newData);
-      });
     }
   }
 
