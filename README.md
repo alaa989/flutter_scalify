@@ -41,6 +41,8 @@ A complete, high-performance responsive system — not just a sizing tool. Scale
 | **Responsive Image** (Per-screen sources) | ✅ |
 | **Animated Transitions** (Smooth layout switch) | ✅ |
 | **Responsive Table** (DataTable ↔ Cards) | ✅ |
+| **Responsive Constraints** (Per-screen BoxConstraints) | ✅ |
+| **Sliver Widgets** (AppBar/Header/Persistent) | ✅ |
 | **Zero External Dependencies** | ✅ |
 | **208 Tests Passing** | ✅ |
 
@@ -67,6 +69,8 @@ A complete, high-performance responsive system — not just a sizing tool. Scale
 - 🖼️ **Responsive Image** — Different images per screen type with memory optimization
 - 🎭 **Animated Transitions** — Smooth animations between responsive layouts
 - 📊 **Responsive Table** — DataTable on desktop, cards on mobile with sorting
+- 🧮 **Responsive Constraints** — Per-screen BoxConstraints with optional scaling
+- 🏗️ **Scalify Slivers** — Responsive SliverAppBar, SliverHeader, & SliverPersistentHeader
 
 ---
 
@@ -1282,7 +1286,152 @@ ResponsiveTable(
 
 ---
 
+## 🧮 ResponsiveConstraints — Screen-Adaptive Constraints
+
+Applies different `BoxConstraints` based on screen type — precise control over min/max dimensions per device.
+
+### Usage
+
+```dart
+ResponsiveConstraints(
+  mobile: BoxConstraints(maxWidth: 350, minHeight: 100),
+  tablet: BoxConstraints(maxWidth: 500, minHeight: 120),
+  desktop: BoxConstraints(maxWidth: 800, minHeight: 150),
+  child: ProductCard(),
+)
+```
+
+### Centered with Alignment
+
+```dart
+ResponsiveConstraints(
+  alignment: Alignment.center,
+  mobile: BoxConstraints(maxWidth: 350),
+  desktop: BoxConstraints(maxWidth: 600),
+  child: LoginForm(),
+)
+```
+
+### With Scaled Constraints
+
+```dart
+ResponsiveConstraints(
+  scaleConstraints: true,  // Values multiply by scaleFactor
+  mobile: BoxConstraints(maxWidth: 300),
+  desktop: BoxConstraints(maxWidth: 700),
+  child: ContentArea(),
+)
+```
+
+### API
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :---: | :--- |
+| `mobile` | `BoxConstraints` | required | Constraints for mobile |
+| `tablet` | `BoxConstraints?` | `null` | Constraints for tablet |
+| `desktop` | `BoxConstraints?` | `null` | Constraints for desktop |
+| `alignment` | `AlignmentGeometry?` | `null` | Align constrained child |
+| `scaleConstraints` | `bool` | `false` | Scale values by `scaleFactor` |
+
+---
+
+## 🏗️ ScalifySliver — Responsive Sliver Widgets
+
+A complete set of responsive Sliver widgets for `CustomScrollView`. Includes 3 widgets:
+
+### ScalifySliverAppBar
+
+A responsive `SliverAppBar` with per-screen expanded heights.
+
+```dart
+CustomScrollView(
+  slivers: [
+    ScalifySliverAppBar(
+      title: 'My Store',
+      mobileExpandedHeight: 200,
+      desktopExpandedHeight: 350,
+      flexibleBackground: Image.asset('assets/banner.jpg', fit: BoxFit.cover),
+      pinned: true,
+    ),
+    // ... more slivers
+  ],
+)
+```
+
+### ScalifySliverHeader
+
+Displays different sliver widgets based on screen type.
+
+```dart
+ScalifySliverHeader(
+  mobile: SliverToBoxAdapter(child: CompactSearchBar()),
+  desktop: SliverToBoxAdapter(child: ExpandedSearchBar()),
+)
+```
+
+### ScalifySliverPersistentHeader
+
+A responsive sticky header with adjustable max/min heights.
+
+```dart
+ScalifySliverPersistentHeader(
+  mobileMaxHeight: 60,
+  desktopMaxHeight: 100,
+  pinned: true,
+  builder: (context, shrinkOffset, overlapsContent) {
+    final progress = shrinkOffset / 40;
+    return Container(
+      color: Colors.blue.withAlpha((200 * (1 - progress)).toInt()),
+      child: Center(child: Text('Sticky Header')),
+    );
+  },
+)
+```
+
+### Full Example
+
+```dart
+CustomScrollView(
+  slivers: [
+    ScalifySliverAppBar(
+      title: 'Products',
+      mobileExpandedHeight: 180,
+      desktopExpandedHeight: 300,
+      flexibleBackground: Image.network(bannerUrl, fit: BoxFit.cover),
+    ),
+    ScalifySliverPersistentHeader(
+      mobileMaxHeight: 50,
+      desktopMaxHeight: 80,
+      builder: (_, __, ___) => FilterBar(),
+    ),
+    ResponsiveGrid(
+      useSliver: true,
+      mobile: 2,
+      desktop: 4,
+      itemCount: products.length,
+      itemBuilder: (ctx, i) => ProductCard(products[i]),
+    ),
+  ],
+)
+```
+
+### ScalifySliverAppBar API
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :---: | :--- |
+| `title` | `String` | required | Title text |
+| `mobileExpandedHeight` | `double` | `200.0` | Height on mobile |
+| `tabletExpandedHeight` | `double?` | `null` | Height on tablet |
+| `desktopExpandedHeight` | `double?` | `null` | Height on desktop |
+| `flexibleBackground` | `Widget?` | `null` | Background widget |
+| `pinned` | `bool` | `true` | Stay visible on scroll |
+| `floating` | `bool` | `false` | Show on scroll up |
+| `stretch` | `bool` | `true` | Stretch on over-scroll |
+
+---
+
 ## 🧪 Testing
+
 
 
 

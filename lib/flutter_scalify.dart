@@ -29,3 +29,5 @@ export 'responsive_scale/responsive_wrap.dart';
 export 'responsive_scale/responsive_image.dart';
 export 'responsive_scale/animated_responsive_transition.dart';
 export 'responsive_scale/responsive_table.dart';
+export 'responsive_scale/responsive_constraints.dart';
+export 'responsive_scale/scalify_sliver.dart';
