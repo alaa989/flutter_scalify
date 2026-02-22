@@ -33,6 +33,10 @@ A complete, high-performance responsive system — not just a sizing tool. Scale
 | **6 Screen Types** (Watch → Large Desktop) | ✅ |
 | **Theme Auto-Scaling** (One line) | ✅ |
 | **Percentage Scaling** (.pw .hp) | ✅ |
+| **Responsive Text** (Auto-resize, ShortText) | ✅ |
+| **Design Token Spacing** (xs → xxl) | ✅ |
+| **Debug Overlay** (Draggable, Live Metrics) | ✅ |
+| **Adaptive Navigation** (Bottom/Rail/Sidebar) | ✅ |
 | **Zero External Dependencies** | ✅ |
 | **208 Tests Passing** | ✅ |
 
@@ -51,6 +55,10 @@ A complete, high-performance responsive system — not just a sizing tool. Scale
 - 🧱 **Local Scaling** — `ScalifyBox` scales elements relative to their container
 - 🧩 **Section Scaling** — `ScalifySection` creates independent scaling per section for split layouts
 - 📊 **Percentage Scaling** — `50.pw` = 50% of screen width, `25.hp` = 25% of height
+- 🔤 **Responsive Text** — Auto-resize text with `shortText` for small screens
+- 📏 **Design Tokens** — `Spacing.md.gap`, `Spacing.lg.insets` — unified spacing system
+- 🔍 **Debug Overlay** — Draggable live metrics panel (debug-only, zero production cost)
+- 🌐 **Adaptive Navigation** — Auto-switches Bottom → Rail → Sidebar by screen size
 
 ---
 
@@ -800,7 +808,251 @@ MaterialApp(
 
 ---
 
+## 🔤 ResponsiveText — Smart Auto-Resizing Text
+
+A text widget that automatically shrinks font size to fit available space, and optionally shows shorter text on small screens.
+
+### Basic Usage
+
+```dart
+ResponsiveText(
+  'Welcome to our Amazing Application',
+  style: TextStyle(fontSize: 18.fz),
+  maxLines: 2,
+)
+```
+
+### Auto-Resize (Shrink to Fit)
+
+```dart
+ResponsiveText(
+  'This long heading will shrink to fit any container width',
+  style: TextStyle(fontSize: 24.fz, fontWeight: FontWeight.bold),
+  autoResize: true,        // Enables auto-shrinking
+  minFontSize: 12,         // Never shrinks below 12px
+  maxLines: 1,
+)
+```
+
+### Short Text for Small Screens
+
+```dart
+ResponsiveText(
+  'Welcome to our Premium Shopping Experience',
+  shortText: 'Welcome',   // Shows on mobile/watch
+  style: TextStyle(fontSize: 20.fz),
+)
+```
+
+### API Reference
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :---: | :--- |
+| `text` | `String` | required | The full text to display |
+| `shortText` | `String?` | `null` | Abbreviated text for small screens |
+| `autoResize` | `bool` | `false` | Enable auto font-size shrinking |
+| `minFontSize` | `double` | `8.0` | Floor for auto-resize |
+| `stepGranularity` | `double` | `0.5` | Precision of resize steps |
+| `maxLines` | `int?` | `null` | Maximum number of lines |
+| `overflow` | `TextOverflow` | `ellipsis` | Overflow behavior |
+
+> 💡 **Performance**: When `autoResize` is `false`, no `LayoutBuilder` is used — zero overhead.
+
+---
+
+## 📏 ResponsiveSpacing — Design Token System
+
+A unified spacing system with predefined, scaled values — like design tokens in Figma.
+
+### Setup (Optional)
+
+```dart
+// Customize spacing values (or use defaults: 4, 8, 16, 24, 32, 48)
+ScalifySpacing.init(const SpacingScale(
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 48,
+));
+```
+
+### Usage
+
+```dart
+Column(
+  children: [
+    Text('Title', style: TextStyle(fontSize: 24.fz)),
+    Spacing.sm.gap,         // SizedBox(height: 8 * scaleFactor)
+    Text('Subtitle'),
+    Spacing.md.gap,         // SizedBox(height: 16 * scaleFactor)
+    Text('Body text'),
+  ],
+)
+
+Container(
+  padding: Spacing.lg.insets,    // EdgeInsets.all(24 * scaleFactor)
+  margin: Spacing.sm.insetsH,   // EdgeInsets.symmetric(horizontal: 8.s)
+  child: Content(),
+)
+```
+
+### Spacing API
+
+| Extension | Output | Example |
+| :--- | :--- | :--- |
+| `.gap` | `SizedBox(height: scaled)` | `Spacing.md.gap` |
+| `.gapW` | `SizedBox(width: scaled)` | `Spacing.sm.gapW` |
+| `.gapAll` | `SizedBox(width: s, height: s)` | `Spacing.lg.gapAll` |
+| `.value` | `double` (raw scaled value) | `Spacing.xl.value` |
+| `.insets` | `EdgeInsets.all(scaled)` | `Spacing.md.insets` |
+| `.insetsH` | `EdgeInsets.symmetric(horizontal:)` | `Spacing.lg.insetsH` |
+| `.insetsV` | `EdgeInsets.symmetric(vertical:)` | `Spacing.sm.insetsV` |
+| `.insetsT` | `EdgeInsets.only(top:)` | `Spacing.md.insetsT` |
+| `.insetsB` | `EdgeInsets.only(bottom:)` | `Spacing.md.insetsB` |
+| `.insetsL` | `EdgeInsets.only(left:)` | `Spacing.sm.insetsL` |
+| `.insetsR` | `EdgeInsets.only(right:)` | `Spacing.sm.insetsR` |
+
+### Default Scale Values
+
+| Tier | Value | Use Case |
+| :---: | :---: | :--- |
+| `xs` | 4 | Tight spacing, chip gaps |
+| `sm` | 8 | List item padding, small gaps |
+| `md` | 16 | Card padding, section gaps |
+| `lg` | 24 | Section spacing, content margins |
+| `xl` | 32 | Large section gaps |
+| `xxl` | 48 | Page-level spacing |
+
+> 💡 All spacing values are automatically scaled via `GlobalResponsive.scaleFactor`.
+
+---
+
+## 🔍 ScalifyDebugOverlay — Developer Tools
+
+A draggable, collapsible debug panel showing live responsive metrics. **Zero overhead in release builds.**
+
+### Usage
+
+```dart
+ScalifyProvider(
+  builder: (context, child) => MaterialApp(
+    home: ScalifyDebugOverlay(
+      child: child!,
+    ),
+  ),
+  child: const HomeScreen(),
+)
+```
+
+### What It Shows
+
+```
+┌─────────────────────────────────┐
+│ 📱 MOBILE                       │
+│ 📐 Size     375 × 812           │
+│ ⚖️  Scale    1.000               │
+│ ↔️  ScaleW   1.000               │
+│ ↕️  ScaleH   1.000               │
+│ 🔤 TextSF   1.00                │
+│ 🔄 Rebuilds 3                   │
+└─────────────────────────────────┘
+```
+
+### Features
+
+- 🎨 **Color-coded** screen type indicator
+- 🖱️ **Draggable** — move anywhere on screen
+- 📐 **Collapsible** — tap header to toggle
+- 🛡️ **Zero production cost** — uses `kDebugMode` guard
+- 🎯 **RepaintBoundary** — isolated repaints
+
+### API
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :---: | :--- |
+| `enabled` | `bool` | `true` | Enable/disable (still debug-only) |
+| `initialTop` | `double` | `50.0` | Initial Y position |
+| `initialRight` | `double` | `16.0` | Initial X position |
+
+---
+
+## 🌐 ResponsiveNavigation — Adaptive Navigation
+
+Automatically switches between `BottomNavigationBar`, `NavigationRail`, and a sidebar drawer based on screen size.
+
+### Usage
+
+```dart
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  int _selectedIndex = 0;
+
+  final _pages = [
+    const HomePage(),
+    const SearchPage(),
+    const ProfilePage(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return ResponsiveNavigation(
+      destinations: const [
+        NavDestination(icon: Icons.home, label: 'Home'),
+        NavDestination(icon: Icons.search, label: 'Search'),
+        NavDestination(
+          icon: Icons.person,
+          label: 'Profile',
+          badge: 3,  // Badge support!
+        ),
+      ],
+      selectedIndex: _selectedIndex,
+      onChanged: (i) => setState(() => _selectedIndex = i),
+      body: _pages[_selectedIndex],
+    );
+  }
+}
+```
+
+### Navigation Modes
+
+```
+┌───────────┬───────────────────┬─────────────────────┐
+│  Screen   │   Navigation      │    Breakpoint        │
+├───────────┼───────────────────┼─────────────────────┤
+│  Mobile   │  BottomNavBar     │  ≤ railBreakpoint    │
+│  Tablet   │  NavigationRail   │  ≤ sidebarBreakpoint │
+│  Desktop  │  Sidebar Drawer   │  > sidebarBreakpoint │
+└───────────┴───────────────────┴─────────────────────┘
+```
+
+### API Reference
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :---: | :--- |
+| `destinations` | `List<NavDestination>` | required | Nav items |
+| `selectedIndex` | `int` | required | Current selection |
+| `onChanged` | `ValueChanged<int>` | required | Selection callback |
+| `body` | `Widget` | required | Main content |
+| `drawerWidth` | `double` | `280.0` | Sidebar width |
+| `railExtended` | `bool` | `false` | Rail shows labels inline |
+| `showLabels` | `bool` | `true` | Show rail labels |
+| `elevation` | `double` | `0.0` | Surface elevation |
+| `railBreakpoint` | `ScreenType` | `mobile` | Bottom→Rail switch |
+| `sidebarBreakpoint` | `ScreenType` | `smallDesktop` | Rail→Sidebar switch |
+| `backgroundColor` | `Color?` | theme | Background color |
+| `selectedColor` | `Color?` | primary | Selected item color |
+| `badge` (NavDestination) | `int?` | `null` | Badge count |
+
+---
+
 ## 🧪 Testing
+
 
 The package includes **208 comprehensive tests** covering all widgets, extensions, and edge cases:
 
