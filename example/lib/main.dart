@@ -4,6 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_scalify/flutter_scalify.dart';
 
 void main() {
+  // Initialize the design token spacing system
+  ScalifySpacing.init(const SpacingScale(
+    xs: 4,
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 32,
+    xxl: 48,
+  ));
   runApp(const MyApp());
 }
 
@@ -56,12 +65,14 @@ class MyApp extends StatelessWidget {
           home: child,
         );
       },
-      child: const AppWidthLimiter(
-        maxWidth: 1200,
-        horizontalPadding: 16,
-        minWidth: 230,
-        backgroundColor: Color(0xFFE2E8F0),
-        child: ScalifyShowcaseScreen(),
+      child: const ScalifyDebugOverlay(
+        child: AppWidthLimiter(
+          maxWidth: 1200,
+          horizontalPadding: 16,
+          minWidth: 230,
+          backgroundColor: Color(0xFFE2E8F0),
+          child: ScalifyShowcaseScreen(),
+        ),
       ),
     );
   }
@@ -479,6 +490,444 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                   ),
                   10.sbh,
                   const _ScaleComparisonDemo(),
+                ],
+              ),
+            ),
+          ),
+          // ═══════════════════════════════════════════════════
+          // NEW v4.0 FEATURES SHOWCASE
+          // ═══════════════════════════════════════════════════
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: 20.p,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Divider(height: 40.h),
+                  const _SectionHeader(title: "NEW v4.0 FEATURES"),
+
+                  // ── 7. ResponsiveText ─────────────────────────
+                  const _SectionHeader(title: "7. RESPONSIVE TEXT"),
+                  Text(
+                    "Auto-resize text & short text for small screens.",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14.fz),
+                  ),
+                  10.sbh,
+                  Container(
+                    padding: 16.p,
+                    decoration: BoxDecoration(
+                      color: Colors.deepPurple.shade50,
+                      borderRadius: 12.br,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Auto-Resize (shrinks to fit):",
+                            style: TextStyle(
+                                fontSize: 13.fz,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepPurple.shade700)),
+                        8.sbh,
+                        Container(
+                          width: double.infinity,
+                          padding: 12.p,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: 8.br,
+                          ),
+                          child: ResponsiveText(
+                            'This is a very long heading that will automatically shrink to fit the available width',
+                            style: TextStyle(
+                                fontSize: 22.fz,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepPurple),
+                            autoResize: true,
+                            minFontSize: 10,
+                            maxLines: 1,
+                          ),
+                        ),
+                        16.sbh,
+                        Text("Short Text for Mobile:",
+                            style: TextStyle(
+                                fontSize: 13.fz,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepPurple.shade700)),
+                        8.sbh,
+                        Container(
+                          padding: 12.p,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: 8.br,
+                          ),
+                          child: ResponsiveText(
+                            'Welcome to our Premium Shopping Experience',
+                            shortText: 'Welcome! 👋',
+                            style: TextStyle(
+                                fontSize: 18.fz,
+                                color: Colors.deepPurple.shade800),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ── 8. ResponsiveSpacing ──────────────────────
+                  30.sbh,
+                  const _SectionHeader(title: "8. RESPONSIVE SPACING (TOKENS)"),
+                  Text(
+                    "Unified spacing system: xs=4, sm=8, md=16, lg=24, xl=32, xxl=48",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14.fz),
+                  ),
+                  10.sbh,
+                  Container(
+                    padding: 16.p,
+                    decoration: BoxDecoration(
+                      color: Colors.amber.shade50,
+                      borderRadius: 12.br,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Spacing.gap (SizedBox shortcuts):",
+                            style: TextStyle(
+                                fontSize: 13.fz,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.amber.shade900)),
+                        Spacing.sm.gap,
+                        const _SpacingDemoRow(label: 'xs', spacing: Spacing.xs),
+                        Spacing.xs.gap,
+                        const _SpacingDemoRow(label: 'sm', spacing: Spacing.sm),
+                        Spacing.xs.gap,
+                        const _SpacingDemoRow(label: 'md', spacing: Spacing.md),
+                        Spacing.xs.gap,
+                        const _SpacingDemoRow(label: 'lg', spacing: Spacing.lg),
+                        Spacing.xs.gap,
+                        const _SpacingDemoRow(label: 'xl', spacing: Spacing.xl),
+                        Spacing.md.gap,
+                        Text("Spacing.insets (Padding shortcuts):",
+                            style: TextStyle(
+                                fontSize: 13.fz,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.amber.shade900)),
+                        Spacing.sm.gap,
+                        Container(
+                          padding: Spacing.lg.insets,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: 8.br,
+                            border: Border.all(color: Colors.amber.shade200),
+                          ),
+                          child: Text(
+                            "Spacing.lg.insets → EdgeInsets.all(24 * scale)",
+                            style: TextStyle(
+                                fontSize: 13.fz, color: Colors.amber.shade800),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // ── 9. ResponsiveWrap ─────────────────────────
+                  30.sbh,
+                  const _SectionHeader(title: "9. RESPONSIVE WRAP"),
+                  Text(
+                    "Smart auto-wrapping layout for chips, tags, and buttons.",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14.fz),
+                  ),
+                  10.sbh,
+                  Container(
+                    padding: 16.p,
+                    decoration: BoxDecoration(
+                      color: Colors.cyan.shade50,
+                      borderRadius: 12.br,
+                    ),
+                    child: ResponsiveWrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        for (final label in [
+                          '🎨 Design',
+                          '⚡ Performance',
+                          '📱 Mobile',
+                          '💻 Desktop',
+                          '🌐 Web',
+                          '🧪 Testing',
+                          '🔄 Auto-Wrap',
+                          '📏 Scaled Spacing',
+                        ])
+                          Chip(
+                            label:
+                                Text(label, style: TextStyle(fontSize: 12.fz)),
+                            backgroundColor: Colors.white,
+                            side: BorderSide(color: Colors.cyan.shade200),
+                          ),
+                      ],
+                    ),
+                  ),
+
+                  // ── 10. ResponsiveImage ───────────────────────
+                  30.sbh,
+                  const _SectionHeader(title: "10. RESPONSIVE IMAGE"),
+                  Text(
+                    "Different images per screen type with fallback chain.",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14.fz),
+                  ),
+                  10.sbh,
+                  Container(
+                    height: 150.s,
+                    decoration: BoxDecoration(
+                      borderRadius: 12.br,
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: ResponsiveImage(
+                      mobile: const NetworkImage(
+                        'https://picsum.photos/400/200',
+                      ),
+                      desktop: const NetworkImage(
+                        'https://picsum.photos/1200/400',
+                      ),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: 150.s,
+                      placeholder: Container(
+                        color: Colors.grey.shade200,
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.image,
+                                  size: 32.iz, color: Colors.grey),
+                              4.sbh,
+                              Text("Loading...",
+                                  style: TextStyle(
+                                      fontSize: 12.fz, color: Colors.grey)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      errorWidget: Container(
+                        color: Colors.red.shade50,
+                        child: Center(
+                          child: Icon(Icons.broken_image,
+                              size: 32.iz, color: Colors.red.shade300),
+                        ),
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+
+                  // ── 11. AnimatedResponsiveTransition ──────────
+                  30.sbh,
+                  const _SectionHeader(
+                      title: "11. ANIMATED RESPONSIVE TRANSITION"),
+                  Text(
+                    "Smooth animations between responsive layouts on resize.",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14.fz),
+                  ),
+                  10.sbh,
+                  AnimatedResponsiveTransition(
+                    duration: const Duration(milliseconds: 400),
+                    transition: ResponsiveTransitionType.fadeSlide,
+                    mobile: Container(
+                      padding: 16.p,
+                      decoration: BoxDecoration(
+                        color: Colors.pink.shade50,
+                        borderRadius: 12.br,
+                        border: Border.all(color: Colors.pink.shade200),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.phone_android,
+                              size: 28.iz, color: Colors.pink),
+                          12.sbw,
+                          Expanded(
+                            child: Text("📱 Mobile Layout",
+                                style: TextStyle(
+                                    fontSize: 16.fz,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.pink.shade800)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    tablet: Container(
+                      padding: 20.p,
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: 12.br,
+                        border: Border.all(color: Colors.blue.shade200),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.tablet_mac,
+                              size: 36.iz, color: Colors.blue),
+                          16.sbw,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text("📱 Tablet Layout",
+                                    style: TextStyle(
+                                        fontSize: 18.fz,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue.shade800)),
+                                4.sbh,
+                                Text("Extra details visible on tablet!",
+                                    style: TextStyle(
+                                        fontSize: 13.fz,
+                                        color: Colors.blue.shade600)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    desktop: Container(
+                      padding: 24.p,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.green.shade50,
+                            Colors.teal.shade50,
+                          ],
+                        ),
+                        borderRadius: 12.br,
+                        border: Border.all(color: Colors.green.shade200),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.desktop_mac,
+                              size: 42.iz, color: Colors.green),
+                          20.sbw,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text("🖥️ Desktop Layout",
+                                    style: TextStyle(
+                                        fontSize: 20.fz,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green.shade800)),
+                                4.sbh,
+                                Text(
+                                    "Full desktop experience with extra content area!",
+                                    style: TextStyle(
+                                        fontSize: 14.fz,
+                                        color: Colors.green.shade600)),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: 12.p,
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade100,
+                              borderRadius: 8.br,
+                            ),
+                            child: Text("Extra Panel",
+                                style: TextStyle(
+                                    fontSize: 12.fz,
+                                    color: Colors.green.shade700)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // ── 12. ResponsiveTable ───────────────────────
+                  30.sbh,
+                  const _SectionHeader(title: "12. RESPONSIVE TABLE"),
+                  Text(
+                    "DataTable on desktop → Cards on mobile. With column hiding.",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14.fz),
+                  ),
+                  10.sbh,
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: 12.br,
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: ResponsiveTable(
+                      columns: const ['Product', 'Price', 'Status', 'Category'],
+                      rows: const [
+                        ['iPhone 15 Pro', '\$999', 'Available', 'Electronics'],
+                        ['MacBook Air', '\$1,199', 'Sold Out', 'Laptops'],
+                        ['AirPods Pro', '\$249', 'Available', 'Audio'],
+                        ['iPad Pro', '\$799', 'Pre-Order', 'Tablets'],
+                        ['Apple Watch', '\$399', 'Available', 'Wearables'],
+                      ],
+                      hiddenColumnsOnMobile: const [3],
+                      onRowTap: (index, row) {},
+                    ),
+                  ),
+
+                  // ── 13. ResponsiveConstraints ─────────────────
+                  30.sbh,
+                  const _SectionHeader(title: "13. RESPONSIVE CONSTRAINTS"),
+                  Text(
+                    "Different BoxConstraints per screen type with alignment.",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14.fz),
+                  ),
+                  10.sbh,
+                  ResponsiveConstraints(
+                    alignment: Alignment.center,
+                    mobile: const BoxConstraints(maxWidth: 300),
+                    tablet: const BoxConstraints(maxWidth: 450),
+                    desktop: const BoxConstraints(maxWidth: 600),
+                    child: Container(
+                      padding: 16.p,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.orange.shade100,
+                            Colors.deepOrange.shade100,
+                          ],
+                        ),
+                        borderRadius: 12.br,
+                        border: Border.all(color: Colors.orange.shade300),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(Icons.aspect_ratio,
+                              size: 32.iz, color: Colors.deepOrange),
+                          8.sbh,
+                          ResponsiveText(
+                            'Constrained to max-width per screen type',
+                            style: TextStyle(
+                                fontSize: 14.fz,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepOrange.shade800),
+                            autoResize: true,
+                            minFontSize: 10,
+                            maxLines: 1,
+                          ),
+                          4.sbh,
+                          ResponsiveBuilder(
+                            builder: (ctx, data) => Text(
+                              'mobile: 300px | tablet: 450px | desktop: 600px',
+                              style: TextStyle(
+                                  fontSize: 11.fz,
+                                  color: Colors.deepOrange.shade600),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  30.sbh,
+                  const _SectionHeader(title: "14. RESPONSIVE NAVIGATION DEMO"),
+                  Text(
+                    "Bottom → Rail → Sidebar. See NavigationDemoPage below.",
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14.fz),
+                  ),
+                  10.sbh,
+                  const _NavigationPreview(),
+
+                  30.sbh,
                 ],
               ),
             ),
@@ -1256,6 +1705,437 @@ class _ScaleComparisonDemo extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// NEW v4.0 FEATURE DEMO WIDGETS
+// ═══════════════════════════════════════════════════════════════════════
+
+/// Row showing a spacing tier with a colored bar.
+class _SpacingDemoRow extends StatelessWidget {
+  final String label;
+  final Spacing spacing;
+  const _SpacingDemoRow({required this.label, required this.spacing});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 30.w,
+          child: Text(label,
+              style: TextStyle(
+                  fontSize: 12.fz,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.amber.shade800)),
+        ),
+        Expanded(
+          child: Container(
+            height: spacing.value.clamp(4, 48),
+            decoration: BoxDecoration(
+              color: Colors.amber.shade200,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+        ),
+        8.sbw,
+        Text('${spacing.value.toStringAsFixed(0)}px',
+            style: TextStyle(fontSize: 11.fz, color: Colors.amber.shade700)),
+      ],
+    );
+  }
+}
+
+/// Preview of the ResponsiveNavigation widget embedded in a container.
+class _NavigationPreview extends StatefulWidget {
+  const _NavigationPreview();
+
+  @override
+  State<_NavigationPreview> createState() => _NavigationPreviewState();
+}
+
+class _NavigationPreviewState extends State<_NavigationPreview> {
+  int _navIndex = 0;
+
+  // Each tab gets its own GlobalKey<NavigatorState> for independent navigation
+  final _navigatorKeys = List.generate(4, (_) => GlobalKey<NavigatorState>());
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 350.s,
+      decoration: BoxDecoration(
+        borderRadius: 12.br,
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: ResponsiveNavigation(
+        destinations: const [
+          NavDestination(icon: Icons.home, label: 'Home'),
+          NavDestination(
+              icon: Icons.search, selectedIcon: Icons.search, label: 'Search'),
+          NavDestination(
+              icon: Icons.notifications_outlined,
+              selectedIcon: Icons.notifications,
+              label: 'Alerts',
+              badge: 5),
+          // Profile: shown in bottom nav, hidden in sidebar (moved to footer)
+          NavDestination(
+              icon: Icons.person_outline,
+              selectedIcon: Icons.person,
+              label: 'Profile',
+              showInSidebar: false),
+        ],
+        selectedIndex: _navIndex,
+        onChanged: (i) => setState(() => _navIndex = i),
+        // ── Nested Navigation: sidebar stays fixed, body navigates ──
+        body: IndexedStack(
+          index: _navIndex,
+          children: [
+            _NestedNav(
+                navKey: _navigatorKeys[0],
+                tabLabel: 'Home',
+                tabColor: Colors.blue,
+                tabIcon: Icons.home),
+            _NestedNav(
+                navKey: _navigatorKeys[1],
+                tabLabel: 'Search',
+                tabColor: Colors.green,
+                tabIcon: Icons.search),
+            _NestedNav(
+                navKey: _navigatorKeys[2],
+                tabLabel: 'Alerts',
+                tabColor: Colors.orange,
+                tabIcon: Icons.notifications),
+            _NestedNav(
+                navKey: _navigatorKeys[3],
+                tabLabel: 'Profile',
+                tabColor: Colors.purple,
+                tabIcon: Icons.person),
+          ],
+        ),
+
+        // ── Custom bottom nav (full UI control) ──
+        bottomNavBuilder: (context, destinations, selected, onChanged) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withAlpha(20),
+                    blurRadius: 10,
+                    offset: const Offset(0, -2))
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(destinations.length, (i) {
+                final d = destinations[i];
+                final isActive = i == selected;
+                return GestureDetector(
+                  onTap: () => onChanged(i),
+                  behavior: HitTestBehavior.opaque,
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.s, horizontal: 12.w),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: isActive ? 16.w : 0),
+                          decoration: BoxDecoration(
+                            color: isActive
+                                ? Colors.indigo.withAlpha(25)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 4.s),
+                            child: Icon(
+                              isActive ? (d.selectedIcon ?? d.icon) : d.icon,
+                              color: isActive ? Colors.indigo : Colors.grey,
+                              size: 22.iz,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 2.s),
+                        Text(
+                          d.label,
+                          style: TextStyle(
+                            fontSize: 10.fz,
+                            fontWeight:
+                                isActive ? FontWeight.bold : FontWeight.normal,
+                            color: isActive ? Colors.indigo : Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+          );
+        },
+
+        // ── Sidebar header ──
+        sidebarHeader: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(Icons.layers, size: 24.iz, color: Colors.indigo),
+              SizedBox(width: 8.w),
+              Text('Scalify App',
+                  style: TextStyle(
+                      fontSize: 16.fz,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.indigo)),
+            ],
+          ),
+        ),
+
+        // ── Sidebar footer (Profile card replaces the button) ──
+        sidebarFooter: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: _navIndex == 3
+                ? Colors.indigo.withAlpha(25)
+                : Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: InkWell(
+            onTap: () => setState(() => _navIndex = 3),
+            borderRadius: BorderRadius.circular(12),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 16.s,
+                  backgroundColor: Colors.indigo.shade100,
+                  child: Icon(Icons.person, size: 18.iz, color: Colors.indigo),
+                ),
+                SizedBox(width: 10.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Alaa Hassan',
+                          style: TextStyle(
+                              fontSize: 13.fz, fontWeight: FontWeight.w600)),
+                      Text('Pro Member',
+                          style:
+                              TextStyle(fontSize: 10.fz, color: Colors.grey)),
+                    ],
+                  ),
+                ),
+                Icon(Icons.settings, size: 16.iz, color: Colors.grey),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Each tab has its own Navigator for independent nested navigation.
+class _NestedNav extends StatelessWidget {
+  final GlobalKey<NavigatorState> navKey;
+  final String tabLabel;
+  final MaterialColor tabColor;
+  final IconData tabIcon;
+
+  const _NestedNav({
+    required this.navKey,
+    required this.tabLabel,
+    required this.tabColor,
+    required this.tabIcon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Navigator(
+      key: navKey,
+      onGenerateRoute: (settings) {
+        return MaterialPageRoute(
+          builder: (_) => _TabListPage(
+            label: tabLabel,
+            color: tabColor,
+            icon: tabIcon,
+            navKey: navKey,
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Root list page for each tab — shows items that push to detail page.
+class _TabListPage extends StatelessWidget {
+  final String label;
+  final MaterialColor color;
+  final IconData icon;
+  final GlobalKey<NavigatorState> navKey;
+
+  const _TabListPage({
+    required this.label,
+    required this.color,
+    required this.icon,
+    required this.navKey,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: color.shade50,
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(12.s),
+            child: Row(
+              children: [
+                Icon(icon, size: 24.iz, color: color),
+                SizedBox(width: 8.w),
+                Text(label,
+                    style: TextStyle(
+                        fontSize: 16.fz,
+                        fontWeight: FontWeight.bold,
+                        color: color.shade800)),
+                const Spacer(),
+                Text('Tap item → push detail',
+                    style: TextStyle(fontSize: 10.fz, color: color.shade400)),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              itemCount: 5,
+              itemBuilder: (ctx, index) {
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 6.s),
+                  child: Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(8),
+                      onTap: () {
+                        // Push detail page — sidebar stays fixed!
+                        navKey.currentState?.push(MaterialPageRoute(
+                          builder: (_) => _TabDetailPage(
+                            parentLabel: label,
+                            itemIndex: index,
+                            color: color,
+                            navKey: navKey,
+                          ),
+                        ));
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.all(10.s),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 14.s,
+                              backgroundColor: color.shade100,
+                              child: Text('${index + 1}',
+                                  style: TextStyle(
+                                      fontSize: 11.fz,
+                                      color: color.shade800,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                            SizedBox(width: 8.w),
+                            Expanded(
+                              child: Text('$label Item ${index + 1}',
+                                  style: TextStyle(
+                                      fontSize: 13.fz, color: color.shade700)),
+                            ),
+                            Icon(Icons.chevron_right,
+                                size: 18.iz, color: color.shade300),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Detail page pushed inside a tab — sidebar stays visible!
+class _TabDetailPage extends StatelessWidget {
+  final String parentLabel;
+  final int itemIndex;
+  final MaterialColor color;
+  final GlobalKey<NavigatorState> navKey;
+
+  const _TabDetailPage({
+    required this.parentLabel,
+    required this.itemIndex,
+    required this.color,
+    required this.navKey,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: color.shade50,
+      child: Column(
+        children: [
+          // Back bar
+          Container(
+            padding: EdgeInsets.all(8.s),
+            color: color.shade100,
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () => navKey.currentState?.pop(),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.arrow_back,
+                          size: 18.iz, color: color.shade800),
+                      SizedBox(width: 4.w),
+                      Text('Back',
+                          style: TextStyle(
+                              fontSize: 13.fz,
+                              fontWeight: FontWeight.w600,
+                              color: color.shade800)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Detail content
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.check_circle, size: 40.iz, color: color),
+                  SizedBox(height: 8.s),
+                  Text('$parentLabel — Detail #${itemIndex + 1}',
+                      style: TextStyle(
+                          fontSize: 16.fz,
+                          fontWeight: FontWeight.bold,
+                          color: color.shade800)),
+                  SizedBox(height: 4.s),
+                  Text('Sidebar stays fixed! ✅',
+                      style: TextStyle(fontSize: 12.fz, color: color.shade600)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
