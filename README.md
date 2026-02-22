@@ -37,6 +37,10 @@ A complete, high-performance responsive system — not just a sizing tool. Scale
 | **Design Token Spacing** (xs → xxl) | ✅ |
 | **Debug Overlay** (Draggable, Live Metrics) | ✅ |
 | **Adaptive Navigation** (Bottom/Rail/Sidebar) | ✅ |
+| **Responsive Wrap** (Auto line-wrapping) | ✅ |
+| **Responsive Image** (Per-screen sources) | ✅ |
+| **Animated Transitions** (Smooth layout switch) | ✅ |
+| **Responsive Table** (DataTable ↔ Cards) | ✅ |
 | **Zero External Dependencies** | ✅ |
 | **208 Tests Passing** | ✅ |
 
@@ -59,6 +63,10 @@ A complete, high-performance responsive system — not just a sizing tool. Scale
 - 📏 **Design Tokens** — `Spacing.md.gap`, `Spacing.lg.insets` — unified spacing system
 - 🔍 **Debug Overlay** — Draggable live metrics panel (debug-only, zero production cost)
 - 🌐 **Adaptive Navigation** — Auto-switches Bottom → Rail → Sidebar by screen size
+- 🔄 **Responsive Wrap** — Auto-wrapping layout with scaled spacing
+- 🖼️ **Responsive Image** — Different images per screen type with memory optimization
+- 🎭 **Animated Transitions** — Smooth animations between responsive layouts
+- 📊 **Responsive Table** — DataTable on desktop, cards on mobile with sorting
 
 ---
 
@@ -1051,7 +1059,231 @@ class _MyAppState extends State<MyApp> {
 
 ---
 
+## 🔄 ResponsiveWrap — Smart Auto-Wrapping
+
+A widget that lays out children horizontally and wraps to the next line automatically when space runs out — perfect for chips, tags, and button groups.
+
+### Usage
+
+```dart
+ResponsiveWrap(
+  spacing: 12,
+  runSpacing: 8,
+  children: [
+    FilterChip(label: Text('All')),
+    FilterChip(label: Text('Clothes')),
+    FilterChip(label: Text('Electronics')),
+    FilterChip(label: Text('Shoes')),
+    FilterChip(label: Text('Books')),
+  ],
+)
+```
+
+### API
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :---: | :--- |
+| `children` | `List<Widget>` | required | Widgets to layout |
+| `spacing` | `double` | `8.0` | Horizontal gap (auto-scaled) |
+| `runSpacing` | `double` | `8.0` | Vertical gap between lines |
+| `alignment` | `WrapAlignment` | `start` | Main axis alignment |
+| `crossAxisAlignment` | `WrapCrossAlignment` | `center` | Cross axis alignment |
+| `scaleSpacing` | `bool` | `true` | Scale spacing via `.s` |
+| `padding` | `EdgeInsetsGeometry?` | `null` | Outer padding |
+
+> 💡 Unlike `ResponsiveFlex` (Row↔Column), `ResponsiveWrap` wraps items **line by line** without switching direction.
+
+---
+
+## 🖼️ ResponsiveImage — Screen-Adaptive Images
+
+Displays different image sources based on screen type, optimizing memory and visual quality.
+
+### Usage
+
+```dart
+ResponsiveImage(
+  mobile: AssetImage('assets/banner_sm.webp'),
+  tablet: AssetImage('assets/banner_md.webp'),
+  desktop: AssetImage('assets/banner_lg.webp'),
+  fit: BoxFit.cover,
+  height: 200.s,
+  borderRadius: BorderRadius.circular(12),
+)
+```
+
+### With Placeholder & Auto-Optimize
+
+```dart
+ResponsiveImage(
+  mobile: NetworkImage('https://example.com/sm.jpg'),
+  desktop: NetworkImage('https://example.com/lg.jpg'),
+  autoOptimize: true,  // Decodes at display size to save memory
+  width: 300.w,
+  height: 200.s,
+  placeholder: Center(child: CircularProgressIndicator()),
+  errorWidget: Icon(Icons.broken_image),
+)
+```
+
+### API
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :---: | :--- |
+| `mobile` | `ImageProvider` | required | Image for mobile (fallback) |
+| `tablet` | `ImageProvider?` | `null` | Image for tablet |
+| `desktop` | `ImageProvider?` | `null` | Image for desktop |
+| `fit` | `BoxFit` | `cover` | How to fit the image |
+| `autoOptimize` | `bool` | `false` | Decode at display size |
+| `placeholder` | `Widget?` | `null` | Loading placeholder |
+| `errorWidget` | `Widget?` | `null` | Error fallback |
+| `borderRadius` | `BorderRadius?` | `null` | Rounded corners |
+
+> 💡 Fallback chain: `desktop → tablet → mobile` — always displays something.
+
+---
+
+## 🎭 AnimatedResponsiveTransition — Smooth Layout Switching
+
+Animates smoothly between different responsive layouts when the screen type changes. Essential for polished Desktop/Web experiences.
+
+### Usage
+
+```dart
+AnimatedResponsiveTransition(
+  duration: Duration(milliseconds: 300),
+  transition: ResponsiveTransitionType.fadeSlide,
+  mobile: CompactCard(),
+  tablet: MediumCard(),
+  desktop: ExpandedCard(),
+)
+```
+
+### Available Transitions
+
+| Type | Visual Effect |
+| :--- | :--- |
+| `ResponsiveTransitionType.fade` | Simple fade between layouts |
+| `ResponsiveTransitionType.fadeSlide` | Fade + horizontal slide |
+| `ResponsiveTransitionType.scale` | Scale up/down transition |
+| `ResponsiveTransitionType.fadeScale` | Fade + subtle scale |
+
+### Custom Transition
+
+```dart
+AnimatedResponsiveTransition(
+  mobile: MobileLayout(),
+  desktop: DesktopLayout(),
+  customTransitionBuilder: (child, animation) {
+    return RotationTransition(turns: animation, child: child);
+  },
+)
+```
+
+### API
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :---: | :--- |
+| `mobile` | `Widget` | required | Mobile layout (fallback) |
+| `tablet` | `Widget?` | `null` | Tablet layout |
+| `desktop` | `Widget?` | `null` | Desktop layout |
+| `duration` | `Duration` | `300ms` | Animation duration |
+| `curve` | `Curve` | `easeInOut` | Animation curve |
+| `transition` | `ResponsiveTransitionType` | `fade` | Transition type |
+| `customTransitionBuilder` | `Function?` | `null` | Custom override |
+
+> 💡 Animation only triggers on **ScreenType** change — not on sub-pixel resize events.
+
+---
+
+## 📊 ResponsiveTable — Adaptive Data Display
+
+A table that automatically switches between a full `DataTable` on desktop and a card list on mobile. Supports sorting, column hiding, and custom card layouts.
+
+### Basic Usage
+
+```dart
+ResponsiveTable(
+  columns: ['Name', 'Price', 'Status', 'Date'],
+  rows: [
+    ['iPhone 15', '\$999', 'Available', '2024-01-15'],
+    ['MacBook Pro', '\$1999', 'Sold Out', '2024-02-20'],
+    ['AirPods', '\$249', 'Available', '2024-03-10'],
+  ],
+  hiddenColumnsOnMobile: [3],  // Hide 'Date' on mobile
+)
+```
+
+### Custom Mobile Cards
+
+```dart
+ResponsiveTable(
+  columns: ['Name', 'Price', 'Status'],
+  rows: products.map((p) => [p.name, p.price, p.status]).toList(),
+  mobileCardBuilder: (context, row, headers) => Card(
+    child: ListTile(
+      leading: Icon(Icons.shopping_bag),
+      title: Text(row[0].toString()),
+      subtitle: Text(row[1].toString()),
+      trailing: Chip(label: Text(row[2].toString())),
+    ),
+  ),
+  onRowTap: (index, row) => print('Tapped: $row'),
+)
+```
+
+### With Sorting
+
+```dart
+ResponsiveTable(
+  columns: ['Name', 'Price'],
+  rows: data,
+  showSortIndicator: true,
+  sortColumnIndex: _sortIndex,
+  sortAscending: _ascending,
+  onSort: (column, ascending) {
+    setState(() {
+      _sortIndex = column;
+      _ascending = ascending;
+      _sortData();
+    });
+  },
+)
+```
+
+### Modes
+
+```
+┌──────────┬───────────────────────────┐
+│  Screen  │   Display Mode            │
+├──────────┼───────────────────────────┤
+│  Mobile  │  Card list (lazy loaded)  │
+│  Tablet  │  Full DataTable           │
+│  Desktop │  Full DataTable           │
+└──────────┴───────────────────────────┘
+```
+
+### API
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :---: | :--- |
+| `columns` | `List<String>` | required | Column headers |
+| `rows` | `List<List<dynamic>>` | required | Row data |
+| `mobileCardBuilder` | `Function?` | `null` | Custom card builder |
+| `hiddenColumnsOnMobile` | `List<int>?` | `null` | Columns to hide |
+| `onRowTap` | `Function?` | `null` | Row tap callback |
+| `tableBreakpoint` | `ScreenType` | `mobile` | Card→Table switch |
+| `showSortIndicator` | `bool` | `false` | Show sort arrows |
+| `onSort` | `Function?` | `null` | Sort callback |
+| `horizontalScroll` | `bool` | `true` | Scroll on overflow |
+| `cardSpacing` | `double` | `8.0` | Gap between cards |
+
+> 💡 Mobile cards use `ListView.builder` for lazy rendering — O(visible) performance even with 1000+ rows.
+
+---
+
 ## 🧪 Testing
+
 
 
 The package includes **208 comprehensive tests** covering all widgets, extensions, and edge cases:

@@ -25,3 +25,7 @@ export 'responsive_scale/responsive_text.dart';
 export 'responsive_scale/responsive_spacing.dart';
 export 'responsive_scale/scalify_debug_overlay.dart';
 export 'responsive_scale/responsive_navigation.dart';
+export 'responsive_scale/responsive_wrap.dart';
+export 'responsive_scale/responsive_image.dart';
+export 'responsive_scale/animated_responsive_transition.dart';
+export 'responsive_scale/responsive_table.dart';
