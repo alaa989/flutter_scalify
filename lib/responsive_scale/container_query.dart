@@ -136,7 +136,11 @@ class ContainerQueryData {
   }
 
   @override
-  int get hashCode => Object.hash(width, height, tier);
+  int get hashCode => Object.hash(
+        (width / _tolerance).round(),
+        (height / _tolerance).round(),
+        tier,
+      );
 
   /// Whether the container is considered mobile size.
   bool get isMobile => tier == QueryTier.xs || tier == QueryTier.sm;

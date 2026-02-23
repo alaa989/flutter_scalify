@@ -84,6 +84,19 @@ class ResponsiveTable extends StatelessWidget {
   /// Decoration for the data table (desktop/tablet).
   final Decoration? tableDecoration;
 
+  /// Whether the mobile card list should shrink-wrap its content.
+  ///
+  /// Set to `true` (default) when the table is nested inside another scrollable.
+  /// Set to `false` when this is the primary scrollable for better performance
+  /// with large datasets — enables lazy rendering via [ListView.builder].
+  final bool cardShrinkWrap;
+
+  /// Scroll physics for the mobile card list.
+  ///
+  /// Default: [NeverScrollableScrollPhysics] when [cardShrinkWrap] is `true`,
+  /// `null` (platform default) when [cardShrinkWrap] is `false`.
+  final ScrollPhysics? cardPhysics;
+
   /// Creates a [ResponsiveTable].
   const ResponsiveTable({
     super.key,
@@ -102,6 +115,8 @@ class ResponsiveTable extends StatelessWidget {
     this.cardSpacing = 8.0,
     this.horizontalScroll = true,
     this.tableDecoration,
+    this.cardShrinkWrap = true,
+    this.cardPhysics,
   });
 
   @override
@@ -188,8 +203,9 @@ class ResponsiveTable extends StatelessWidget {
 
     return ListView.separated(
       padding: cardListPadding,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: cardShrinkWrap,
+      physics: cardPhysics ??
+          (cardShrinkWrap ? const NeverScrollableScrollPhysics() : null),
       itemCount: rows.length,
       separatorBuilder: (_, __) => SizedBox(height: cardSpacing.s),
       itemBuilder: (context, index) {

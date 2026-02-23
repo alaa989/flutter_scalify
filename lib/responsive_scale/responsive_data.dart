@@ -184,10 +184,19 @@ class ResponsiveData {
 
   @override
   int get hashCode {
+    // Bucket size values by rebuildWidthPxThreshold to match == tolerance.
+    // This ensures that values within the tolerance range produce the same hash.
+    final widthBucket = config.rebuildWidthPxThreshold > 0
+        ? (size.width / config.rebuildWidthPxThreshold).round()
+        : size.width.round();
+    final heightBucket = config.rebuildWidthPxThreshold > 0
+        ? (size.height / config.rebuildWidthPxThreshold).round()
+        : size.height.round();
+
     return Object.hash(
+      widthBucket,
+      heightBucket,
       _scaleFactorId,
-      _scaleWidthId,
-      _scaleHeightId,
       _textScaleFactorId,
       screenType,
     );

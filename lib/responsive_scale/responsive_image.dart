@@ -42,7 +42,7 @@ class ResponsiveImage extends StatelessWidget {
   final double? height;
 
   /// Alignment within the container. Default: [Alignment.center].
-  final AlignmentGeometry alignment;
+  final Alignment alignment;
 
   /// Widget to show while the image is loading.
   final Widget? placeholder;
@@ -106,7 +106,7 @@ class ResponsiveImage extends StatelessWidget {
       fit: fit,
       width: width,
       height: height,
-      alignment: alignment as Alignment,
+      alignment: alignment,
       color: color,
       colorBlendMode: colorBlendMode,
       semanticLabel: semanticLabel,
