@@ -495,7 +495,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
             ),
           ),
           // ═══════════════════════════════════════════════════
-          // NEW v4.0 FEATURES SHOWCASE
+          // NEW v3.1.0 FEATURES SHOWCASE
           // ═══════════════════════════════════════════════════
           SliverToBoxAdapter(
             child: Padding(
@@ -504,7 +504,7 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Divider(height: 40.h),
-                  const _SectionHeader(title: "NEW v4.0 FEATURES"),
+                  const _SectionHeader(title: "NEW v3.1.0 FEATURES"),
 
                   // ── 7. ResponsiveText ─────────────────────────
                   const _SectionHeader(title: "7. RESPONSIVE TEXT"),
@@ -1710,7 +1710,7 @@ class _ScaleComparisonDemo extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// NEW v4.0 FEATURE DEMO WIDGETS
+// NEW v3.1.0 FEATURE DEMO WIDGETS
 // ═══════════════════════════════════════════════════════════════════════
 
 /// Row showing a spacing tier with a colored bar.

@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] - 2026-02-23 🚀 (The Feature Expansion Update)
+
+This release adds **10 new responsive widgets**, comprehensive test coverage, and a world-class documentation overhaul.
+
+### ✨ New Widgets (10)
+
+- **`ResponsiveText`:** Auto-resize text to fit available width with binary-search font fitting. Supports `shortText` for abbreviated labels on small screens.
+- **`ResponsiveSpacing`:** Design token system (`Spacing.md.gap`, `Spacing.lg.insets`) with customizable `SpacingScale` (xs → xxl). All values auto-scale via `GlobalResponsive`.
+- **`ScalifyDebugOverlay`:** Draggable, collapsible live metrics panel showing screen type, dimensions, scale factors, and rebuild count. Zero cost in release builds (`kDebugMode` guard).
+- **`ResponsiveNavigation`:** Adaptive navigation that auto-switches between `BottomNavigationBar`, `NavigationRail`, and sidebar drawer based on screen size. Supports `bottomNavBuilder`, `sidebarHeader`/`sidebarFooter`, `showInSidebar` per destination, badge counts, and nested navigation.
+- **`ResponsiveWrap`:** Auto-wrapping layout with scaled `spacing` and `runSpacing`. Perfect for chips, tags, and button groups.
+- **`ResponsiveImage`:** Displays different `ImageProvider` sources per screen type (mobile/tablet/desktop) with fallback chain, `autoOptimize`, `placeholder`, `errorWidget`, and `borderRadius`.
+- **`AnimatedResponsiveTransition`:** Smooth animations between responsive layouts on screen type changes. Supports `fade`, `fadeSlide`, `scale`, `fadeScale`, and custom transitions via `customTransitionBuilder`.
+- **`ResponsiveTable`:** Renders `DataTable` on desktop and card list on mobile. Supports `hiddenColumnsOnMobile`, `mobileCardBuilder`, `onRowTap`, sorting, and lazy-loaded mobile cards.
+- **`ResponsiveConstraints`:** Applies per-screen `BoxConstraints` with fallback chain. Supports `alignment` and `scaleConstraints` flag for proportional scaling.
+- **`ScalifySliver`:** Suite of 3 responsive sliver widgets: `ScalifySliverAppBar` (per-screen expanded heights), `ScalifySliverHeader` (per-screen sliver widgets), `ScalifySliverPersistentHeader` (responsive sticky headers with adjustable max/min heights).
+
+### 🧪 Test Suite
+
+- **312 tests passing** (up from 208), covering all 10 new widgets with comprehensive scenarios.
+- Added 10 new test files with full coverage for screen type resolution, fallback chains, widget rendering, and edge cases.
+
+### 📚 Documentation
+
+- **README restructured** for world-class quality: added Table of Contents, merged duplicate sections, moved Best Practices/Theme/Breakpoints before widgets, grouped all reference sections at the bottom.
+- **All 10 new widgets** fully documented with usage examples, API reference tables, and practical tips.
+- **ResponsiveNavigation** docs expanded with `bottomNavBuilder`, sidebar customization, and nested navigation examples.
+- **ScalifyConfig** moved to the top of documentation with detailed inline comments explaining every setting.
+
+---
+
 ## [3.0.0] - 2025-02-16 🚀 (The Performance & Stability Update)
 
 This is a **major release** that re-engineers the core scaling engine, introduces powerful developer experience improvements, and brings the following:

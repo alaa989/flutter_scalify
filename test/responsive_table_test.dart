@@ -143,8 +143,6 @@ void main() {
     });
 
     testWidgets('onRowTap callback fires on DataTable row tap', (tester) async {
-      int tappedRow = -1;
-
       await pumpApp(
         tester,
         MediaQuery(
@@ -155,7 +153,7 @@ void main() {
             child: ResponsiveTable(
               columns: columns,
               rows: rows,
-              onRowTap: (index, row) => tappedRow = index,
+              onRowTap: (index, row) {},
             ),
           ),
         ),

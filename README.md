@@ -96,7 +96,7 @@ A complete, high-performance responsive system — not just a sizing tool. Scale
 
 ```yaml
 dependencies:
-  flutter_scalify: ^3.0.0
+  flutter_scalify: ^3.1.0
 ```
 
 ```bash

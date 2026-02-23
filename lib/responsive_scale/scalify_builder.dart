@@ -10,7 +10,7 @@ import 'package:flutter_scalify/flutter_scalify.dart';
 /// **Deprecated**: Use [ResponsiveBuilder] instead, which provides the same
 /// functionality. [ScalifyBuilder] will be removed in a future major version.
 @Deprecated(
-    'Use ResponsiveBuilder instead. ScalifyBuilder will be removed in v4.0.')
+    'Use ResponsiveBuilder instead. ScalifyBuilder will be removed in v3.1.')
 class ScalifyBuilder extends ResponsiveBuilder {
   /// Creates a [ScalifyBuilder] to enable live scaling.
   const ScalifyBuilder({
