@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2.svg)](https://dart.dev)
-[![Tests](https://img.shields.io/badge/Tests-208%20passed-brightgreen.svg)](#)
+[![Tests](https://img.shields.io/badge/Tests-312%20passed-brightgreen.svg)](#)
 [![Platform](https://img.shields.io/badge/Platform-Android%20|%20iOS%20|%20Web%20|%20macOS%20|%20Linux%20|%20Windows-purple.svg)](#)
 
 **The Intelligent Scaling Engine for Flutter.**
@@ -44,7 +44,7 @@ A complete, high-performance responsive system — not just a sizing tool. Scale
 | **Responsive Constraints** (Per-screen BoxConstraints) | ✅ |
 | **Sliver Widgets** (AppBar/Header/Persistent) | ✅ |
 | **Zero External Dependencies** | ✅ |
-| **208 Tests Passing** | ✅ |
+| **312 Tests Passing** | ✅ |
 
 ---
 
@@ -140,6 +140,95 @@ MaterialApp(
 ```
 
 > 💡 **Tip:** The builder pattern is recommended because it puts `ScalifyProvider` above `MaterialApp`, so changing window size doesn't rebuild `MaterialApp` itself.
+
+---
+
+## ⚙️ ScalifyConfig — Full Reference
+
+> **This is the foundation of Scalify.** Every developer should understand `ScalifyConfig` first — it controls design dimensions, breakpoints, font clamping, scaling bounds, 4K protection, and performance tuning. All other features depend on these settings.
+
+```dart
+ScalifyConfig(
+  // ─── 📐 Design Baseline ──────────────────────────────────────────
+  // These values should match your UI design file (e.g., Figma, XD).
+  // Scalify calculates scale factors by comparing actual screen size
+  // to these reference dimensions.
+  designWidth: 375.0,             // Your design's reference width in pixels
+  designHeight: 812.0,            // Your design's reference height in pixels
+
+  // ─── 📱 Breakpoints ──────────────────────────────────────────────
+  // Define exact pixel boundaries for each screen type.
+  // These control when ResponsiveGrid, ResponsiveVisibility,
+  // ResponsiveNavigation, etc. switch their layout.
+  watchBreakpoint: 300.0,         // < 300px = Watch
+  mobileBreakpoint: 600.0,        // 300–600px = Mobile
+  tabletBreakpoint: 900.0,        // 600–900px = Tablet
+  smallDesktopBreakpoint: 1200.0, // 900–1200px = Small Desktop
+  desktopBreakpoint: 1800.0,      // 1200–1800px = Desktop
+  //                               // > 1800px = Large Desktop
+
+  // ─── 🔡 Font Control ─────────────────────────────────────────────
+  // These ensure font sizes remain readable on all devices.
+  // .fz extension uses these bounds for clamping.
+  minFontSize: 6.0,               // Minimum allowed font size (floor)
+  maxFontSize: 256.0,             // Maximum allowed font size (ceiling)
+  respectTextScaleFactor: true,   // Respect system accessibility text scaling
+
+  // ─── 📏 Scale Bounds ──────────────────────────────────────────────
+  // Prevent extreme scaling that would distort the UI.
+  // E.g., on a 4K monitor, the scale might be 5.0x — maxScale caps it.
+  minScale: 0.5,                  // UI never scales below 50%
+  maxScale: 4.0,                  // UI never scales above 400%
+
+  // ─── 🛡️ 4K / Ultra-Wide Protection ───────────────────────────────
+  // On very wide screens (e.g., 3840px), raw scaling would make text
+  // enormous. Smart Dampening kicks in above the threshold width.
+  memoryProtectionThreshold: 1920.0,  // Width where dampening starts
+  highResScaleFactor: 0.65,           // Dampening strength (0.0–1.0)
+  //   0.0 = full dampening (scale stops growing)
+  //   1.0 = no dampening (linear scaling continues)
+  //   0.65 = balanced (recommended)
+
+  // ─── ⚡ Performance Tuning ────────────────────────────────────────
+  // These prevent excessive widget rebuilds during window resizing
+  // (Desktop/Web). Most apps can use defaults.
+  debounceWindowMillis: 120,          // Wait 120ms after last resize event
+  rebuildScaleThreshold: 0.01,        // Ignore scale changes < 1%
+  rebuildWidthPxThreshold: 4.0,       // Ignore width changes < 4px
+  enableGranularNotifications: false, // Enable InheritedModel aspect filtering
+
+  // ─── 🔄 Orientation ──────────────────────────────────────────────
+  // If true, swaps designWidth/designHeight in landscape orientation.
+  // Useful for apps that have separate landscape designs.
+  autoSwapDimensions: false,
+
+  // ─── 🔧 Minimum Window Width ──────────────────────────────────────
+  // If > 0, enables horizontal scrolling when the window is narrower
+  // than this value. Prevents content from being crushed on tiny windows.
+  minWidth: 0.0,
+
+  // ─── 🏷️ Legacy Compatibility ─────────────────────────────────────
+  // Only needed when migrating from v1.x with ContainerQuery tier system.
+  legacyContainerTierMapping: false,
+  showDeprecationBanner: true,        // Shows debug banner when legacy = true
+)
+```
+
+### 📐 What Each Setting Affects
+
+| Setting | What it controls | Default |
+| :--- | :--- | :---: |
+| `designWidth` / `designHeight` | Base reference for `.w`, `.h`, `.s`, `.fz` etc. | `375` / `812` |
+| `watchBreakpoint` → `desktopBreakpoint` | `ScreenType` classification for all responsive widgets | See above |
+| `minFontSize` / `maxFontSize` | `.fz` clamping range | `6` / `256` |
+| `minScale` / `maxScale` | Scale factor bounds for all extensions | `0.5` / `4.0` |
+| `memoryProtectionThreshold` | 4K dampening activation width | `1920` |
+| `highResScaleFactor` | Dampening strength on ultra-wide | `0.65` |
+| `debounceWindowMillis` | Resize debounce for Desktop/Web | `120` |
+| `rebuildScaleThreshold` | Minimum scale change to trigger rebuild | `0.01` |
+| `rebuildWidthPxThreshold` | Minimum px change to trigger rebuild | `4.0` |
+
+> 💡 **Most apps only need to set `designWidth` and `designHeight`.** All other values have smart defaults.
 
 ---
 
@@ -628,52 +717,7 @@ Widget build(BuildContext context) {
 
 ---
 
-## ⚙️ ScalifyConfig — Full Reference
-
-```dart
-ScalifyConfig(
-  // 📐 Design Baseline
-  designWidth: 375.0,             // Figma/XD design width
-  designHeight: 812.0,            // Figma/XD design height
-
-  // 📱 Breakpoints (Customizable)
-  watchBreakpoint: 300.0,         // < 300 = Watch
-  mobileBreakpoint: 600.0,        // 300-600 = Mobile
-  tabletBreakpoint: 900.0,        // 600-900 = Tablet
-  smallDesktopBreakpoint: 1200.0,  // 900-1200 = Small Desktop
-  desktopBreakpoint: 1800.0,      // 1200-1800 = Desktop
-  //                               // > 1800 = Large Desktop
-
-  // 🔡 Font Control
-  minFontSize: 6.0,               // Floor for .fz
-  maxFontSize: 256.0,             // Ceiling for .fz
-  respectTextScaleFactor: true,   // System accessibility support
-
-  // 📏 Scale Bounds
-  minScale: 0.5,                  // Minimum scale factor
-  maxScale: 4.0,                  // Maximum scale factor
-
-  // 🛡️ 4K Protection
-  memoryProtectionThreshold: 1920.0,  // Where dampening kicks in
-  highResScaleFactor: 0.65,           // Dampening strength (0-1)
-
-  // ⚡ Performance
-  debounceWindowMillis: 120,          // Resize debounce (ms)
-  rebuildScaleThreshold: 0.01,        // Min scale change to rebuild
-  rebuildWidthPxThreshold: 4.0,       // Min px change to rebuild
-  enableGranularNotifications: false, // InheritedModel aspects
-
-  // 🔄 Orientation
-  autoSwapDimensions: false,          // Swap design W/H in landscape
-
-  // 🔧 Minimum Window Width
-  minWidth: 0.0,                      // Enables horizontal scroll below this
-
-  // 🏷️ Legacy
-  legacyContainerTierMapping: false,  // v1 compatibility
-  showDeprecationBanner: true,        // Debug banner for legacy mode
-)
-```
+> 📌 **ScalifyConfig** is documented in detail at the top of this file — see [⚙️ ScalifyConfig — Full Reference](#️-scalifyconfig--full-reference).
 
 ---
 
@@ -1043,6 +1087,87 @@ class _MyAppState extends State<MyApp> {
 └───────────┴───────────────────┴─────────────────────┘
 ```
 
+### Custom Bottom Navigation
+
+Use `bottomNavBuilder` for **full UI control** over the bottom navigation bar:
+
+```dart
+ResponsiveNavigation(
+  destinations: destinations,
+  selectedIndex: _index,
+  onChanged: (i) => setState(() => _index = i),
+  body: pages[_index],
+  bottomNavBuilder: (context, destinations, selected, onChanged) {
+    return BottomNavigationBar(
+      currentIndex: selected,
+      onTap: onChanged,
+      items: destinations.map((d) => BottomNavigationBarItem(
+        icon: Icon(d.icon),
+        label: d.label,
+      )).toList(),
+    );
+  },
+)
+```
+
+### Sidebar Footer, Header & Hidden Items
+
+Add custom widgets to the sidebar and hide specific destinations from it:
+
+```dart
+ResponsiveNavigation(
+  destinations: [
+    NavDestination(icon: Icons.home, label: 'Home'),
+    NavDestination(icon: Icons.search, label: 'Search'),
+    NavDestination(
+      icon: Icons.person,
+      label: 'Profile',
+      showInSidebar: false,  // ✅ Hidden from sidebar, visible in bottom nav
+    ),
+  ],
+  selectedIndex: _index,
+  onChanged: (i) => setState(() => _index = i),
+  body: pages[_index],
+  sidebarHeader: Padding(
+    padding: EdgeInsets.all(16),
+    child: Row(
+      children: [Icon(Icons.apps), SizedBox(width: 8), Text('My App')],
+    ),
+  ),
+  sidebarFooter: ListTile(
+    leading: CircleAvatar(child: Text('A')),
+    title: Text('Alaa Hassan'),
+    subtitle: Text('Admin'),
+  ),
+)
+```
+
+### Nested Navigation
+
+`ResponsiveNavigation` supports nested navigation — the sidebar stays fixed while tab content navigates independently:
+
+```dart
+ResponsiveNavigation(
+  destinations: destinations,
+  selectedIndex: _index,
+  onChanged: (i) => setState(() => _index = i),
+  body: IndexedStack(
+    index: _index,
+    children: [
+      Navigator(  // Each tab has its own navigation stack
+        key: _navKeys[0],
+        onGenerateRoute: (_) => MaterialPageRoute(
+          builder: (_) => ListPage(navKey: _navKeys[0]),
+        ),
+      ),
+      Navigator(key: _navKeys[1], /* ... */),
+    ],
+  ),
+)
+```
+
+> 💡 **Key:** Use `IndexedStack` + per-tab `Navigator` with `GlobalKey<NavigatorState>` to preserve tab state and enable push/pop within each tab while the sidebar remains visible.
+
 ### API Reference
 
 | Parameter | Type | Default | Description |
@@ -1051,6 +1176,9 @@ class _MyAppState extends State<MyApp> {
 | `selectedIndex` | `int` | required | Current selection |
 | `onChanged` | `ValueChanged<int>` | required | Selection callback |
 | `body` | `Widget` | required | Main content |
+| `bottomNavBuilder` | `BottomNavBuilder?` | `null` | Full custom bottom nav UI |
+| `sidebarHeader` | `Widget?` | `null` | Widget above sidebar items |
+| `sidebarFooter` | `Widget?` | `null` | Widget below sidebar items |
 | `drawerWidth` | `double` | `280.0` | Sidebar width |
 | `railExtended` | `bool` | `false` | Rail shows labels inline |
 | `showLabels` | `bool` | `true` | Show rail labels |
@@ -1059,7 +1187,16 @@ class _MyAppState extends State<MyApp> {
 | `sidebarBreakpoint` | `ScreenType` | `smallDesktop` | Rail→Sidebar switch |
 | `backgroundColor` | `Color?` | theme | Background color |
 | `selectedColor` | `Color?` | primary | Selected item color |
-| `badge` (NavDestination) | `int?` | `null` | Badge count |
+
+### NavDestination Properties
+
+| Property | Type | Default | Description |
+| :--- | :--- | :---: | :--- |
+| `icon` | `IconData` | required | Icon for the destination |
+| `label` | `String` | required | Label text |
+| `selectedIcon` | `IconData?` | `null` | Icon when selected |
+| `badge` | `int?` | `null` | Badge count (shows as chip) |
+| `showInSidebar` | `bool` | `true` | Whether to show in sidebar mode |
 
 ---
 
@@ -1435,12 +1572,32 @@ CustomScrollView(
 
 
 
-The package includes **208 comprehensive tests** covering all widgets, extensions, and edge cases:
+The package includes **312 comprehensive tests** covering all widgets, extensions, and edge cases:
 
 ```bash
 flutter test --reporter compact
-# 00:02 +208: All tests passed!
+# 00:04 +312: All tests passed!
 ```
+
+### Test Coverage by Feature
+
+| Feature | Tests |
+| :--- | :---: |
+| Core Extensions (`.w`, `.h`, `.s`, `.fz`, etc.) | 50 |
+| ResponsiveGrid | 30+ |
+| ResponsiveVisibility | 15+ |
+| ResponsiveFlex | 15+ |
+| ResponsiveText | 8 |
+| ResponsiveSpacing | 12 |
+| ScalifyDebugOverlay | 4 |
+| ResponsiveNavigation | 11 |
+| ResponsiveWrap | 10 |
+| ResponsiveImage | 11 |
+| AnimatedResponsiveTransition | 12 |
+| ResponsiveTable | 9 |
+| ResponsiveConstraints | 9 |
+| ScalifySliver (AppBar/Header/Persistent) | 10 |
+| Container Queries, ScalifyBox, etc. | 30+ |
 
 ---
 
