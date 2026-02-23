@@ -17,7 +17,44 @@ A complete, high-performance responsive system — not just a sizing tool. Scale
 
 ---
 
-## Why Scalify? ⚡️
+## 📑 Table of Contents
+
+| Section | Description |
+| :--- | :--- |
+| [⚡️ Why Scalify?](#️-why-scalify-️) | Full feature checklist |
+| [📦 Installation](#-installation) | Setup guide |
+| [🚀 Quick Start](#-quick-start) | First integration |
+| [⚙️ ScalifyConfig](#️-scalifyconfig--full-reference) | Foundation — design dimensions, breakpoints, performance |
+| [📚 API Cheat Sheet](#-api-cheat-sheet) | All extensions at a glance |
+| [💻 Complete Example](#-complete-example) | Full working code |
+| [📏 Best Practices](#-best-practices--consistent-ui) | Which extension for which element |
+| [🎨 Theme Auto-Scaling](#-theme-auto-scaling) | One-line theme scaling |
+| [📱 Screen Breakpoints](#-screen-breakpoints) | 6-tier breakpoint reference |
+| **— Widgets —** | |
+| [🚀 Core Layout Widgets](#-responsive-widgets) | Grid, Flex, Layout, Visibility, Builder |
+| [📦 Container Queries](#-container-queries) | ContainerQuery, AdaptiveContainer |
+| [🧱 ScalifyBox](#-scalifybox--local-scaling) | Local container scaling |
+| [🧩 ScalifySection](#-scalifysection--independent-section-scaling) | Split-screen scaling |
+| [🛡️ AppWidthLimiter](#️-appwidthlimiter--ultra-wide-protection) | Ultra-wide protection |
+| [🔤 ResponsiveText](#-responsivetext--smart-auto-resizing-text) | Auto-resize text |
+| [📏 ResponsiveSpacing](#-responsivespacing--design-token-system) | Design token spacing |
+| [🔍 ScalifyDebugOverlay](#-scalifydebugoverlay--developer-tools) | Debug metrics panel |
+| [🌐 ResponsiveNavigation](#-responsivenavigation--adaptive-navigation) | Bottom/Rail/Sidebar |
+| [🔄 ResponsiveWrap](#-responsivewrap--smart-auto-wrapping) | Auto line-wrapping |
+| [🖼️ ResponsiveImage](#️-responsiveimage--screen-adaptive-images) | Per-screen images |
+| [🎭 AnimatedResponsiveTransition](#-animatedresponsivetransition--smooth-layout-switching) | Smooth layout switching |
+| [📊 ResponsiveTable](#-responsivetable--adaptive-data-display) | DataTable ↔ Cards |
+| [🧮 ResponsiveConstraints](#-responsiveconstraints--screen-adaptive-constraints) | Per-screen BoxConstraints |
+| [🏗️ ScalifySliver](#️-scalifysliver--responsive-sliver-widgets) | SliverAppBar/Header/Persistent |
+| **— Reference —** | |
+| [🔄 Live Resizing](#-live-resizing-desktop--web) | Desktop/Web resize handling |
+| [🧠 Engine Internals](#-advanced-how-the-engine-works) | Performance deep-dive |
+| [📋 Migration Guide](#-migration-from-v2x--v300) | v2.x → v3.0.0 |
+| [🧪 Testing](#-testing) | 312 tests |
+
+---
+
+## ⚡️ Why Scalify?
 
 | Feature | Scalify |
 | :--- | :---: |
@@ -33,7 +70,7 @@ A complete, high-performance responsive system — not just a sizing tool. Scale
 | **6 Screen Types** (Watch → Large Desktop) | ✅ |
 | **Theme Auto-Scaling** (One line) | ✅ |
 | **Percentage Scaling** (.pw .hp) | ✅ |
-| **Responsive Text** (Auto-resize, ShortText) | ✅ |
+| **Responsive Text** (Auto-resize + ShortText) | ✅ |
 | **Design Token Spacing** (xs → xxl) | ✅ |
 | **Debug Overlay** (Draggable, Live Metrics) | ✅ |
 | **Adaptive Navigation** (Bottom/Rail/Sidebar) | ✅ |
@@ -43,44 +80,19 @@ A complete, high-performance responsive system — not just a sizing tool. Scale
 | **Responsive Table** (DataTable ↔ Cards) | ✅ |
 | **Responsive Constraints** (Per-screen BoxConstraints) | ✅ |
 | **Sliver Widgets** (AppBar/Header/Persistent) | ✅ |
+| **Simple `.w` `.h` `.sp` Extensions** | ✅ |
 | **Zero External Dependencies** | ✅ |
 | **312 Tests Passing** | ✅ |
 
 ---
 
-## Features ✨
-
-- 🎯 **Simple API** — `16.fz`, `20.s`, `24.iz`, `300.w` — just add an extension
-- 📐 **Responsive Layouts** — Built-in `ResponsiveGrid`, `ResponsiveFlex`, `ResponsiveLayout`
-- 📦 **Container Queries** — `ContainerQuery` & `AdaptiveContainer` rebuild based on parent size
-- 🛡️ **4K Protection** — Smart dampening prevents UI explosion on ultra-wide screens
-- 📱 **6-Tier System** — Watch, Mobile, Tablet, Small Desktop, Desktop, Large Desktop
-- ⚡ **Hyper Performance** — `vm:prefer-inline`, Quantized IDs, InheritedModel, Debounce
-- 🔡 **Font Clamping** — Configurable min/max font bounds (never too small or too big)
-- 🎨 **Theme Scaling** — `ThemeData.scale(context)` — one line, entire theme scaled
-- 🧱 **Local Scaling** — `ScalifyBox` scales elements relative to their container
-- 🧩 **Section Scaling** — `ScalifySection` creates independent scaling per section for split layouts
-- 📊 **Percentage Scaling** — `50.pw` = 50% of screen width, `25.hp` = 25% of height
-- 🔤 **Responsive Text** — Auto-resize text with `shortText` for small screens
-- 📏 **Design Tokens** — `Spacing.md.gap`, `Spacing.lg.insets` — unified spacing system
-- 🔍 **Debug Overlay** — Draggable live metrics panel (debug-only, zero production cost)
-- 🌐 **Adaptive Navigation** — Auto-switches Bottom → Rail → Sidebar by screen size
-- 🔄 **Responsive Wrap** — Auto-wrapping layout with scaled spacing
-- 🖼️ **Responsive Image** — Different images per screen type with memory optimization
-- 🎭 **Animated Transitions** — Smooth animations between responsive layouts
-- 📊 **Responsive Table** — DataTable on desktop, cards on mobile with sorting
-- 🧮 **Responsive Constraints** — Per-screen BoxConstraints with optional scaling
-- 🏗️ **Scalify Slivers** — Responsive SliverAppBar, SliverHeader, & SliverPersistentHeader
-
----
-
-## Responsive Preview
+## 🖼️ Responsive Preview
 
 ![Responsive Design Screenshots](./screenshots/screen.jpg)
 
 ---
 
-## Installation
+## 📦 Installation
 
 ```yaml
 dependencies:
@@ -93,7 +105,7 @@ flutter pub get
 
 ---
 
-## Quick Start
+## 🚀 Quick Start
 
 ### ✅ Recommended: Builder Pattern (ScalifyProvider wraps MaterialApp)
 
@@ -346,6 +358,72 @@ Container(
     ],
   ),
 )
+```
+
+---
+
+## 📏 Best Practices — Consistent UI
+
+Use the right extension for each element to maintain a consistent UI across all screen sizes:
+
+| Element | Use | Why |
+| :--- | :---: | :--- |
+| **Text / Fonts** | `.fz` | Scaled + clamped + accessibility |
+| **Icons** | `.iz` / `.s` | Proportional to screen |
+| **Button height** | `.s` | ❌ Never `.h` — distorts on wide screens |
+| **Input field height** | `.s` | ❌ Never `.h` — text overflows |
+| **Container width** | `.w` | Follows screen width |
+| **Container height** | `.s` | Stays proportional |
+| **Horizontal padding** | `.w` | Follows width |
+| **Vertical spacing** | `.h` | Adapts to screen height |
+| **General spacing** | `.s` | Balanced proportional |
+| **Border radius** | `.r` / `.br` | Uses min(scaleW, scaleH) |
+
+> ⚠️ **Common Mistake:** Using `.h` for button/input heights causes them to shrink on wide screens (where height < width), making text overflow.
+>
+> ✅ **Fix:** Use `.s` — it uses `min(scaleWidth, scaleHeight)` which stays balanced.
+
+```dart
+// ❌ Wrong — height shrinks on wide screens
+SizedBox(height: 48.h, child: ElevatedButton(...))
+
+// ✅ Correct — stays proportional everywhere
+SizedBox(height: 48.s, child: ElevatedButton(...))
+```
+
+---
+
+## 🎨 Theme Auto-Scaling
+
+Scale your **entire** app theme with one line — no need to add `.fz` to every text widget.
+
+```dart
+ScalifyProvider(
+  builder: (context, child) => MaterialApp(
+    theme: ThemeData.light().scale(context),  // ✨ One line!
+    home: child,
+  ),
+  child: const HomeScreen(),
+)
+```
+
+> 💡 Automatically skips scaling when `scaleFactor == 1.0` for zero overhead.
+
+---
+
+## 📱 Screen Breakpoints
+
+```
+┌──────────────┬─────────────────┬──────────────────────────┐
+│  Screen Type │   Width Range   │        Enum Value        │
+├──────────────┼─────────────────┼──────────────────────────┤
+│  Watch       │     < 300px     │  ScreenType.watch        │
+│  Mobile      │  300px - 600px  │  ScreenType.mobile       │
+│  Tablet      │  600px - 900px  │  ScreenType.tablet       │
+│  Small DT    │  900px - 1200px │  ScreenType.smallDesktop │
+│  Desktop     │ 1200px - 1800px │  ScreenType.desktop      │
+│  Large DT    │    > 1800px     │  ScreenType.largeDesktop │
+└──────────────┴─────────────────┴──────────────────────────┘
 ```
 
 ---
@@ -633,232 +711,6 @@ AppWidthLimiter(
   horizontalPadding: 16,
   backgroundColor: Color(0xFFE2E8F0),
   child: YourApp(),
-)
-```
-
----
-
-## 📏 Best Practices — Consistent UI
-
-Use the right extension for each element to maintain a consistent UI across all screen sizes:
-
-| Element | Use | Why |
-| :--- | :---: | :--- |
-| **Text / Fonts** | `.fz` | Scaled + clamped + accessibility |
-| **Icons** | `.iz` / `.s` | Proportional to screen |
-| **Button height** | `.s` | ❌ Never `.h` — distorts on wide screens |
-| **Input field height** | `.s` | ❌ Never `.h` — text overflows |
-| **Container width** | `.w` | Follows screen width |
-| **Container height** | `.s` | Stays proportional |
-| **Horizontal padding** | `.w` | Follows width |
-| **Vertical spacing** | `.h` | Adapts to screen height |
-| **General spacing** | `.s` | Balanced proportional |
-| **Border radius** | `.r` / `.br` | Uses min(scaleW, scaleH) |
-
-> ⚠️ **Common Mistake:** Using `.h` for button/input heights causes them to shrink on wide screens (where height < width), making text overflow.
->
-> ✅ **Fix:** Use `.s` — it uses `min(scaleWidth, scaleHeight)` which stays balanced.
-
-```dart
-// ❌ Wrong — height shrinks on wide screens
-SizedBox(height: 48.h, child: ElevatedButton(...))
-
-// ✅ Correct — stays proportional everywhere
-SizedBox(height: 48.s, child: ElevatedButton(...))
-```
-
----
-
-## 🎨 Theme Auto-Scaling
-
-Scale your **entire** app theme with one line — no need to add `.fz` to every text widget.
-
-```dart
-ScalifyProvider(
-  builder: (context, child) => MaterialApp(
-    theme: ThemeData.light().scale(context),  // ✨ One line!
-    home: child,
-  ),
-  child: const HomeScreen(),
-)
-```
-
-> 💡 Automatically skips scaling when `scaleFactor == 1.0` for zero overhead.
-
----
-
-## 🔄 Live Resizing (Desktop & Web)
-
-For instant UI updates while dragging the window:
-
-**Option 1: ResponsiveBuilder (Recommended)**
-
-```dart
-ResponsiveBuilder(
-  builder: (context, data) {
-    return Scaffold(
-      body: Center(
-        child: Text("${data.width.toInt()}px", style: TextStyle(fontSize: 20.fz)),
-      ),
-    );
-  },
-)
-```
-
-**Option 2: Direct Subscription**
-
-```dart
-@override
-Widget build(BuildContext context) {
-  context.responsiveData;  // 👈 Subscribe to resize events
-  return Scaffold(/* ... */);
-}
-```
-
----
-
-> 📌 **ScalifyConfig** is documented in detail at the top of this file — see [⚙️ ScalifyConfig — Full Reference](#️-scalifyconfig--full-reference).
-
----
-
-## 📱 Screen Breakpoints
-
-```
-┌──────────────┬─────────────────┬──────────────────────────┐
-│  Screen Type │   Width Range   │        Enum Value        │
-├──────────────┼─────────────────┼──────────────────────────┤
-│  Watch       │     < 300px     │  ScreenType.watch        │
-│  Mobile      │  300px - 600px  │  ScreenType.mobile       │
-│  Tablet      │  600px - 900px  │  ScreenType.tablet       │
-│  Small DT    │  900px - 1200px │  ScreenType.smallDesktop │
-│  Desktop     │ 1200px - 1800px │  ScreenType.desktop      │
-│  Large DT    │    > 1800px     │  ScreenType.largeDesktop │
-└──────────────┴─────────────────┴──────────────────────────┘
-```
-
----
-
-## 🧠 Advanced: How the Engine Works
-
-### Configurable Rebuild Tolerance
-
-Scalify uses a **dual-tolerance** system to prevent unnecessary rebuilds:
-
-- **`rebuildWidthPxThreshold`** (default 4.0px) — Ignores sub-pixel size changes
-- **`rebuildScaleThreshold`** (default 0.01) — Ignores scale changes < 1%
-
-```
-Screen: 375px → 377px (2px diff < 4px threshold)
-Scale:  1.000 → 1.005 (0.005 diff < 0.01 threshold)
-→ No rebuild! ✅
-```
-
-Internally, Quantized IDs (×1000) are still used for `InheritedModel` aspect-based comparisons to ensure fast integer equality checks.
-
-### InheritedModel Aspects
-
-Enable granular notifications to rebuild widgets **only** when specific data changes:
-
-```dart
-// Only rebuilds when screen TYPE changes (not on every pixel resize)
-ScalifyProvider.of(context, aspect: ScalifyAspect.type);
-
-// Only rebuilds when scale FACTOR changes
-ScalifyProvider.of(context, aspect: ScalifyAspect.scale);
-
-// Only rebuilds when text scale changes (accessibility)
-ScalifyProvider.of(context, aspect: ScalifyAspect.text);
-```
-
-Enable in config:
-
-```dart
-ScalifyConfig(enableGranularNotifications: true)
-```
-
-### Debounce on Resize
-
-On Desktop/Web, window resizing fires hundreds of events per second. Scalify debounces platform-driven resize events with a configurable window (`debounceWindowMillis`, default 120ms), calculating the layout **once** after the user stops dragging. Parent-driven updates (e.g., `didChangeDependencies`) remain synchronous for instant response.
-
-```dart
-// Disable debounce for instant updates:
-ScalifyConfig(debounceWindowMillis: 0)
-
-// Increase debounce for weaker devices:
-ScalifyConfig(debounceWindowMillis: 200)
-```
-
-### Nested Providers & Performance (`observeMetrics`)
-
-When nesting `ScalifyProvider` (e.g., for a split-screen section), the inner provider should **not** listen to window resize events directly, as this creates a "double debounce" race condition with the parent provider, causing UI lag.
-
-To fix this, set `observeMetrics: false` on the nested provider:
-
-```dart
-ScalifyProvider(
-  config: sectionConfig,
-  observeMetrics: false, // ⚡️ Disables internal resize listener
-  child: SectionContent(),
-)
-```
-
-This ensures the inner provider updates **synchronously** when its parent rebuilds, resulting in 60fps performance during window resizing. `ScalifySection` handles this automatically.
-
-### 4K Smart Dampening
-
-For screens wider than `memoryProtectionThreshold` (default 1920px):
-
-```
-Normal: scale = screenWidth / designWidth
-4K:     scale = thresholdScale + (excessWidth / designWidth × dampFactor)
-```
-
-This prevents text from becoming 5× the intended size on ultra-wide monitors.
-
----
-
-## 📋 Migration from v2.x → v3.0.0
-
-### 1. Builder Pattern (Recommended)
-
-```diff
-- MaterialApp(
--   builder: (context, child) => ScalifyProvider(child: child),
--   home: HomeScreen(),
-- )
-+ ScalifyProvider(
-+   builder: (context, child) => MaterialApp(home: child),
-+   child: const HomeScreen(),
-+ )
-```
-
-### 2. Context API for `const` Widgets
-
-```diff
-- // Won't update in const trees
-- Text("Hi", style: TextStyle(fontSize: 16.fz))
-
-+ // Always updates via context
-+ Builder(
-+   builder: (context) => Text(
-+     "Hi",
-+     style: TextStyle(fontSize: context.sp(16)),
-+   ),
-+ )
-```
-
-### 3. Percentage Scaling (New)
-
-```dart
-SizedBox(width: 50.pw)   // 50% of screen width
-SizedBox(height: 25.hp)  // 25% of screen height
-```
-
-### 4. Theme Scaling (New)
-
-```dart
-MaterialApp(
-  theme: ThemeData.light().scale(context),
 )
 ```
 
@@ -1567,10 +1419,163 @@ CustomScrollView(
 
 ---
 
+## 🔄 Live Resizing (Desktop & Web)
+
+For instant UI updates while dragging the window:
+
+**Option 1: ResponsiveBuilder (Recommended)**
+
+```dart
+ResponsiveBuilder(
+  builder: (context, data) {
+    return Scaffold(
+      body: Center(
+        child: Text("${data.width.toInt()}px", style: TextStyle(fontSize: 20.fz)),
+      ),
+    );
+  },
+)
+```
+
+**Option 2: Direct Subscription**
+
+```dart
+@override
+Widget build(BuildContext context) {
+  context.responsiveData;  // 👈 Subscribe to resize events
+  return Scaffold(/* ... */);
+}
+```
+
+---
+
+## 🧠 Advanced: How the Engine Works
+
+### Configurable Rebuild Tolerance
+
+Scalify uses a **dual-tolerance** system to prevent unnecessary rebuilds:
+
+- **`rebuildWidthPxThreshold`** (default 4.0px) — Ignores sub-pixel size changes
+- **`rebuildScaleThreshold`** (default 0.01) — Ignores scale changes < 1%
+
+```
+Screen: 375px → 377px (2px diff < 4px threshold)
+Scale:  1.000 → 1.005 (0.005 diff < 0.01 threshold)
+→ No rebuild! ✅
+```
+
+Internally, Quantized IDs (×1000) are still used for `InheritedModel` aspect-based comparisons to ensure fast integer equality checks.
+
+### InheritedModel Aspects
+
+Enable granular notifications to rebuild widgets **only** when specific data changes:
+
+```dart
+// Only rebuilds when screen TYPE changes (not on every pixel resize)
+ScalifyProvider.of(context, aspect: ScalifyAspect.type);
+
+// Only rebuilds when scale FACTOR changes
+ScalifyProvider.of(context, aspect: ScalifyAspect.scale);
+
+// Only rebuilds when text scale changes (accessibility)
+ScalifyProvider.of(context, aspect: ScalifyAspect.text);
+```
+
+Enable in config:
+
+```dart
+ScalifyConfig(enableGranularNotifications: true)
+```
+
+### Debounce on Resize
+
+On Desktop/Web, window resizing fires hundreds of events per second. Scalify debounces platform-driven resize events with a configurable window (`debounceWindowMillis`, default 120ms), calculating the layout **once** after the user stops dragging. Parent-driven updates (e.g., `didChangeDependencies`) remain synchronous for instant response.
+
+```dart
+// Disable debounce for instant updates:
+ScalifyConfig(debounceWindowMillis: 0)
+
+// Increase debounce for weaker devices:
+ScalifyConfig(debounceWindowMillis: 200)
+```
+
+### Nested Providers & Performance (`observeMetrics`)
+
+When nesting `ScalifyProvider` (e.g., for a split-screen section), the inner provider should **not** listen to window resize events directly, as this creates a "double debounce" race condition with the parent provider, causing UI lag.
+
+To fix this, set `observeMetrics: false` on the nested provider:
+
+```dart
+ScalifyProvider(
+  config: sectionConfig,
+  observeMetrics: false, // ⚡️ Disables internal resize listener
+  child: SectionContent(),
+)
+```
+
+This ensures the inner provider updates **synchronously** when its parent rebuilds, resulting in 60fps performance during window resizing. `ScalifySection` handles this automatically.
+
+### 4K Smart Dampening
+
+For screens wider than `memoryProtectionThreshold` (default 1920px):
+
+```
+Normal: scale = screenWidth / designWidth
+4K:     scale = thresholdScale + (excessWidth / designWidth × dampFactor)
+```
+
+This prevents text from becoming 5× the intended size on ultra-wide monitors.
+
+---
+
+## 📋 Migration from v2.x → v3.0.0
+
+### 1. Builder Pattern (Recommended)
+
+```diff
+- MaterialApp(
+-   builder: (context, child) => ScalifyProvider(child: child),
+-   home: HomeScreen(),
+- )
++ ScalifyProvider(
++   builder: (context, child) => MaterialApp(home: child),
++   child: const HomeScreen(),
++ )
+```
+
+### 2. Context API for `const` Widgets
+
+```diff
+- // Won't update in const trees
+- Text("Hi", style: TextStyle(fontSize: 16.fz))
+
++ // Always updates via context
++ Builder(
++   builder: (context) => Text(
++     "Hi",
++     style: TextStyle(fontSize: context.sp(16)),
++   ),
++ )
+```
+
+### 3. Percentage Scaling (New)
+
+```dart
+SizedBox(width: 50.pw)   // 50% of screen width
+SizedBox(height: 25.hp)  // 25% of screen height
+```
+
+### 4. Theme Scaling (New)
+
+```dart
+MaterialApp(
+  theme: ThemeData.light().scale(context),
+)
+```
+
+---
+
 ## 🧪 Testing
-
-
-
 
 The package includes **312 comprehensive tests** covering all widgets, extensions, and edge cases:
 
