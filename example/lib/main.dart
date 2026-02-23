@@ -443,23 +443,23 @@ class ScalifyShowcaseScreen extends StatelessWidget {
                 key: ValueKey('api_item_$index'),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: 8.br,
+                  borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.grey.shade200),
                 ),
                 alignment: Alignment.center,
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Padding(
-                    padding: 8.p,
+                    padding: const EdgeInsets.all(8),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.cloud_download,
-                            color: Colors.blueGrey, size: 28.iz),
-                        4.sbh,
+                        const Icon(Icons.cloud_download,
+                            color: Colors.blueGrey, size: 28),
+                        const SizedBox(height: 4),
                         Text("API Item $index",
-                            style: TextStyle(fontSize: 18.fz)),
+                            style: const TextStyle(fontSize: 15)),
                       ],
                     ),
                   ),
@@ -1067,10 +1067,10 @@ class _AdaptiveProductCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: 12.br,
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade200),
       ),
-      padding: 12.p,
+      padding: const EdgeInsets.all(12),
       child: ContainerQuery(
         breakpoints: const [200, 350],
         builder: (context, query) {
@@ -1082,13 +1082,14 @@ class _AdaptiveProductCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.shopping_bag, color: Colors.indigo, size: 32.iz),
-                  8.sbh,
+                  const Icon(Icons.shopping_bag,
+                      color: Colors.indigo, size: 32),
+                  const SizedBox(height: 8),
                   Text("Product $index",
-                      style: TextStyle(
-                          fontSize: 19.fz, fontWeight: FontWeight.bold)),
-                  Text("\$99",
-                      style: TextStyle(fontSize: 18.fz, color: Colors.green)),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold)),
+                  const Text("\$99",
+                      style: TextStyle(fontSize: 14, color: Colors.green)),
                 ],
               ),
             );
@@ -1101,13 +1102,14 @@ class _AdaptiveProductCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.shopping_bag, color: Colors.indigo, size: 40.iz),
-                  8.sbh,
+                  const Icon(Icons.shopping_bag,
+                      color: Colors.indigo, size: 40),
+                  const SizedBox(height: 8),
                   Text("Product $index",
-                      style: TextStyle(
-                          fontSize: 20.fz, fontWeight: FontWeight.bold)),
-                  Text("\$99.00",
-                      style: TextStyle(fontSize: 18.fz, color: Colors.green)),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text("\$99.00",
+                      style: TextStyle(fontSize: 15, color: Colors.green)),
                 ],
               ),
             );
@@ -1116,14 +1118,15 @@ class _AdaptiveProductCard extends StatelessWidget {
           return Row(
             children: [
               Container(
-                width: 50.w,
-                height: 50.w,
+                width: 50,
+                height: 50,
                 decoration: BoxDecoration(
-                    color: Colors.indigo.shade50, borderRadius: 8.br),
-                child:
-                    Icon(Icons.shopping_bag, color: Colors.indigo, size: 24.iz),
+                    color: Colors.indigo.shade50,
+                    borderRadius: BorderRadius.circular(8)),
+                child: const Icon(Icons.shopping_bag,
+                    color: Colors.indigo, size: 24),
               ),
-              16.sbw,
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1131,18 +1134,18 @@ class _AdaptiveProductCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text("Premium Product $index",
-                        style: TextStyle(
-                            fontSize: 22.fz, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
-                    Text("High quality item description...",
-                        style: TextStyle(fontSize: 18.fz, color: Colors.grey),
+                    const Text("High quality item description...",
+                        style: TextStyle(fontSize: 13, color: Colors.grey),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
                   ],
                 ),
               ),
-              12.sbw,
+              const SizedBox(width: 12),
               Tooltip(
                 message: 'Buy product',
                 child: ElevatedButton(
