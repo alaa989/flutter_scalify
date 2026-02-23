@@ -128,13 +128,13 @@ void main() {
           data: const MediaQueryData(size: Size(375, 812)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: CustomScrollView(
+            child: const CustomScrollView(
               slivers: [
                 ScalifySliverHeader(
-                  mobile: const SliverToBoxAdapter(
+                  mobile: SliverToBoxAdapter(
                     child: Text('Mobile Header'),
                   ),
-                  desktop: const SliverToBoxAdapter(
+                  desktop: SliverToBoxAdapter(
                     child: Text('Desktop Header'),
                   ),
                 ),
@@ -155,13 +155,13 @@ void main() {
           data: const MediaQueryData(size: Size(1400, 900)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: CustomScrollView(
+            child: const CustomScrollView(
               slivers: [
                 ScalifySliverHeader(
-                  mobile: const SliverToBoxAdapter(
+                  mobile: SliverToBoxAdapter(
                     child: Text('Mobile Header'),
                   ),
-                  desktop: const SliverToBoxAdapter(
+                  desktop: SliverToBoxAdapter(
                     child: Text('Desktop Header'),
                   ),
                 ),
@@ -182,10 +182,10 @@ void main() {
           data: const MediaQueryData(size: Size(768, 1024)),
           child: ScalifyProvider(
             builder: (context, child) => MaterialApp(home: child),
-            child: CustomScrollView(
+            child: const CustomScrollView(
               slivers: [
                 ScalifySliverHeader(
-                  mobile: const SliverToBoxAdapter(
+                  mobile: SliverToBoxAdapter(
                     child: Text('Fallback'),
                   ),
                 ),
@@ -269,9 +269,7 @@ void main() {
                   mobileMaxHeight: 50,
                   desktopMaxHeight: 100,
                   builder: (context, shrinkOffset, overlapsContent) {
-                    return Container(
-                      child: const Text('Desktop Height'),
-                    );
+                    return const Text('Desktop Height');
                   },
                 ),
               ],
@@ -295,7 +293,7 @@ void main() {
                 ScalifySliverPersistentHeader(
                   mobileMaxHeight: 60,
                   builder: (context, shrinkOffset, overlapsContent) {
-                    return Container(child: const Text('Pinned'));
+                    return const Text('Pinned');
                   },
                 ),
               ],
@@ -322,7 +320,7 @@ void main() {
                   mobileMaxHeight: 100,
                   minHeight: 40,
                   builder: (context, shrinkOffset, overlapsContent) {
-                    return Container(child: const Text('Ratio'));
+                    return const Text('Ratio');
                   },
                 ),
               ],

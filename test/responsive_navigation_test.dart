@@ -33,7 +33,7 @@ void main() {
   });
 
   group('ResponsiveNavigation', () {
-    final destinations = const [
+    const destinations = [
       NavDestination(icon: Icons.home, label: 'Home'),
       NavDestination(icon: Icons.search, label: 'Search'),
       NavDestination(icon: Icons.person, label: 'Profile'),
