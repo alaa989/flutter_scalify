@@ -1885,17 +1885,21 @@ class _NavigationPreviewState extends State<_NavigationPreview> {
         },
 
         // ── Sidebar header ──
-        sidebarHeader: Padding(
-          padding: const EdgeInsets.all(16),
+        sidebarHeader: const Padding(
+          padding: EdgeInsets.all(16),
           child: Row(
             children: [
-              Icon(Icons.layers, size: 24.iz, color: Colors.indigo),
-              SizedBox(width: 8.w),
-              Text('Scalify App',
-                  style: TextStyle(
-                      fontSize: 16.fz,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.indigo)),
+              Icon(Icons.layers, size: 24, color: Colors.indigo),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text('Scalify App',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.indigo),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+              ),
             ],
           ),
         ),
@@ -1915,26 +1919,28 @@ class _NavigationPreviewState extends State<_NavigationPreview> {
             child: Row(
               children: [
                 CircleAvatar(
-                  radius: 16.s,
+                  radius: 16,
                   backgroundColor: Colors.indigo.shade100,
-                  child: Icon(Icons.person, size: 18.iz, color: Colors.indigo),
+                  child:
+                      const Icon(Icons.person, size: 18, color: Colors.indigo),
                 ),
-                SizedBox(width: 10.w),
-                Expanded(
+                const SizedBox(width: 10),
+                const Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text('Alaa Hassan',
                           style: TextStyle(
-                              fontSize: 13.fz, fontWeight: FontWeight.w600)),
+                              fontSize: 13, fontWeight: FontWeight.w600),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
                       Text('Pro Member',
-                          style:
-                              TextStyle(fontSize: 10.fz, color: Colors.grey)),
+                          style: TextStyle(fontSize: 10, color: Colors.grey)),
                     ],
                   ),
                 ),
-                Icon(Icons.settings, size: 16.iz, color: Colors.grey),
+                const Icon(Icons.settings, size: 16, color: Colors.grey),
               ],
             ),
           ),
